@@ -5,7 +5,8 @@ import {
     Dimensions,
     StyleSheet,
     FlatList,
-    StatusBar
+    StatusBar,
+    TouchableOpacity
 } from 'react-native';
 import { BuscarProdutosServer } from '../Models/ProdutosServerModel';
 
@@ -50,14 +51,19 @@ const Index = () => {
     }
 
     const MostraBag = () => {
+        
         if(itensBag.length > 0){
             return(
-                <Bag itensBag={itensBag}>
+                <Bag 
+                    itensBag={itensBag}
+                    countItens={itensBag.length}
+                >
                     <View style={{ padding: 20 }}>
                         <Text>Conteúdo do BottomSheet</Text>
                         <Text>Arraste para cima para fechar.</Text>
                     </View>
                 </Bag>
+
             )
 
         }
@@ -66,12 +72,22 @@ const Index = () => {
     return (
         <View style={styles.container}>
             <View >
-                <View style={{width:windowWidth,marginBottom:20, height:80,  justifyContent:"center", backgroundColor:"#4a4a4a"}}>
-                    <View style={{ marginLeft:10, marginTop:20}}>
+                <View style={{width:windowWidth,marginBottom:20, height:80,  alignItems:"center",  backgroundColor:"#4a4a4a", flexDirection:"row"}}>
+                    <View style={{ marginLeft:10, marginTop:20, width:windowWidth-80}}>
                         <Text style={{ fontWeight:"bold", color:"#ffff"}}>Olá Vinicius</Text>
                     </View>
+                    <TouchableOpacity style={{ marginLeft:10, marginTop:20, width: 80}}>
+                        <Text style={{ fontWeight:"bold", color:"#ffff"}}>Busca</Text>
+                    </TouchableOpacity>
                     
                 </View>
+
+            </View>
+            <View style={{  backgroundColor:"red", position:"absolute",zIndex:2, top:80, height:120, right:0}}>
+                <View style={{  height:100, width:windowWidth-40}}>
+                    <Text>asdas</Text>
+                </View>
+                
 
             </View>
             <View style={{height:windowHeight-140}}>
@@ -90,6 +106,7 @@ const Index = () => {
                     }}
                 />
             </View>
+
             {
                 MostraBag()
             }

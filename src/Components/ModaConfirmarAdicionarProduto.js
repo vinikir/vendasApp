@@ -45,7 +45,9 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
             qtd2 = 0
         }
 
-        if(qtd2 > item.estoque){
+        console.log(item)
+
+        if(qtd2 > item.estoque && item.tipo != "servico"){
             setMsg("A quantidade é maior que o estoque atual")
             setqtd(0)
             setDisabilitado(true)
@@ -101,7 +103,8 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
             qtd:qtd,
             valorUnitario:item.valorVenda,
             valorTotal: parseFloat(total.replace(',', '.')),
-            desconto:desconto
+            desconto:desconto,
+            tipo:item.tipo
         }
         setTotal("0,00")
         setDesconto(0)
@@ -132,10 +135,15 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
                                         <Text style={{fontWeight:"bold" , fontSize:18 }}>Valor:</Text>
                                         <Text style={{fontWeight:"bold" , fontSize:18 }}> R$ {preco}</Text>
                                     </View>
-                                    <View style={{width: (windowWidth-108)/2,}}>
-                                        <Text style={{fontWeight:"bold" , fontSize:18}}>Estoque: </Text>
-                                        <Text style={{fontWeight:"bold" , fontSize:18}}>{item.estoque}</Text>
-                                    </View>
+                                    {
+                                        item.tipo != "servico" && (
+                                            <View style={{width: (windowWidth-108)/2,}}>
+                                                <Text style={{fontWeight:"bold" , fontSize:18}}>Estoque: </Text>
+                                                <Text style={{fontWeight:"bold" , fontSize:18}}>{item.estoque}</Text>
+                                            </View>
+                                        )
+                                    }
+                                    
                                 </View>
                                 
 

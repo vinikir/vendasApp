@@ -35,7 +35,6 @@ const ProdutoListagem = ({item, callback}) => {
         setModalDetalhesAberto(true)
     }
 
-
     const adicionarItemBag = (jsonItem) => {
         callback(jsonItem)
         
