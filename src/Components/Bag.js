@@ -111,16 +111,16 @@ const Bag = ({  itensBag, countItens }) => {
                         <View style={{ height:tamanhoAbertura-120}}>
                             <View style={{ width:windowWidth-10,Height:40,justifyContent:"center", alignItems:"center", marginLeft:5, marginRight:5, flexDirection:"row" }}>
                                 <View style={{width:tamanhoColuna*3 }}>
-                                    <Text style={{fontWeight:"bold" }}>Produto</Text>
+                                    <Text style={{color:"#000",fontWeight:"bold" }}>Produto</Text>
                                 </View>
                                 <View style={{width:tamanhoColuna , alignItems:'center'}}>
-                                    <Text style={{fontWeight:"bold" }}>Qtd</Text>
+                                    <Text style={{color:"#000",fontWeight:"bold" }}>Qtd</Text>
                                 </View>
                                 <View style={{width:tamanhoColuna , alignItems:'center' }}>
-                                    <Text style={{fontWeight:"bold" }}>Valor</Text>
+                                    <Text style={{color:"#000",fontWeight:"bold" }}>Valor</Text>
                                 </View>
                                 <View style={{width:tamanhoColuna ,alignItems:'center'}}>
-                                    <Text style={{fontWeight:"bold" }}>Ação</Text>
+                                    <Text style={{color:"#000",fontWeight:"bold" }}>Ação</Text>
                                 </View>
                             </View>
                             <FlatList 
@@ -138,16 +138,16 @@ const Bag = ({  itensBag, countItens }) => {
                                     return (
                                            <View style={{ flex:1, width:windowWidth-10,minHeight:40,justifyContent:"center", alignItems:"center", marginLeft:5, marginRight:5, flexDirection:"row" }}>
                                                 <View style={{width:tamanhoColuna*3 }}>
-                                                    <Text>{item.produtoNome}</Text>
+                                                    <Text style={{color:"#000",}}>{item.produtoNome}</Text>
                                                 </View>
                                                 <View style={{width:tamanhoColuna , alignItems:'center'}}>
-                                                    <Text>{item.qtd}</Text>
+                                                    <Text style={{color:"#000",}}>{item.qtd}</Text>
                                                 </View>
                                                 <View style={{width:tamanhoColuna , alignItems:'center' }}>
-                                                    <Text>{preco}</Text>
+                                                    <Text style={{color:"#000",}}>{preco}</Text>
                                                 </View>
                                                 <View style={{width:tamanhoColuna ,alignItems:'center'}}>
-                                                    <Text>X</Text>
+                                                    <Text style={{color:"#000",}}>X</Text>
                                                 </View>
                                             </View>
                                     )
@@ -155,15 +155,15 @@ const Bag = ({  itensBag, countItens }) => {
                             />
                             <View style={{marginLeft:5}}>
                                 <View>
-                                    <Text>Valor Total: R$ {valorTotal}</Text>
+                                    <Text style={{fontSize:22,color:"#000", fontWeight:"bold"}}>Valor Total: R$ {valorTotal}</Text>
                                 </View>
                                 <View>
-                                    <Text>Quantidade de itens: {totalItens}</Text>
+                                    <Text style={{fontSize:22,color:"#000", fontWeight:"bold"}}>Quantidade de itens: {totalItens}</Text>
                                 </View>
 
                             </View>
                         </View>
-                        <View style={{ alignItems:'center', justifyContent:"center" }}>
+                        <View style={{ alignItems:'center', justifyContent:"center", marginTop:10 }}>
                             <TouchableOpacity style={{ backgroundColor:"blue", height:40, width:windowWidth - 120, borderRadius:20, alignItems:"center", justifyContent:"center", marginBottom:20}}>
                                 <Text style={{ color:"#ffff", fontWeight:"bold"}}>Finalizar venda</Text>
                             </TouchableOpacity>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import UserModels from '../Models/UserModels';
 
 import { 
@@ -15,6 +15,7 @@ import {
 
 } from 'react-native';
 import { Logar } from '../Models/UserServerModel';
+import { AuthContext } from '../Contexts/auth';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 
@@ -32,6 +33,9 @@ const Login = ({navigation, route}) => {
 
 
     const [ visionIcon, setVision ] = useState('eye-slash')
+
+    const { setUser } = useContext( AuthContext )
+
 
 
     useEffect(() => {
@@ -79,7 +83,7 @@ const Login = ({navigation, route}) => {
                 return
             }
             UserModels.salvarUsuario(res.valor.ID, res.valor.Nome)
-
+            setUser(res.valor)
             return  navigation.navigate('Index')
         })
     }

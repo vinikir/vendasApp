@@ -42,8 +42,8 @@ const ModalInformativosProduto = ({modalAberto, item, fechaModal, img}) => {
                     <ScrollView>
                         <View style={styles.viewInfo}>
                             <View style={{ marginBottom:10 }}>
-                                <Text style={{fontWeight:"bold"}}>Produto:</Text>
-                                <Text >{item.nome}</Text>
+                                <Text style={{fontWeight:"bold",color:"#000",}}>Produto:</Text>
+                                <Text style={{color:"#000",}}>{item.nome}</Text>
                             </View>
                             <View
                                 style={{
@@ -52,8 +52,8 @@ const ModalInformativosProduto = ({modalAberto, item, fechaModal, img}) => {
                                 }}
                             />
                             <View style={{ marginBottom:10, marginTop:10 }}>
-                                <Text style={{fontWeight:"bold"}}>Valor:</Text>
-                                <Text >R$ {preco}</Text>
+                                <Text style={{fontWeight:"bold",color:"#000",}}>Valor:</Text>
+                                <Text style={{color:"#000",}}>R$ {preco}</Text>
                             </View>
                             <View
                                 style={{
@@ -62,8 +62,8 @@ const ModalInformativosProduto = ({modalAberto, item, fechaModal, img}) => {
                                 }}
                             />
                             <View style={{ marginBottom:10, marginTop:10 }}>
-                                <Text style={{fontWeight:"bold"}}>Estoque:</Text>
-                                <Text >{item.estoque}</Text>
+                                <Text style={{fontWeight:"bold",color:"#000",}}>Estoque:</Text>
+                                <Text style={{color:"#000",}}>{item.estoque}</Text>
                             </View>
                             <View
                                 style={{
@@ -73,8 +73,8 @@ const ModalInformativosProduto = ({modalAberto, item, fechaModal, img}) => {
                             />
 
                             <View style={{ marginBottom:10, marginTop:10 }}>
-                                <Text style={{fontWeight:"bold"}}>Desconto maximo:</Text>
-                                <Text >{item.descontoMaximo}</Text>
+                                <Text style={{fontWeight:"bold",color:"#000",}}>Desconto maximo:</Text>
+                                <Text style={{color:"#000",}}>{item.descontoMaximo}</Text>
                             </View>
                             <View
                                 style={{
@@ -83,8 +83,8 @@ const ModalInformativosProduto = ({modalAberto, item, fechaModal, img}) => {
                                 }}
                             />
                             <View style={{ marginBottom:10, marginTop:10 }}>
-                                <Text style={{fontWeight:"bold"}}>Descrição:</Text>
-                                <Text> {item.descricao}</Text>
+                                <Text style={{color:"#000",fontWeight:"bold"}}>Descrição:</Text>
+                                <Text style={{color:"#000",}}> {item.descricao}</Text>
                             </View>
 
                         </View>
@@ -161,7 +161,8 @@ const styles = StyleSheet.create({
     textStyle: {
         color: "white",
         fontWeight: "bold",
-        textAlign: "center"
+        textAlign: "center",
+        color:"#000",
     },
 })
 

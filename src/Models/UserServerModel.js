@@ -14,9 +14,11 @@ export const Logar = async (login, senha) => {
         } else if (error.request) {
             // A requisição foi feita, mas nenhuma resposta foi recebida
             console.log(error.request);
+            retorno = error.request
         } else {
             // Outro erro ocorreu
             console.log('Erro:', error.message);
+            retorno = error.message
         }
         
         return retorno

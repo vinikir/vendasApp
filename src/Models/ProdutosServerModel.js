@@ -1,8 +1,9 @@
 import api from "../Api/api";
 
-export const BuscarProdutosServer = async () => {
+export const BuscarProdutosServer = async (busca, tipo) => {
     let retorno
-    const res_api = await api.get('produtos').then((res) => {
+    console.log('produtos?search='+busca+"&tipo="+tipo)
+    const res_api = await api.get('produtos?search='+busca+"&tipo="+tipo).then((res) => {
         if (typeof res.data != "undefined" && res.data) {
             retorno = res.data
             return res.data

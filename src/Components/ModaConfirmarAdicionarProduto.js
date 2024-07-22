@@ -126,20 +126,20 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
                     <ScrollView>
                         <View style={styles.viewInfo}>
                             <View style={{ marginBottom:10 }}>
-                                <Text style={{fontWeight:"bold", fontSize:22}}>{item.nome}</Text>
+                                <Text style={{fontWeight:"bold", color:"#000", fontSize:22}}>{item.nome}</Text>
                             </View>
                           
                             <View style={{ marginBottom:40, marginTop:10}}>
                                 <View style={{  flexDirection:'row', marginBottom:10 }}>
                                     <View style={{width: (windowWidth-108)/2,}}>
-                                        <Text style={{fontWeight:"bold" , fontSize:18 }}>Valor:</Text>
-                                        <Text style={{fontWeight:"bold" , fontSize:18 }}> R$ {preco}</Text>
+                                        <Text style={{fontWeight:"bold" , color:"#000", fontSize:18 }}>Valor:</Text>
+                                        <Text style={{fontWeight:"bold" , color:"#000", fontSize:18 }}> R$ {preco}</Text>
                                     </View>
                                     {
                                         item.tipo != "servico" && (
                                             <View style={{width: (windowWidth-108)/2,}}>
-                                                <Text style={{fontWeight:"bold" , fontSize:18}}>Estoque: </Text>
-                                                <Text style={{fontWeight:"bold" , fontSize:18}}>{item.estoque}</Text>
+                                                <Text style={{fontWeight:"bold", color:"#000" , fontSize:18}}>Estoque: </Text>
+                                                <Text style={{fontWeight:"bold", color:"#000" , fontSize:18}}>{item.estoque}</Text>
                                             </View>
                                         )
                                     }
@@ -160,27 +160,32 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
                            
                             <View style={{ marginBottom:10, marginTop:10, flexDirection:"row" }}>
                                  <View style={{width: (windowWidth-112)/2, marginRight:2}}>
-                                    <Text style={{fontWeight:"bold"}}>Quantidade</Text>
+                                    <Text style={{fontWeight:"bold", color:"#000"}}>Quantidade</Text>
                                     <TextInput 
                                         style={{
                                             borderBottomColor: 'black',
                                             borderBottomWidth: StyleSheet.hairlineWidth,
+                                            color:"rgba(0, 0, 0, 0.6)"
                                         }}
                                         keyboardType = 'numeric'
                                         onChangeText = {(text)=> { atualizarQtd(text)}}
                                         value = {qtd}
+                                        placeholderTextColor="rgba(0, 0, 0, 0.6)"
                                     />
                                 </View>
                                 <View style={{width: (windowWidth-112)/2, marginLeft:2}}>
-                                    <Text style={{fontWeight:"bold"}}>Desconto (%)</Text>
+                                    <Text style={{fontWeight:"bold", color:"#000"}}>Desconto (%)</Text>
                                     <TextInput 
                                         style={{
                                             borderBottomColor: 'black',
                                             borderBottomWidth: StyleSheet.hairlineWidth,
+                                            color:"rgba(0, 0, 0, 0.6)"
                                         }}
                                         keyboardType = 'numeric'
                                         onChangeText = {(text)=> atualizarDesconto(text)}
                                         value = {desconto}
+                                        placeholderTextColor="rgba(0, 0, 0, 0.6)"
+                                        
                                     />
                                 </View>
                             </View>
@@ -188,7 +193,7 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
     
                             <View style={{ marginBottom:10, marginTop:10,}}>
                                 <View style={{width: (windowWidth-108) }}>
-                                    <Text style={{fontWeight:"bold", fontSize:30}}>Total: R$ {total}</Text>
+                                    <Text style={{fontWeight:"bold",color:"#000", fontSize:30}}>Total: R$ {total}</Text>
                                 </View>
                             </View>
                             
@@ -300,7 +305,8 @@ const styles = StyleSheet.create({
     textStyle: {
         color: "white",
         fontWeight: "bold",
-        textAlign: "center"
+        textAlign: "center",
+        color:"#000",
     },
 })
 
