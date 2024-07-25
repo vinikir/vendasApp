@@ -15,11 +15,11 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import ProdutoListagem from '../Components/ProdutoListagem';
 import Bag from '../Components/Bag';
 import { AuthContext } from '../Contexts/auth';
+import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 
 const Index = () => {
 
     const [ produtos, setProdutos ] = useState([])
-    const [showBottomSheet, setShowBottomSheet] = useState(false);
     const [ itensBag , setItensBag ]= useState([])
     const [ busca, setBusca ] = useState("")
     const [selectedId, setSelectedId] = useState();
@@ -27,21 +27,21 @@ const Index = () => {
     const [refreshing, setRefreshing] = useState(false); 
 
     const { userInfos } = useContext( AuthContext )
-
+    
     useEffect(() => {
-        BuscarProdutosServer().then(res => {
-            
-            setProdutos(res.valor)
-        })
         
+        buscaItensServe()
+
     },[])
 
-    const onRefresh = async () => {
+    const buscaItensServe = () => {
         BuscarProdutosServer().then(res => {
             
             setProdutos(res.valor)
         })
-    };
+    }
+
+   
 
     const radioButtons = useMemo(() => ([
         {
@@ -84,6 +84,26 @@ const Index = () => {
         setItensBag(i)
     }
 
+    const removerItem = (itemid) => {
+        let i = itensBag.filter((el) => el.produtoId !=  itemid)
+        setItensBag(i)
+        
+    }
+
+    const onRefresh = () => {
+        buscaItensServe()
+    }
+
+    const limparBag = (chamaItens) => {
+
+        if(chamaItens == true){
+            buscaItensServe()
+        }
+
+        setItensBag([])
+
+    }
+
     const MostraBag = () => {
         
         if(itensBag.length > 0){
@@ -91,6 +111,9 @@ const Index = () => {
                 <Bag 
                     itensBag={itensBag}
                     countItens={itensBag.length}
+                    removerItem={ (itemId) => removerItem(itemId) }
+                    user={userInfos}
+                    limparBag={(chamaItens) => limparBag(chamaItens)}
                 />
                    
 
@@ -176,10 +199,10 @@ const Index = () => {
             <View >
                 <View style={{width:windowWidth,marginBottom:20, height:80,  alignItems:"center",  backgroundColor:"#4a4a4a", flexDirection:"row"}}>
                     <View style={{ marginLeft:10, marginTop:20, width:windowWidth-80}}>
-                        <Text style={{ fontWeight:"bold", color:"#ffff"}}>Olá {userInfos.Nome}</Text>
+                        <Text style={{ fontWeight:"bold", color:"#ffff"}}>Olá {userInfos?.Nome}</Text>
                     </View>
                     <TouchableOpacity onPress={() => setBuscaVisivel(true)} style={{ marginLeft:10, marginTop:20, width: 80}}>
-                        <Text style={{ fontWeight:"bold", color:"#ffff"}}>Busca</Text>
+                        <Icon name="filter" size={18} color="#ffff" />
                     </TouchableOpacity>
                     
                 </View>

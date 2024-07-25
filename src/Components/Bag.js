@@ -9,14 +9,25 @@ import { View, Text, PanResponder, Dimensions, TouchableWithoutFeedback,ScrollVi
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/dist/FontAwesome5';
+import ModalPagamento from './ModalPagamento';
+import { SalvaVendaServer } from '../Models/ProdutosServerModel';
+import ModalMsg from './ModalMsg';
 
-const Bag = ({  itensBag, countItens }) => {
+const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
     
     const height = useSharedValue(0);
-	const [ expanded, setExpanded] = useState(true);
+	const [ expanded, setExpanded] = useState(false);
     const [ totalItens, setTotalItens ] = useState(0)
     const [ valorTotal, setValorTotal ] = useState("0,00")
     const [ chaveOrdeServico, setChaveOrdemServico ] = useState(false)
+    
+
+    const [ modalAberto, setModalAberto ] = useState(false)
+    const [ modalMsgAberto, setModalMsgAberto ] = useState(false)
+    const [ msg, setMsg ] =  useState("")
+    
+
     useEffect(() => {
         calculaValorEQuantidade(itensBag)
     },[itensBag])
@@ -47,6 +58,52 @@ const Bag = ({  itensBag, countItens }) => {
 
     } 
 
+    const finalizar = (pagamento) => {
+
+        const jsonFinalizar = {
+            userId:user.ID,
+            tipoVenda:"local",
+            user:user.Nome,
+            status:"finalizado",
+            pagamento:pagamento,
+            produtos:itensBag
+        }
+
+        SalvaVendaServer(jsonFinalizar).then(( re ) => {
+           
+            if(re.erro == false){
+
+                setMsg("Venda finalizada com sucesso")
+                setModalMsgAberto(true)
+
+            }else{
+
+                setMsg(re.valor)
+                setModalMsgAberto(true)
+
+            }
+
+        }).catch(() => {
+
+            setMsg("Erro ao finalizar venda")
+            setModalMsgAberto(true)
+
+        })
+
+
+    }
+
+    const fechaModalMsg = (liBag) => {
+
+        if(liBag == true){
+            setExpanded(false)
+            limparBag(true)
+        }
+
+        setModalMsgAberto(false)
+
+    }
+
 
 	const hh = useAnimatedStyle(() => {
 		return ({
@@ -56,6 +113,7 @@ const Bag = ({  itensBag, countItens }) => {
 
     const showContent = () => {
 		//t()
+        
 		if(expanded){
 			
 			height.value = withTiming(0, {
@@ -77,6 +135,7 @@ const Bag = ({  itensBag, countItens }) => {
 	};
 
     const tamanhoColuna = (windowWidth-10)/6
+
 
     return (
         <View style={{
@@ -146,9 +205,9 @@ const Bag = ({  itensBag, countItens }) => {
                                                 <View style={{width:tamanhoColuna , alignItems:'center' }}>
                                                     <Text style={{color:"#000",}}>{preco}</Text>
                                                 </View>
-                                                <View style={{width:tamanhoColuna ,alignItems:'center'}}>
-                                                    <Text style={{color:"#000",}}>X</Text>
-                                                </View>
+                                                <TouchableOpacity onPress={() => removerItem(item.produtoId)} style={{width:tamanhoColuna ,alignItems:'center'}}>
+                                                    <Icon name="trash-alt" size={18} color="red" />
+                                                </TouchableOpacity>
                                             </View>
                                     )
                                 }}
@@ -164,7 +223,7 @@ const Bag = ({  itensBag, countItens }) => {
                             </View>
                         </View>
                         <View style={{ alignItems:'center', justifyContent:"center", marginTop:10 }}>
-                            <TouchableOpacity style={{ backgroundColor:"blue", height:40, width:windowWidth - 120, borderRadius:20, alignItems:"center", justifyContent:"center", marginBottom:20}}>
+                            <TouchableOpacity onPress={() => setModalAberto(true) } style={{ backgroundColor:"#13a303", elevation:5, height:40, width:windowWidth - 120, borderRadius:20, alignItems:"center", justifyContent:"center", marginBottom:20}}>
                                 <Text style={{ color:"#ffff", fontWeight:"bold"}}>Finalizar venda</Text>
                             </TouchableOpacity>
                             {
@@ -180,6 +239,17 @@ const Bag = ({  itensBag, countItens }) => {
               
             </ScrollView>
         </Animated.View>
+        <ModalPagamento
+            modalAberto={modalAberto}
+            fechaModal={() => setModalAberto(false)}
+            concluir={(pagamento) => finalizar(pagamento)}
+            valorCobrar={valorTotal}
+        />
+        <ModalMsg
+            modalAberto={modalMsgAberto}
+            msg={msg}
+            fechaModal={() => fechaModalMsg(true)}
+        />
       </View>
     );
 };

@@ -1,4 +1,4 @@
-package com.awesomeproject
+package com.gemvendas
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
