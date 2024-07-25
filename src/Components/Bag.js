@@ -96,6 +96,7 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
     const fechaModalMsg = (liBag) => {
 
         if(liBag == true){
+            
             setExpanded(false)
             limparBag(true)
         }

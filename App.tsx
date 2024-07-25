@@ -7,6 +7,9 @@ import Login from './src/screens/Login';
 import Index from './src/screens/Index';
 import AuthProvider from './src/Contexts/auth';
 
+import CodePush from 'react-native-code-push';
+
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -25,4 +28,8 @@ const App = () => {
 
 }
 
-export default App
+export default CodePush({
+	checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+})(App);
+
+//export default App

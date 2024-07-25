@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { Logar } from '../Models/UserServerModel';
 import { AuthContext } from '../Contexts/auth';
+import { getVersaoApp } from '../Controller/Funcoes/Geral';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 
@@ -24,12 +25,12 @@ const Login = ({navigation, route}) => {
     const [ imgLogo, setImgLogo ] = useState(require("../../public/img/logoGem.png"))
 
     const [ seguret, setSeguret ] = useState(true)
+    const [ versao, setVersao] =  useState('') 
 
     const [ login, setLogin ] = useState("")
     const [ senha, setSenha ] = useState('')
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ msg, setMsg ] = useState('')
-
 
 
     const [ visionIcon, setVision ] = useState('eye-slash')
@@ -40,12 +41,26 @@ const Login = ({navigation, route}) => {
 
     useEffect(() => {
        
-        const res = UserModels.buscausuraio()
-
+        inicializar()
         //  Logar().then((res) => {
         //     console.log(res)
         //  })
     },[])
+
+    const  inicializar = async () => {
+        console.log("asdasd")
+       
+        const versaoApp = await getVersaoApp().then((res) => {
+            
+            setVersao(res)
+        }).catch((e) => {
+            console.log(e)
+        })
+       
+        
+        
+        const res = UserModels.buscausuraio()
+    }
 
     const vision = () =>{
 
@@ -166,7 +181,7 @@ const Login = ({navigation, route}) => {
                     justifyContent: "center",
                 }
             }>
-                <Text style={{ fontSize:10, color:"#fff", textAlign: 'center', paddingTop: 20}}>Versão 1</Text>
+                <Text style={{ fontSize:10, color:"#fff", textAlign: 'center', paddingTop: 20}}>{versao}</Text>
             </View>
             <Modal
                 animationType="slide"
