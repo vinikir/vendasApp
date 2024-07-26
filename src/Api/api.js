@@ -18,7 +18,6 @@ var api = axios.create({
         'Content-Type':'application/json; charset=utf-8',
     }
 });
-console.log(api)
 
 
 export default api;

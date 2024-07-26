@@ -16,6 +16,8 @@ import ProdutoListagem from '../Components/ProdutoListagem';
 import Bag from '../Components/Bag';
 import { AuthContext } from '../Contexts/auth';
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
+import Icon2 from 'react-native-vector-icons/dist/Feather';
+import SideMenuComponent from '../Components/SideMenu';
 
 const Index = () => {
 
@@ -25,6 +27,7 @@ const Index = () => {
     const [selectedId, setSelectedId] = useState();
     const [ buscaVisivel, setBuscaVisivel ] = useState(false)
     const [refreshing, setRefreshing] = useState(false); 
+    const [ sideMenuAberto, setSidemenuAberto] = useState(false)
 
     const { userInfos } = useContext( AuthContext )
     
@@ -196,9 +199,15 @@ const Index = () => {
 
     return (
         <View style={styles.container}>
+            <SideMenuComponent 
+                abreSideMenu={sideMenuAberto}
+            />
             <View >
                 <View style={{width:windowWidth,marginBottom:20, height:80,  alignItems:"center",  backgroundColor:"#4a4a4a", flexDirection:"row"}}>
-                    <View style={{ marginLeft:10, marginTop:20, width:windowWidth-80}}>
+                    <TouchableOpacity onPress={() => setSidemenuAberto(!sideMenuAberto)} style={{ marginLeft:10, alignItems:"center", justifyContent:"center", marginTop:20, width:30}}>
+                        <Icon2 name="menu" size={20} color="#ffff" />
+                    </TouchableOpacity>
+                    <View style={{ marginLeft:10, marginTop:20, width:windowWidth-110}}>
                         <Text style={{ fontWeight:"bold", color:"#ffff"}}>Olá {userInfos?.Nome}</Text>
                     </View>
                     <TouchableOpacity onPress={() => setBuscaVisivel(true)} style={{ marginLeft:10, marginTop:20, width: 80}}>

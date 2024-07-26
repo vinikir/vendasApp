@@ -45,7 +45,6 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
             qtd2 = 0
         }
 
-        console.log(item)
 
         if(qtd2 > item.estoque && item.tipo != "servico"){
             setMsg("A quantidade é maior que o estoque atual")

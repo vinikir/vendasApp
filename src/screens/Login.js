@@ -17,6 +17,7 @@ import {
 import { Logar } from '../Models/UserServerModel';
 import { AuthContext } from '../Contexts/auth';
 import { getVersaoApp } from '../Controller/Funcoes/Geral';
+import InfosLoginModel from '../Models/InfosLoginModel';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 
@@ -48,7 +49,6 @@ const Login = ({navigation, route}) => {
     },[])
 
     const  inicializar = async () => {
-        console.log("asdasd")
        
         const versaoApp = await getVersaoApp().then((res) => {
             
@@ -60,6 +60,14 @@ const Login = ({navigation, route}) => {
         
         
         const res = UserModels.buscausuraio()
+
+        const res2 = InfosLoginModel.buscaInfosLogin()
+        
+        if(res2.length > 0){
+            setLogin(res2[0].login)
+            setSenha(res2[0].senha)
+        }
+        
     }
 
     const vision = () =>{
@@ -91,13 +99,18 @@ const Login = ({navigation, route}) => {
             setModalVisible(true)
             return
         }
-        Logar(login,senha).then((res) => {
+
+        Logar(login.trim(),senha.trim()).then((res) => {
+
             if(res.erro == true){
                 setMsg(res.valor)
                 setModalVisible(true)
                 return
             }
+
             UserModels.salvarUsuario(res.valor.ID, res.valor.Nome)
+            InfosLoginModel.salvarInfos(login.trim(),senha.trim())
+
             setUser(res.valor)
             return  navigation.navigate('Index')
         })

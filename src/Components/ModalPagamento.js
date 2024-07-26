@@ -47,7 +47,7 @@ const ModalPagamento = ({modalAberto, fechaModal, concluir, valorCobrar}) => {
     ]), []);
 
     const adicionarPagamento = () => {
-        console.log("asdasd")
+        
         let p = pagamento
         const metodo = radioButtons.find(el => el.id == selectedId)
         p.push({

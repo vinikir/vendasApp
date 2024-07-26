@@ -24,9 +24,11 @@ export const getVersaoApp = async  () => {
             }).catch((e) => {
                 console.log(e)
             });
-            console.log(t)
+
         }catch(e){
+
             console.log("erro", e)
+            
         }
         
         
