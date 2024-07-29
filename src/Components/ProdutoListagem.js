@@ -56,8 +56,11 @@ const ProdutoListagem = ({item, callback}) => {
 					/>
 				</View>
                 <View style={styles.viewText}> 
-                    <View style={{ height:53,marginTop:2, }}> 
+                    <View style={{ height:50,marginTop:2, }}> 
 						<Text style={ { color:"#000", fontWeight:"bold"}}>{item.nome}</Text>
+					</View>
+					<View style={{ height:25,  }}> 
+						<Text style={ {color:"#000"}}>Marca: {item.marca}</Text>
 					</View>
                     <View style={{ height:25,  }}> 
 						<Text style={ {color:"#000"}}>Estoque: {item.estoque}</Text>
@@ -127,24 +130,26 @@ const styles = StyleSheet.create({
 		width: windowWidth-18
 	},
 	viewText:{ 
-		height:80,
+		height:100,
 		width:windowWidth-200,
 		justifyContent:"center",
        
 	},
 	viewImg:{
-        height:80,
+        height:100,
 		borderRadius:10,
 		justifyContent:"center",
 		width:100,
+		alignItems:"center",
+		justifyContent:"center"
 		
     },
     
     
 	
     img:{
-        height:80,
-        width:100,
+        height:70,
+        width:90,
 		
         resizeMode: 'stretch',
 		borderRadius:10
@@ -153,7 +158,7 @@ const styles = StyleSheet.create({
 	
     card:{
         backgroundColor:"#fff",
-        height:80, 
+        height:100, 
         flexDirection: 'row',        
        
 		borderTopLeftRadius:10,

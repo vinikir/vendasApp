@@ -39,10 +39,18 @@ const SideMenuComponent = ({abreSideMenu}) => {
         return navigation.navigate('Login')
     }
 
+    const trocarSenha = () => {
+        return navigation.navigate('TrocarSenha')
+    }
 
     return (
         <Animated.View style={[{ height:windowHeight-80,zIndex:3,  backgroundColor:"#bfbfbf", position:"absolute", bottom:0, left:0 },hh]}>
             <View style={{ marginTop:10 , marginLeft:10}} >
+                <TouchableOpacity onPress={() => trocarSenha()}>
+                    <View>
+                        <Text style={{color:"#000"}}>Trocar senha</Text>
+                    </View>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => sair()}>
                     <View>
                         <Text style={{color:"#000"}}>Sair</Text>

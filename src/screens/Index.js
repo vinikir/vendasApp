@@ -24,7 +24,7 @@ const Index = () => {
     const [ produtos, setProdutos ] = useState([])
     const [ itensBag , setItensBag ]= useState([])
     const [ busca, setBusca ] = useState("")
-    const [selectedId, setSelectedId] = useState();
+    const [ selectedId, setSelectedId] = useState();
     const [ buscaVisivel, setBuscaVisivel ] = useState(false)
     const [refreshing, setRefreshing] = useState(false); 
     const [ sideMenuAberto, setSidemenuAberto] = useState(false)
@@ -138,6 +138,8 @@ const Index = () => {
 
         BuscarProdutosServer(busca, tipoItem).then(res => {
             setProdutos(res.valor)
+            setBuscaVisivel(false)
+            setBusca("")
         })
     }
 
