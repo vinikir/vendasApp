@@ -10,7 +10,7 @@ import {
     Dimensions
 } from 'react-native';
 import RenderHtml from 'react-native-render-html';
-
+import InformativosProduto from './InformativosProdutos';
 
 const ModalInformativosProduto = ({modalAberto, item, fechaModal, img}) => {
 
@@ -19,19 +19,7 @@ const ModalInformativosProduto = ({modalAberto, item, fechaModal, img}) => {
 
     }
 
-    let preco = `${item.valorVenda.toFixed(2)}`
-
-    preco = preco.replace('.', ',')
-
-    let aplic = ""
-
-    if(typeof item.aplicacao != "undefined"){
-        aplic = item.aplicacao
-    }
-
-    const source = {
-		html:  `<div style="color:#000; ">`+aplic+`</div>`
-	};
+   
 
     return(
         <Modal
@@ -43,102 +31,10 @@ const ModalInformativosProduto = ({modalAberto, item, fechaModal, img}) => {
 
                 <View style={styles.modalView}>
 
-                    <View style={ styles.viewImgInfo }>
-                        <Image
-                            style={styles.imgInfo}
-                            source={img}
-                        />
-                    </View>
-                    
-                    
-                    <ScrollView>
-                        <View style={styles.viewInfo}>
-                            <View style={{ marginBottom:10 }}>
-                                <Text style={{fontWeight:"bold",color:"#000",}}>Produto:</Text>
-                                <Text style={{color:"#000",}}>{item.nome}</Text>
-                            </View>
-                            <View
-                                style={{
-                                    borderBottomColor: 'black',
-                                    borderBottomWidth: StyleSheet.hairlineWidth,
-                                }}
-                            />
-                            <View style={{ marginBottom:10 }}>
-                                <Text style={{fontWeight:"bold",color:"#000",}}>Marca:</Text>
-                                <Text style={{color:"#000",}}>{item.marca}</Text>
-                            </View>
-                            <View
-                                style={{
-                                    borderBottomColor: 'black',
-                                    borderBottomWidth: StyleSheet.hairlineWidth,
-                                }}
-                            />
-                            <View style={{ flexDirection:"row"}}>
-                                <View style={{ marginBottom:10, marginTop:10, width:(windowWidth-108)/4 }}>
-                                    <Text style={{fontWeight:"bold",color:"#000",}}>Estoque:</Text>
-                                    <Text style={{color:"#000",}}>{item.estoque}</Text>
-                                </View>
-
-                                <View style={{ marginBottom:10, marginTop:10, width:(windowWidth-108)/3 }}>
-                                    <Text style={{fontWeight:"bold",color:"#000",}}>Valor:</Text>
-                                    <Text style={{color:"#000",}}>R$ {preco}</Text>
-                                </View>
-                                <View style={{ marginBottom:10, marginTop:10 }}>
-                                    <Text style={{fontWeight:"bold",color:"#000",}}>Desconto até (%):</Text>
-                                    <Text style={{color:"#000",}}>{item.descontoMaximo}</Text>
-                                </View>
-                            </View>
-                            
-                            <View
-                                style={{
-                                    borderBottomColor: 'black',
-                                    borderBottomWidth: StyleSheet.hairlineWidth,
-                                }}
-                            />
-                            <View style={{flexDirection:"row"}}>
-                                <View style={{ marginBottom:10, marginTop:10, width:(windowWidth-108)/2 }}>
-                                    <Text style={{color:"#000",fontWeight:"bold"}}>SKU:</Text>
-                                    <Text style={{color:"#000",}}> {item.sku}</Text>
-                                </View>
-                                <View style={{ marginBottom:10, marginTop:10, width:((windowWidth-108)/2) }}>
-                                    <Text style={{color:"#000",fontWeight:"bold"}}>Codigo de barras:</Text>
-                                    <Text style={{color:"#000",}}> {item.codigoBarra}</Text>
-                                </View>
-
-                            </View>
-                            
-                            
-
-                            <View
-                                style={{
-                                    borderBottomColor: 'black',
-                                    borderBottomWidth: StyleSheet.hairlineWidth,
-                                }}
-                            />
-                            
-                            <View style={{ marginBottom:10, marginTop:10 }}>
-                                <Text style={{color:"#000",fontWeight:"bold"}}>Descrição:</Text>
-                                <Text style={{color:"#000",}}> {item.descricao}</Text>
-                            </View>
-                            <View
-                                style={{
-                                    borderBottomColor: 'black',
-                                    borderBottomWidth: StyleSheet.hairlineWidth,
-                                }}
-                            />
-                            
-                            <View style={{ marginBottom:10, marginTop:10 }}>
-                                <Text style={{color:"#000",fontWeight:"bold"}}>Aplicação:</Text>
-                                <RenderHtml
-									contentWidth={200}
-									source={source}
-								/>
-                            </View>
-                            
-                        </View>
-                        
-                    </ScrollView>
-                
+                    <InformativosProduto 
+                        item={item} 
+                        img={img}
+                    />
                     
                     <Pressable
                         style={[styles.button, styles.buttonClose]}

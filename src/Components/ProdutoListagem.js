@@ -41,13 +41,23 @@ const ProdutoListagem = ({item, callback}) => {
         setModalConfirmacaoAberto(false)
     }
 
+	let backgroundColor = "#fff"
+	let tamanho = 50
+	
+	if(item.tipo == "servico"){
+		backgroundColor = "#ffc48a"
+		tamanho = 100
+	}
+
+	
+
     return(
         <View style={{ marginBottom:10, width:windowWidth, alignItems:"center" }} >
             <TouchableOpacity 
 				onPress={ () => {
 					abrirDetalhes()
 				}} 
-				style={ styles.card }
+				style={ [ styles.card, { backgroundColor:backgroundColor}] }
 			>
                 <View style={ styles.viewImg }>
 					<Image
@@ -56,15 +66,22 @@ const ProdutoListagem = ({item, callback}) => {
 					/>
 				</View>
                 <View style={styles.viewText}> 
-                    <View style={{ height:50,marginTop:2, }}> 
+                    <View style={{ height:tamanho,marginTop:2, }}> 
 						<Text style={ { color:"#000", fontWeight:"bold"}}>{item.nome}</Text>
 					</View>
-					<View style={{ height:25,  }}> 
-						<Text style={ {color:"#000"}}>Marca: {item.marca}</Text>
-					</View>
-                    <View style={{ height:25,  }}> 
-						<Text style={ {color:"#000"}}>Estoque: {item.estoque}</Text>
-					</View>
+					{
+						item.tipo != "servico" && (
+							<View>
+								<View style={{ height:25,  }}> 
+									<Text style={ {color:"#000"}}>Marca: {item.marca}</Text>
+								</View>
+								<View style={{ height:25,  }}> 
+									<Text style={ {color:"#000"}}>Estoque: {item.estoque}</Text>
+								</View>
+							</View>
+						)
+					}
+					
                 </View>
                 <View>
                     <View style={{justifyContent:"center", height:80 }}> 
@@ -141,21 +158,15 @@ const styles = StyleSheet.create({
 		justifyContent:"center",
 		width:100,
 		alignItems:"center",
-		justifyContent:"center"
+		justifyContent:"center",
 		
     },
-    
-    
-	
     img:{
-        height:70,
-        width:90,
-		
+        height:96,
+        width:96,
         resizeMode: 'stretch',
 		borderRadius:10
     },
-    
-	
     card:{
         backgroundColor:"#fff",
         height:100, 
@@ -166,7 +177,6 @@ const styles = StyleSheet.create({
 		width: windowWidth-18,
 		elevation:5,
     },
-	
 	
 	
 });
