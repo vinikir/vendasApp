@@ -237,12 +237,14 @@ const styles = StyleSheet.create({
     viewImag:{
         //justifyContent: 'center',
         alignItems:'center',
+        borderRadius:10,
+        
     },
     img:{
-         marginTop:70,
+        marginTop:70,
         
-        height:150,
-         marginBottom:30,
+        height:300,
+        marginBottom:30,
         //borderRadius:20
     },
     img2:{

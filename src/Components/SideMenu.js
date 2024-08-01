@@ -46,14 +46,14 @@ const SideMenuComponent = ({abreSideMenu}) => {
     return (
         <Animated.View style={[{ height:windowHeight-80,zIndex:3,  backgroundColor:"#bfbfbf", position:"absolute", bottom:0, left:0 },hh]}>
             <View style={{ marginTop:10 , marginLeft:10}} >
-                <TouchableOpacity onPress={() => trocarSenha()}>
+                {/* <TouchableOpacity onPress={() => trocarSenha()}>
                     <View>
                         <Text style={{color:"#000"}}>Trocar senha</Text>
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => sair()}>
-                    <View>
-                        <Text style={{color:"#000"}}>Sair</Text>
+                </TouchableOpacity> */}
+                <TouchableOpacity onPress={() => sair()} style={{backgroundColor:"#4a4a4a", height:40, justifyContent:"center", marginRight:10}}>
+                    <View style={{ marginLeft:5}}>
+                        <Text style={{color:"#fff"}}>Sair</Text>
                     </View>
                 </TouchableOpacity>
             </View>
