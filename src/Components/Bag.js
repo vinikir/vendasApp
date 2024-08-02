@@ -173,11 +173,14 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                                 <View style={{width:tamanhoColuna*3 }}>
                                     <Text style={{color:"#000",fontWeight:"bold" }}>Produto</Text>
                                 </View>
+                                <View style={{width:tamanhoColuna , alignItems:'center' }}>
+                                    <Text style={{color:"#000",fontWeight:"bold" }}>Valor U</Text>
+                                </View>
                                 <View style={{width:tamanhoColuna , alignItems:'center'}}>
                                     <Text style={{color:"#000",fontWeight:"bold" }}>Qtd</Text>
                                 </View>
                                 <View style={{width:tamanhoColuna , alignItems:'center' }}>
-                                    <Text style={{color:"#000",fontWeight:"bold" }}>Valor</Text>
+                                    <Text style={{color:"#000",fontWeight:"bold" }}>Valor T</Text>
                                 </View>
                                 <View style={{width:tamanhoColuna ,alignItems:'center'}}>
                                     <Text style={{color:"#000",fontWeight:"bold" }}>Ação</Text>
@@ -189,19 +192,23 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                                     <Text style={{color:"#fff"}}>Sem Itens</Text>
                                 }
                                 renderItem={ ({ item, index }) => {
-                                    
-                                    
+                                    console.log(item)
+                                    let uni = `${item.valorUnitario.toFixed(2)}`
                                     let preco = `${item.valorTotal.toFixed(2)}`
 
                                     preco = preco.replace('.', ',')
+                                    uni = uni.replace('.', ',')
                                     
                                     return (
                                            <View style={{ flex:1, width:windowWidth-10,minHeight:40,justifyContent:"center", alignItems:"center", marginLeft:5, marginRight:5, flexDirection:"row" }}>
                                                 <View style={{width:tamanhoColuna*3 }}>
                                                     <Text style={{color:"#000",}}>{item.produtoNome}</Text>
                                                 </View>
+                                                <View style={{width:tamanhoColuna , alignItems:'center' }}>
+                                                    <Text style={{color:"#000",}}>{uni} X</Text>
+                                                </View>
                                                 <View style={{width:tamanhoColuna , alignItems:'center'}}>
-                                                    <Text style={{color:"#000",}}>{item.qtd}</Text>
+                                                    <Text style={{color:"#000",}}>{item.qtd} </Text>
                                                 </View>
                                                 <View style={{width:tamanhoColuna , alignItems:'center' }}>
                                                     <Text style={{color:"#000",}}>{preco}</Text>
