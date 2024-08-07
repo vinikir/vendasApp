@@ -10,7 +10,7 @@ import {
     FlatList
 } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
-import TabelaPagamentos from './TabelaTapamentos';
+import TabelaPagamentos from './TabelaPagamentos';
 
 const ModalPagamento = ({modalAberto, fechaModal, concluir, valorCobrar}) => {
 

@@ -129,7 +129,7 @@ const Login = ({navigation, route}) => {
 				animated={true}
 				backgroundColor={"#4a4a4a"}
 			/>
-            <View style={{flex:1, alignItems:"center", justifyContent:"center", backgroundColor:"#4a4a4a"}}>
+            <View style={{flex:1, width:windowWidth, alignItems:"center", justifyContent:"center", backgroundColor:"#4a4a4a"}}>
                 <View style={{flex:1, alignItems:"center", justifyContent:"center",}}>
                     <View style={ styles.viewImag}>
                         <Image
@@ -221,6 +221,7 @@ const Login = ({navigation, route}) => {
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
     container:{
         flex:1,

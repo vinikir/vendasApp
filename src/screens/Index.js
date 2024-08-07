@@ -50,17 +50,20 @@ const Index = () => {
         {
             id: '1', // acts as primary key, should be unique and non-empty string
             label: 'Serviço',
-            value: 'option1'
+            value: 'option1',
+            color:"#fff"
         },
         {
             id: '2',
             label: 'Peças',
-            value: 'option2'
+            value: 'option2',
+            color:"#fff"
         },
         {
             id: '3',
             label: 'Todos',
-            value: 'option2'
+            value: 'option2',
+            color:"#fff"
         }
     ]), []);
 
@@ -146,7 +149,7 @@ const Index = () => {
     const ComponentBusca = () => {
         if(buscaVisivel == true){
             return(
-                <View style={{  backgroundColor:"#757575", position:"absolute",zIndex:2, top:80, height:120, right:0}}>
+                <View style={{  backgroundColor:"#757575", position:"absolute",zIndex:2, elevation:5, top:80, height:120, right:0}}>
                     <View style={{  height:100, width:windowWidth-40}}>
                         <View>
                             <RadioGroup 

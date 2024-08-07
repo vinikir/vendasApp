@@ -192,7 +192,6 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                                     <Text style={{color:"#fff"}}>Sem Itens</Text>
                                 }
                                 renderItem={ ({ item, index }) => {
-                                    console.log(item)
                                     let uni = `${item.valorUnitario.toFixed(2)}`
                                     let preco = `${item.valorTotal.toFixed(2)}`
 
