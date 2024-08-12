@@ -140,7 +140,7 @@ const Login = ({navigation, route}) => {
                     </View>
 
                     <View style={ styles.viewInput }>
-                        <View style={{  alignItems:'center',position: 'absolute',marginTop:13,marginLeft:20,  zIndex:999}}>
+                        <View style={{  alignItems:'center',position: 'absolute',marginTop:13,marginLeft:10,  zIndex:999}}>
                             <Icon name="user-alt" size={18} color="rgba(0, 0, 0, 0.6)"></Icon>
                         </View>
                         <TextInput
@@ -155,7 +155,7 @@ const Login = ({navigation, route}) => {
                     </View>
 
                     <View style={ styles.viewInput }>
-                        <View style={{  alignItems:'center',position: 'absolute',marginTop:13,marginLeft:20,  zIndex:999}}>
+                        <View style={{  alignItems:'center',position: 'absolute',marginTop:13,marginLeft:10,  zIndex:999}}>
                             <Icon name="lock" size={20} color="rgba(0, 0, 0, 0.6)"></Icon>
                         </View>
                         <TouchableOpacity onPress={() => vision()} style={{  alignItems:'center',position: 'absolute',marginTop:10,right:10,  zIndex:999}}>
@@ -256,16 +256,16 @@ const styles = StyleSheet.create({
     input:{ 
         backgroundColor:"#fff",
         width: windowWidth-90,
-        borderRadius:20,
-        paddingLeft:55,
+        borderRadius:5,
+        paddingLeft:45,
         height:45,
         color:"rgba(0, 0, 0, 0.6)"
     },
     inputSenha:{
         backgroundColor:"#fff",
         width: windowWidth-90,
-        borderRadius:20,
-        paddingLeft:55,
+        borderRadius:5,
+        paddingLeft:45,
         paddingRight:55,
         height:45,
         color:"rgba(0, 0, 0, 0.6)"
@@ -273,11 +273,12 @@ const styles = StyleSheet.create({
     btnLogin:{
         width:windowWidth-90,
         height: 45,
-        backgroundColor: "#2b306e",
+        backgroundColor: "#f0660a",
         justifyContent: 'center',
         alignItems:'center',
         marginTop:20,
-        borderRadius:20
+        borderRadius:5,
+        elevation:5
     },
     centeredView: {
         flex: 1,

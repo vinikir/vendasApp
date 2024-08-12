@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     img:{
         height:96,
         width:96,
-        resizeMode: 'stretch',
+        resizeMode: 'center',
 		borderRadius:10
     },
     card:{

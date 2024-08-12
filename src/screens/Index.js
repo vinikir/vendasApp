@@ -51,19 +51,22 @@ const Index = () => {
             id: '1', // acts as primary key, should be unique and non-empty string
             label: 'Serviço',
             value: 'option1',
-            color:"#fff"
+            color:"#f0660a",
+            labelStyle:{color:"#fff", fontWeight:"bold"}
         },
         {
             id: '2',
             label: 'Peças',
             value: 'option2',
-            color:"#fff"
+            color:"#f0660a",
+            labelStyle:{color:"#fff", fontWeight:"bold"}
         },
         {
             id: '3',
             label: 'Todos',
             value: 'option2',
-            color:"#fff"
+            color:"#f0660a",
+            labelStyle:{color:"#fff", fontWeight:"bold"}
         }
     ]), []);
 
@@ -162,14 +165,13 @@ const Index = () => {
                         <View style={{ marginLeft:10, marginTop:5}}>
                             <TextInput 
                                 style={ {
-
                                     backgroundColor:"#fff",
                                     width: windowWidth-90,
-                                
-                                    paddingLeft:2,
-                                    paddingRight:2,
-                                    height:35 ,
-                                    color:"rgba(0, 0, 0, 0.6)"
+                                    borderRadius:5,
+                                    paddingLeft:45,
+                                    color:"rgba(0, 0, 0, 0.6)",
+                                    height:35,
+                                    
                                 }}
                                 onChangeText={(tex) => setBusca(tex) }
                                 value={busca}

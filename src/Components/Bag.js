@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 import ModalPagamento from './ModalPagamento';
 import { SalvaVendaServer } from '../Models/ProdutosServerModel';
 import ModalMsg from './ModalMsg';
+import MenuBag from './MenuBag';
 
 const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
     
@@ -21,7 +22,7 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
     const [ totalItens, setTotalItens ] = useState(0)
     const [ valorTotal, setValorTotal ] = useState("0,00")
     const [ chaveOrdeServico, setChaveOrdemServico ] = useState(false)
-    
+    const [ menuBagVisivel, setMenuBagVisilve ] = useState(false)
 
     const [ modalAberto, setModalAberto ] = useState(false)
     const [ modalMsgAberto, setModalMsgAberto ] = useState(false)
@@ -33,6 +34,8 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
     },[itensBag])
 
     const tamanhoAbertura = windowHeight - 200
+
+    
 
     const calculaValorEQuantidade = async (itens) => {
         let v = 0
@@ -135,7 +138,7 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
 		}
 	};
 
-    const tamanhoColuna = (windowWidth-10)/6
+    const tamanhoColuna = (windowWidth-10)/8
 
 
     return (
@@ -152,7 +155,24 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                 onPress={() => { showContent() }}
             >
                 <View style={{backgroundColor:"#4a4a4a", flexDirection:"row", flex:1,alignItems:"center",justifyContent:"center", width:windowWidth, height:30, borderTopLeftRadius:10, borderTopRightRadius:10}}>
-                    <Text style={{fontSize:30, color:"#ffff", fontWeight:"bold"}}>-</Text>
+                    
+                    {
+                        expanded == true && (
+                            <TouchableOpacity onPress={ () => setMenuBagVisilve(!menuBagVisivel) } style={{position:"absolute", left:10}}>
+                                
+                                <View style={{ height:30, width:30, alignItems:"center", justifyContent:"center",flex:1, }}>
+                                    <Text style={{ color:"#ffff", fontWeight:"bold"}}>
+                                        <Icon name="bars" size={18} color="#ffff" />
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    }
+           
+                    
+                    <Text style={{fontSize:30, color:"#ffff", fontWeight:"bold"}}>
+                        <Icon name="ellipsis-h" size={18} color="#ffff" />
+                    </Text>
                     <View style={{position:"absolute", right:10}}>
                         
                         <View style={{marginTop:-25, height:30, width:30, alignItems:"center", justifyContent:"center",flex:1,  backgroundColor:"red", borderRadius:50}}>
@@ -165,6 +185,11 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
             </TouchableOpacity>
        
         <Animated.View style={[{ width: windowWidth,  color:"#bfbfbf" },hh]}>
+            
+                    <MenuBag
+                    visivel={menuBagVisivel} />
+                
+
             <ScrollView 
                 nestedScrollEnabled={true}>
                     <View style={{ backgroundColor:"#ebebeb", height:tamanhoAbertura, width:windowWidth}}>
@@ -179,6 +204,9 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                                 <View style={{width:tamanhoColuna , alignItems:'center'}}>
                                     <Text style={{color:"#000",fontWeight:"bold" }}>Qtd</Text>
                                 </View>
+                                <View style={{width:tamanhoColuna , alignItems:'center'}}>
+                                    <Text style={{color:"#000",fontWeight:"bold" }}>Desconto (%)</Text>
+                                </View>
                                 <View style={{width:tamanhoColuna , alignItems:'center' }}>
                                     <Text style={{color:"#000",fontWeight:"bold" }}>Valor T</Text>
                                 </View>
@@ -192,12 +220,13 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                                     <Text style={{color:"#fff"}}>Sem Itens</Text>
                                 }
                                 renderItem={ ({ item, index }) => {
+                                    
                                     let uni = `${item.valorUnitario.toFixed(2)}`
                                     let preco = `${item.valorTotal.toFixed(2)}`
 
                                     preco = preco.replace('.', ',')
                                     uni = uni.replace('.', ',')
-                                    
+                                   
                                     return (
                                            <View style={{ flex:1, width:windowWidth-10,minHeight:40,justifyContent:"center", alignItems:"center", marginLeft:5, marginRight:5, flexDirection:"row" }}>
                                                 <View style={{width:tamanhoColuna*3 }}>
@@ -208,6 +237,9 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                                                 </View>
                                                 <View style={{width:tamanhoColuna , alignItems:'center'}}>
                                                     <Text style={{color:"#000",}}>{item.qtd} </Text>
+                                                </View>
+                                                <View style={{width:tamanhoColuna , alignItems:'center'}}>
+                                                    <Text style={{color:"#000",}}>{item.desconto} </Text>
                                                 </View>
                                                 <View style={{width:tamanhoColuna , alignItems:'center' }}>
                                                     <Text style={{color:"#000",}}>{preco}</Text>
@@ -230,12 +262,12 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                             </View>
                         </View>
                         <View style={{ alignItems:'center', justifyContent:"center", marginTop:10 }}>
-                            <TouchableOpacity onPress={() => setModalAberto(true) } style={{ backgroundColor:"#13a303", elevation:5, height:40, width:windowWidth - 120, borderRadius:20, alignItems:"center", justifyContent:"center", marginBottom:20}}>
+                            <TouchableOpacity onPress={() => setModalAberto(true) } style={{ backgroundColor:"#13a303", elevation:5, height:40, width:windowWidth - 120, borderRadius:5, alignItems:"center", justifyContent:"center", marginBottom:20}}>
                                 <Text style={{ color:"#ffff", fontWeight:"bold"}}>Finalizar venda</Text>
                             </TouchableOpacity>
                             {
                                 chaveOrdeServico && (
-                                    <TouchableOpacity style={{ backgroundColor:"blue", height:40, width:windowWidth - 120, borderRadius:20, alignItems:"center", justifyContent:"center"}}>
+                                    <TouchableOpacity style={{ backgroundColor:"blue", height:40, width:windowWidth - 120, borderRadius:5, alignItems:"center", justifyContent:"center"}}>
                                         <Text style={{ color:"#ffff", fontWeight:"bold"}}>Finalizar venda com ordem de serviço</Text>
                                     </TouchableOpacity>
                                 )

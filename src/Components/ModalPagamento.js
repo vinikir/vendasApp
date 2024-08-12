@@ -24,25 +24,25 @@ const ModalPagamento = ({modalAberto, fechaModal, concluir, valorCobrar}) => {
             id: '1', 
             label: 'Pix',
             value: 'pix',
-            color:"#fff"
+            color:"#f0660a"
         },
         {
             id: '2',
             label: 'Dinheiro',
             value: 'dinheiro',
-            color:"#fff"
+            color:"#f0660a"
         },
         {
             id: '3',
             label: 'Débito',
             value: 'debito',
-            color:"#fff"
+            color:"#f0660a"
         },
         {
             id: '4',
             label: 'Crédito',
             value: 'credito',
-            color:"#fff"
+            color:"#f0660a"
         }
     ]), []);
 
