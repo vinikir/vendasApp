@@ -22,37 +22,41 @@ const TabelaPagamentos = ({pagamentos }) => {
 
         return (
 
-            <View style={{ height: 200, marginTop: 10, backgroundColor:"red" }}>
-                
-                <FlatList 
-                    data={pagamentos}
-                    renderItem={({ item }) => {
-                        
-                        
-                        const valor = `${item.valor.toFixed(2)}`.replace(".",",")
-                        return(
-                            <View style={{ marginTop: 10}} >
-                                <View style={{flexDirection:"row"}}>
-                                    <View style={{ width:windowWidth/4 }}>
-                                        <Text>Metodo</Text>
-                                    </View>
-                                    <View style={{ width:windowWidth/4 }}>
-                                        <Text>{item.metodo}</Text>
-                                    </View>
-                                    <View style={{ width:windowWidth/4 }}>
-                                        <Text>Valor</Text>
-                                    </View>
-                                    <View style={{ width:windowWidth/4 }}>
-                                        <Text>R$ {valor}</Text>
+            <View style={{backgroundColor:"#4a4a4a", height: windowHeight/4, width:windowWidth-20,}}>
+                <View style={{height: windowHeight/4-30, width:windowWidth-20, marginBottom:10}}>
+                    <FlatList 
+                        data={pagamentos}
+                        renderItem={({ item }) => {
+                            
+                            
+                            const valor = `${item.valor.toFixed(2)}`.replace(".",",")
+                            return(
+                                <View style={{ marginTop: 10, borderBottomWidth:1,borderBottomColor:"#707070"}} >
+                                    <View style={{flexDirection:"row"}}>
+                                        <View style={{ width:windowWidth/4 }}>
+                                            <Text style={{ color:"#FFF"}}>Metodo</Text>
+                                        </View>
+                                        <View style={{ width:windowWidth/4 }}>
+                                            <Text style={{ color:"#FFF"}}>{item.metodo}</Text>
+                                        </View>
+                                        <View style={{ width:windowWidth/4 }}>
+                                            <Text style={{ color:"#FFF"}}>Valor</Text>
+                                        </View>
+                                        <View style={{ width:windowWidth/4 }}>
+                                            <Text style={{ color:"#FFF"}}>R$ {valor}</Text>
+                                        </View>
+                                        
                                     </View>
                                     
                                 </View>
-                                
-                            </View>
-                        )
-                    }}
-                />
-                <Text>Total: R$ {`${todal.toFixed(2)}`.replace(".",",")}</Text>
+                            )
+                        }}
+                    />
+                </View>
+                <View>
+                    <Text style={{ color:"#FFF"}} >Total Pago: R$ {`${todal.toFixed(2)}`.replace(".",",")}</Text>
+                </View>
+                
             </View>
         )
 

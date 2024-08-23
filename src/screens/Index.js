@@ -19,8 +19,9 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/dist/Feather';
 import SideMenuComponent from '../Components/SideMenu';
 
-const Index = () => {
+const Index = ({route}) => {
 
+    
     const [ produtos, setProdutos ] = useState([])
     const [ itensBag , setItensBag ]= useState([])
     const [ busca, setBusca ] = useState("")
@@ -28,6 +29,8 @@ const Index = () => {
     const [ buscaVisivel, setBuscaVisivel ] = useState(false)
     const [refreshing, setRefreshing] = useState(false); 
     const [ sideMenuAberto, setSidemenuAberto] = useState(false)
+
+    
 
     const { userInfos } = useContext( AuthContext )
     
@@ -44,7 +47,11 @@ const Index = () => {
         })
     }
 
-   
+    if(typeof route != "undefined" && typeof route.params != "undefined" && typeof route.params.limparBag != "undefined" &&  route.params.limparBag == true ){
+        setItensBag([])
+        buscaItensServe()
+        route.params = {}
+    }
 
     const radioButtons = useMemo(() => ([
         {
@@ -270,7 +277,7 @@ const styles = StyleSheet.create({
         
         alignItems:'center',
         width: windowWidth,
-        
+        backgroundColor:"#4a4a4a"
     },
 })
 

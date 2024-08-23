@@ -1,9 +1,9 @@
 import api from "../Api/api";
 
-export const BuscarProdutosServer = async (busca, tipo) => {
+export const SalvaOrcamentoServer = async (orcamento) => {
     let retorno
     
-    const res_api = await api.get('produtos?search='+busca+"&tipo="+tipo).then((res) => {
+    const res_api = await api.post('orcamento/salvar',orcamento).then((res) => {
         if (typeof res.data != "undefined" && res.data) {
             retorno = res.data
             return res.data
@@ -27,10 +27,11 @@ export const BuscarProdutosServer = async (busca, tipo) => {
 
 }
 
-export const SalvaVendaServer = async (vanda) => {
+export const BuscaOrcamentoServer = async () => {
+    
     let retorno
     
-    const res_api = await api.post('venda',vanda).then((res) => {
+    const res_api = await api.post('orcamentos').then((res) => {
         if (typeof res.data != "undefined" && res.data) {
             retorno = res.data
             return res.data

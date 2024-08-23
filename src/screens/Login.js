@@ -254,21 +254,29 @@ const styles = StyleSheet.create({
         
     },
     input:{ 
-        backgroundColor:"#fff",
+        backgroundColor: '#4a4a4a', 
+        color: '#fff', // Cor do texto
         width: windowWidth-90,
         borderRadius:5,
         paddingLeft:45,
         height:45,
-        color:"rgba(0, 0, 0, 0.6)"
+        borderWidth: 1,
+        borderColor: '#707070', 
+        elevation:5,
+        
     },
     inputSenha:{
-        backgroundColor:"#fff",
+        backgroundColor: '#4a4a4a', 
+        color: '#fff', // Cor do texto
         width: windowWidth-90,
         borderRadius:5,
         paddingLeft:45,
         paddingRight:55,
         height:45,
-        color:"rgba(0, 0, 0, 0.6)"
+        borderWidth: 1,
+        borderColor: '#707070', 
+        elevation:5,
+        
     },
     btnLogin:{
         width:windowWidth-90,

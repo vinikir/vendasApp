@@ -4,14 +4,33 @@ import {
     TouchableOpacity,
     Dimensions
 } from 'react-native';
-
+import Botao from './Botao';
 const MenuBag = ({visivel, callback}) => {
+
     if(visivel == true){
         return(
-            <View style={{flex:1, height:50, width:(windowWidth/3)*2, backgroundColor:"#757575", elevation:5, position:"absolute", zIndex:2, alignItems:"center", justifyContent:"center"}} >
-                <TouchableOpacity onPress={() => callback("orcamento")} style={{ backgroundColor:"blue", height:40, width:(windowWidth/2), borderRadius:5, alignItems:"center", justifyContent:"center", elevation:5}}>
-                    <Text style={{ color:"#ffff", fontWeight:"bold"}}>salvar como orçamento</Text>
-                </TouchableOpacity>
+            <View style={{flex:1,  height:110, width:(windowWidth/3)*2, borderTopWidth:1,borderTopColor:"#4a4a4a", backgroundColor:"#707070", elevation:5, position:"absolute", zIndex:2, alignItems:"center", justifyContent:"space-around"}} >
+                <View>
+                    <Botao 
+                        width={windowWidth/2}
+                        label="Salvar como orçamento"
+                        callback={() => { callback("orcamento") }}
+                        backgroundColor="blue"
+                    />
+                    
+                </View>
+                <View>
+
+                    <Botao 
+                        width={windowWidth/2}
+                        label="Limpar Bag"
+                        callback={() => { callback("limparBag") }}
+                        backgroundColor="blue"
+                    />
+
+                </View>
+                
+                
             </View>
         )
     }

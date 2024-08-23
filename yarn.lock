@@ -7042,11 +7042,13 @@ __metadata:
     https: ^1.0.0
     install: ^0.13.0
     jest: ^29.6.3
+    moment: ^2.30.1
     prettier: 2.8.8
     react: 18.2.0
     react-native: 0.74.3
     react-native-code-push: ^8.3.1
     react-native-device-info: ^11.1.0
+    react-native-html-to-pdf: ^0.12.0
     react-native-radio-buttons-group: ^3.1.0
     react-native-reanimated: ^3.14.0
     react-native-render-html: ^6.3.4
@@ -10022,7 +10024,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.21.0":
+"moment@npm:^2.21.0, moment@npm:^2.30.1":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
   checksum: 859236bab1e88c3e5802afcf797fc801acdbd0ee509d34ea3df6eea21eb6bcc2abd4ae4e4e64aa7c986aa6cba563c6e62806218e6412a765010712e5fa121ba6
@@ -11434,6 +11436,13 @@ __metadata:
   peerDependencies:
     react-native: "*"
   checksum: 272cab82573933a1f3a9bc394b82a387ccbdf9fbef131fc1f04b8ff78b36f581931b5c643f5aa278f28577cbc320ef2ac588cafdb73292e9b0cf4427d54c44ce
+  languageName: node
+  linkType: hard
+
+"react-native-html-to-pdf@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "react-native-html-to-pdf@npm:0.12.0"
+  checksum: a5be594ccbfdd501d3ac626fb643f9a87631f1693029cd42679d08925658d03becef9a1dd02d1c38c64b93ef914b6a5f42646d36869dcdeed3d0f6ddcbf013ba
   languageName: node
   linkType: hard
 

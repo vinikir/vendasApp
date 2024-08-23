@@ -41,7 +41,7 @@ const ProdutoListagem = ({item, callback}) => {
         setModalConfirmacaoAberto(false)
     }
 
-	let backgroundColor = "#fff"
+	let backgroundColor = "#4a4a4a"
 	let tamanho = 50
 	
 	if(item.tipo == "servico"){
@@ -67,16 +67,16 @@ const ProdutoListagem = ({item, callback}) => {
 				</View>
                 <View style={styles.viewText}> 
                     <View style={{ height:tamanho,marginTop:2, }}> 
-						<Text style={ { color:"#000", fontWeight:"bold"}}>{item.nome}</Text>
+						<Text style={ { color:"#ffff", fontWeight:"bold"}}>{item.nome}</Text>
 					</View>
 					{
 						item.tipo != "servico" && (
 							<View>
 								<View style={{ height:25,  }}> 
-									<Text style={ {color:"#000"}}>Marca: {item.marca}</Text>
+									<Text style={ {color:"#ffff"}}>Marca: {item.marca}</Text>
 								</View>
 								<View style={{ height:25,  }}> 
-									<Text style={ {color:"#000"}}>Estoque: {item.estoque}</Text>
+									<Text style={ {color:"#ffff"}}>Estoque: {item.estoque}</Text>
 								</View>
 							</View>
 						)
@@ -84,15 +84,15 @@ const ProdutoListagem = ({item, callback}) => {
 					
                 </View>
                 <View>
-                    <View style={{justifyContent:"center", height:80 }}> 
-						<Text style={ {color:"#000"}}>R$ {preco}</Text>
+                    <View style={{justifyContent:"center", height:100, width:75, alignItems:"center" }}> 
+						<Text style={ {color:"#ffff"}}>R$ {preco}</Text>
 					</View>
                 </View>
 					
             </TouchableOpacity>
             <View style={ styles.subCard}>
                 <TouchableOpacity style={{ 
-						backgroundColor:"#5059bf",
+						backgroundColor:"#f0660a",
 						flex:1,
 						justifyContent:"center",
 						alignItems:"center",
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     
     
 	subCard:{
-		//backgroundColor:'#15404A',
+		
 		borderBottomLeftRadius:10,
 		borderBottomRightRadius:10,
 		justifyContent:"center",
@@ -150,12 +150,12 @@ const styles = StyleSheet.create({
 		height:100,
 		width:windowWidth-200,
 		justifyContent:"center",
+		marginLeft:5
        
 	},
 	viewImg:{
         height:100,
 		borderRadius:10,
-		justifyContent:"center",
 		width:100,
 		alignItems:"center",
 		justifyContent:"center",
@@ -164,14 +164,15 @@ const styles = StyleSheet.create({
     img:{
         height:96,
         width:96,
-        resizeMode: 'center',
+        resizeMode: 'cover',
 		borderRadius:10
     },
     card:{
-        backgroundColor:"#fff",
+        
         height:100, 
         flexDirection: 'row',        
-       
+        borderWidth:1,
+		borderBlockColor:"#707070",
 		borderTopLeftRadius:10,
 		borderTopRightRadius:10,
 		width: windowWidth-18,

@@ -10,6 +10,7 @@ import {
     Dimensions,
     TextInput
 } from 'react-native';
+import Botao from './Botao';
 
 const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callbackAdicionar}) => {
 
@@ -207,23 +208,23 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
                 
                     <View style={{  width:windowWidth-108, height:100}}>
                         <View >
-                            <Pressable
-                                style={styles.buttonAdicionar}
-                                onPress={() => adicionar()}
+                            <Botao 
+                                label="Adicionar"
+                                color='#fff'
+                                callback={() => adicionar()}
                                 disabled={disabilitado}
-                            >
-                                <Text style={styles.textStyle}>Adicionar</Text>
-                            </Pressable>
+                                backgroundColor='#05ad02'
+                            />
+                            
                         </View>
 
-                        <View>
-                            
-                            <Pressable
-                                style={styles.buttonCancelar}
-                                onPress={() => fechaModal()}
-                            >
-                                <Text style={styles.textStyle}>Cancelar</Text>
-                            </Pressable>
+                        <View style={{ marginTop:10}}>
+                            <Botao 
+                                label="Cancelar"
+                                color='#fff'
+                                callback={() => fechaModal()}
+                                backgroundColor='#ff001e'
+                            />
                         </View>
 
                         

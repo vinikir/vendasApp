@@ -43,6 +43,10 @@ const SideMenuComponent = ({abreSideMenu}) => {
         return navigation.navigate('TrocarSenha')
     }
 
+    const telaOrcamentos = () => {
+        return navigation.navigate('Orcamentos')
+    }
+
     return (
         <Animated.View style={[{ height:windowHeight-80,zIndex:3,  backgroundColor:"#bfbfbf", position:"absolute", bottom:0, left:0 },hh]}>
             <View style={{ marginTop:10 , marginLeft:10}} >
@@ -51,6 +55,11 @@ const SideMenuComponent = ({abreSideMenu}) => {
                         <Text style={{color:"#000"}}>Trocar senha</Text>
                     </View>
                 </TouchableOpacity> */}
+                <TouchableOpacity onPress={() => telaOrcamentos()} style={{backgroundColor:"#4a4a4a", height:40, justifyContent:"center", marginRight:10}}>
+                    <View style={{ marginLeft:5}}>
+                        <Text style={{color:"#fff"}}>Orçamento</Text>
+                    </View>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => sair()} style={{backgroundColor:"#4a4a4a", height:40, justifyContent:"center", marginRight:10}}>
                     <View style={{ marginLeft:5}}>
                         <Text style={{color:"#fff"}}>Sair</Text>

@@ -10,10 +10,10 @@ import { View, Text, PanResponder, Dimensions, TouchableWithoutFeedback,ScrollVi
     withTiming,
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
-import ModalPagamento from './ModalPagamento';
-import { SalvaVendaServer } from '../Models/ProdutosServerModel';
+import Botao from './Botao';
 import ModalMsg from './ModalMsg';
 import MenuBag from './MenuBag';
+import { useNavigation } from '@react-navigation/native';
 
 const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
     
@@ -24,10 +24,10 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
     const [ chaveOrdeServico, setChaveOrdemServico ] = useState(false)
     const [ menuBagVisivel, setMenuBagVisilve ] = useState(false)
 
-    const [ modalAberto, setModalAberto ] = useState(false)
     const [ modalMsgAberto, setModalMsgAberto ] = useState(false)
     const [ msg, setMsg ] =  useState("")
     
+    const navigation = useNavigation()
 
     useEffect(() => {
         calculaValorEQuantidade(itensBag)
@@ -35,9 +35,8 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
 
     const tamanhoAbertura = windowHeight - 200
 
-    
-
     const calculaValorEQuantidade = async (itens) => {
+        
         let v = 0
         let it = 0
         let c = false
@@ -61,40 +60,7 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
 
     } 
 
-    const finalizar = (pagamento) => {
-
-        const jsonFinalizar = {
-            userId:user.ID,
-            tipoVenda:"local",
-            user:user.Nome,
-            status:"finalizado",
-            pagamento:pagamento,
-            produtos:itensBag
-        }
-
-        SalvaVendaServer(jsonFinalizar).then(( re ) => {
-           
-            if(re.erro == false){
-
-                setMsg("Venda finalizada com sucesso")
-                setModalMsgAberto(true)
-
-            }else{
-
-                setMsg(re.valor)
-                setModalMsgAberto(true)
-
-            }
-
-        }).catch(() => {
-
-            setMsg("Erro ao finalizar venda")
-            setModalMsgAberto(true)
-
-        })
-
-
-    }
+    
 
     const fechaModalMsg = (liBag) => {
 
@@ -104,7 +70,7 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
             limparBag(true)
         }
 
-        setModalMsgAberto(false)
+        
 
     }
 
@@ -138,6 +104,37 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
 		}
 	};
 
+    const irTelaPagamento = () => {
+
+        return  navigation.navigate('TelaPagamento',{valorTotal, user:user, itensBag:itensBag})
+
+    }
+    const funcoes = (funcao) => {
+        if(funcao == "limparBag"){
+            limparBag()
+        }
+
+        if(funcao == "orcamento"){
+            const orcamento = {
+                userId:user.ID,
+                tipoVenda:"local",
+                user:user.Nome,
+                produtos:itensBag
+            }
+            
+            SalvaorcamentoServer(orcamento).then((res) => {
+               
+                if(res.erro == false){
+                    setMsg("Orçamento salvo com sucesso")
+                    setModalMsgAberto(true)
+                }
+
+            }).catch((er) => {
+                console.log("er", er)
+            })
+        }
+    }
+
     const tamanhoColuna = (windowWidth-10)/8
 
 
@@ -154,7 +151,7 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
             <TouchableOpacity style={{ alignItems:"center", justifyContent:"center" }}
                 onPress={() => { showContent() }}
             >
-                <View style={{backgroundColor:"#4a4a4a", flexDirection:"row", flex:1,alignItems:"center",justifyContent:"center", width:windowWidth, height:30, borderTopLeftRadius:10, borderTopRightRadius:10}}>
+                <View style={{backgroundColor:"#707070", flexDirection:"row", flex:1,alignItems:"center",justifyContent:"center", width:windowWidth, height:30, borderTopLeftRadius:10, borderTopRightRadius:10}}>
                     
                     {
                         expanded == true && (
@@ -186,8 +183,10 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
        
         <Animated.View style={[{ width: windowWidth,  color:"#bfbfbf" },hh]}>
             
-                    <MenuBag
-                    visivel={menuBagVisivel} />
+            <MenuBag
+                visivel={menuBagVisivel}
+                callback={(funcao) => funcoes(funcao)}
+            />
                 
 
             <ScrollView 
@@ -262,14 +261,27 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                             </View>
                         </View>
                         <View style={{ alignItems:'center', justifyContent:"center", marginTop:10 }}>
-                            <TouchableOpacity onPress={() => setModalAberto(true) } style={{ backgroundColor:"#13a303", elevation:5, height:40, width:windowWidth - 120, borderRadius:5, alignItems:"center", justifyContent:"center", marginBottom:20}}>
-                                <Text style={{ color:"#ffff", fontWeight:"bold"}}>Finalizar venda</Text>
-                            </TouchableOpacity>
+                            <View style={{marginBottom:10}}>
+                                <Botao 
+                                    callback={() => irTelaPagamento()}
+                                    color='#fff'
+                                    backgroundColor="#13a303"
+                                    label="Finalizar venda"
+                                />
+                            </View>
+                           
                             {
                                 chaveOrdeServico && (
-                                    <TouchableOpacity style={{ backgroundColor:"blue", height:40, width:windowWidth - 120, borderRadius:5, alignItems:"center", justifyContent:"center"}}>
-                                        <Text style={{ color:"#ffff", fontWeight:"bold"}}>Finalizar venda com ordem de serviço</Text>
-                                    </TouchableOpacity>
+                                    <View>
+                                        <Botao 
+                                            callback={() => irTelaPagamento()}
+                                            color='#fff'
+                                            backgroundColor="blue"
+                                            label="Finalizar venda com ordem de serviço"
+                                        />
+                                    </View>
+                                   
+                                    
                                 )
                             }
                          
@@ -278,12 +290,6 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
               
             </ScrollView>
         </Animated.View>
-        <ModalPagamento
-            modalAberto={modalAberto}
-            fechaModal={() => setModalAberto(false)}
-            concluir={(pagamento) => finalizar(pagamento)}
-            valorCobrar={valorTotal}
-        />
         <ModalMsg
             modalAberto={modalMsgAberto}
             msg={msg}
