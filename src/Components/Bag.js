@@ -14,7 +14,7 @@ import Botao from './Botao';
 import ModalMsg from './ModalMsg';
 import MenuBag from './MenuBag';
 import { useNavigation } from '@react-navigation/native';
-
+import { SalvaOrcamentoServer } from '../Models/OrcamentosServer';
 const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
     
     const height = useSharedValue(0);
@@ -122,7 +122,7 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                 produtos:itensBag
             }
             
-            SalvaorcamentoServer(orcamento).then((res) => {
+            SalvaOrcamentoServer(orcamento).then((res) => {
                
                 if(res.erro == false){
                     setMsg("Orçamento salvo com sucesso")
