@@ -1,10 +1,16 @@
+import React, { useEffect, useState } from "react";
 import moment from "moment"
 import { FlatList, View, Text, StyleSheet, Dimensions, Image } from "react-native"
 import Botao from "../Components/Botao"
-const OrcamentoDetalhe = ({route, navigation}) => {
-    const orcamento = route.params.orcamento
-    const  imgLogo = require("../../public/img/logoGem.png")
+import Share from 'react-native-share';
+import { WebView } from 'react-native-webview';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import teste from '../../public/img/logoGem_.png'
 
+const OrcamentoDetalhe = ({route, navigation}) => {
+    const [ html, setHtml ] = useState()
+    const orcamento = route.params.orcamento
+    const  imgLogo = require("../../public/img/logoGem_.png")
     let valorTotal = 0
 
     for (let index = 0; index < orcamento.produtos.length; index++) {
@@ -12,6 +18,172 @@ const OrcamentoDetalhe = ({route, navigation}) => {
         
         valorTotal+= element.valorTotal
     }
+
+    
+    const exampleImageUri = Image.resolveAssetSource(teste).uri
+
+
+    useEffect(() => {
+        criaHTMLPdf()
+
+    }, [])
+
+    const listagemProdutos = () => {
+        let he = ''
+        orcamento.produtos.map((item) => {
+            he += `
+            
+                <tr style="width:100%; height:40px">
+
+                    
+                    <td >${item.produtoNome}</td>
+                
+
+                
+                    <td >${item.qtd}</td>
+                
+
+                
+                    <td >R$ ${item.valorUnitario.toFixed(2).toString().replace(".",",")}</td>
+                
+
+                
+                    <td >${item.desconto}</td>
+                
+
+                
+                    <td >R$ ${item.valorTotal.toFixed(2).toString().replace(".",",")}</td>
+                    
+
+                </tr>
+            `
+            
+        })
+        return he
+    }
+
+    const criaHTMLPdf = () => {
+
+        let h = `
+            <div style="display:flex; align-items:center; flex-direction:column; width:100%; height:100%">
+                <div style=" display:flex; flex-direction:row; width:100%">
+                  
+                    <div style=" width:200px; height:200px ">
+                        <img src='https://i.imgur.com/9Hv8LYj.png' width="200px" height="200px"/>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:center; height: 200px; width:40%; font-size:30px"> 
+                        
+                        G & M Moto Pecas
+                       
+                       
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:center; height: 200px; font-size:15px; flex-direction:column">
+                        <div>
+                            CNPJ 55.744.795/0001-34
+                        </div>
+                        <div>
+                            Contato (11) 9 6564-0477
+                        </div>
+                    </div>
+                    
+                </div>
+                <div style="display:flex; align-items:center; justify-content:center;width:100%; height:50px; margin-top:20px">
+                    <div style="display:flex; align-items:center; justify-content:center; width:98%; height:60px; font-size:40px; background-color:#4a4a4a; color:#fff">
+                        Orçamento Nº ${orcamento.orcamentoId}
+                    </div>
+                </div>
+                <div style="  width:98%; margin-top:20px; ">
+                    
+                    <div>
+                        Data origem do orçamento: ${moment(orcamento.data).format("DD/MM/YYYY")}
+                    </div>
+                    <br/>
+                    <div>
+                        Valido até: ${moment(orcamento.data).add(30, 'days').format("DD/MM/YYYY")}
+                    </div>
+                    
+                    
+                </div>
+                <div style="  width:98%; margin-top:20px; ">
+                    <table style="  width:100%; ">
+                        <thead >
+                            <tr style="background-color:rgba(50,50,50,0.3); height:40px">
+                                <td>
+                                    Produto
+                                </td>
+                                <td>
+                                    
+                                    Qtd
+                                    
+                                </td>
+                                <td>
+                                    Val. Uni.
+                                </td>
+                                <td>
+                                    Desc. (%)
+                                </td>
+                                <td>
+                                    Val. Tot.
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            ${listagemProdutos()}
+                        
+                        </tbody>
+                        <tfoot>
+                            <tr style=" height:40px">
+                                <td scope="row" colspan=4>Total Orçamento</td>
+                                <td style="font-weight:Bold">R$ ${valorTotal.toFixed(2).toString().replace(".",",")}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+                </div>
+            </div>
+        `;
+
+        
+        setHtml(h)
+    } 
+    
+
+    const comp = async () => {
+        const options = {
+            html: html,
+            fileName: 'GeM_moto_pecas_orcamento_'+orcamento.orcamentoId+"_"+moment().format("DDMMYYYYHm"),
+            directory: 'Documents',
+        };
+        try{
+            const file = await RNHTMLtoPDF.convert(options);
+
+            
+            const shareOptions = {
+                title: 'Compartilhar PDF',
+                message: 'Confira este PDF!',
+                url: "file://"+file.filePath,
+                type: 'application/pdf',
+            };
+            
+            Share.open(shareOptions).then((res) => {
+
+                console.log('Compartilhado com sucesso:', res);
+
+            }).catch((err) => {
+
+                console.log('Erro ao compartilhar:', err);
+
+            });
+
+        } catch (error) {
+          console.log('Erro ao gerar PDF:', error);
+        }
+    }
+
+
+
+   
 
     return (
         <View style={styles.container}>
@@ -34,6 +206,9 @@ const OrcamentoDetalhe = ({route, navigation}) => {
                             </View>
                             <View>
                                 <Text style={{ color:"#000"}}>CNPJ 55.744.795/0001-34</Text>
+                            </View>
+                            <View>
+                                <Text style={{ color:"#000"}}>Contato (11) 9 6564-0477</Text>
                             </View>
                         </View>
                         
@@ -116,6 +291,10 @@ const OrcamentoDetalhe = ({route, navigation}) => {
                 </View>
 
             </View>
+             {/* <WebView
+                source={{ html: html }}
+                style={{ flex: 1, top:5, height:windowHeight-185, width:windowWidth }}
+            /> */}
             <View>
                 <Botao 
                     label="Voltar"
@@ -123,12 +302,13 @@ const OrcamentoDetalhe = ({route, navigation}) => {
                     callback={() => navigation.goBack()}
                 />
             </View>
-            {/* <View style={{ marginTop:20}}>
+            <View style={{ marginTop:20}}>
                 <Botao 
-                    label="Compartilhar"
+                    label="Gerar PDF"
                     backgroundColor="blue"
+                    callback={() => comp()}
                 />
-            </View> */}
+            </View>
         </View>
     )
 
