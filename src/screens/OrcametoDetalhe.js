@@ -62,11 +62,11 @@ const OrcamentoDetalhe = ({route, navigation}) => {
         return he
     }
 
-    const criaHTMLPdf = () => {
+    const criaHTMLPdf = async () => {
 
         let h = `
             <div style="display:flex; align-items:center; flex-direction:column; width:100%; height:100%">
-                <div style=" display:flex; flex-direction:row; width:100%">
+                <div style=" display:flex; flex-direction:row; width:98%">
                   
                     <div style=" width:200px; height:200px ">
                         <img src='https://i.imgur.com/9Hv8LYj.png' width="200px" height="200px"/>
@@ -188,7 +188,7 @@ const OrcamentoDetalhe = ({route, navigation}) => {
     return (
         <View style={styles.container}>
 
-            <View style={styles.subContainer}>
+            {/* <View style={styles.subContainer}>
                 <View style={ styles.viewHead}>
 
                     <View style={{ flexDirection:"row"}}>
@@ -290,11 +290,11 @@ const OrcamentoDetalhe = ({route, navigation}) => {
                     <Text style={styles.text}> Valor total: R$ {`${valorTotal.toFixed(2)}`.replace(".",",")}</Text>
                 </View>
 
-            </View>
-             {/* <WebView
+            </View> */}
+            <WebView
                 source={{ html: html }}
                 style={{ flex: 1, top:5, height:windowHeight-185, width:windowWidth }}
-            /> */}
+            />
             <View>
                 <Botao 
                     label="Voltar"
