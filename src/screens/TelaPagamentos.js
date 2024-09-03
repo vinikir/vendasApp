@@ -90,7 +90,8 @@ const TelaPagamentos = ({route, navigation}) => {
             user:user.Nome,
             status:"finalizado",
             pagamento:pagamento,
-            produtos:itensBag
+            produtos:itensBag,
+            valor:parseFloat(valorCobrar.replace(",",".")).toFixed(2)
         }
 
 
