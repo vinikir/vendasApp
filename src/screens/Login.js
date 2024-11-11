@@ -14,6 +14,7 @@ import {
     Pressable,
 
 } from 'react-native';
+
 import { Logar } from '../Models/UserServerModel';
 import { AuthContext } from '../Contexts/auth';
 import { getVersaoApp } from '../Controller/Funcoes/Geral';
@@ -222,6 +223,14 @@ const Login = ({navigation, route}) => {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+let heightImage = 300
+
+if(windowHeight < 600){
+
+    heightImage = 180
+    
+}
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
@@ -244,7 +253,7 @@ const styles = StyleSheet.create({
     img:{
         marginTop:70,
         
-        height:300,
+        height:heightImage,
         marginBottom:30,
         //borderRadius:20
     },

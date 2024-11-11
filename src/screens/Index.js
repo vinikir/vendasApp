@@ -175,7 +175,7 @@ const Index = ({route}) => {
                                     backgroundColor:"#fff",
                                     width: windowWidth-90,
                                     borderRadius:5,
-                                    paddingLeft:45,
+                                    paddingLeft:5,
                                     color:"rgba(0, 0, 0, 0.6)",
                                     height:35,
                                     
@@ -277,6 +277,7 @@ const styles = StyleSheet.create({
         
         alignItems:'center',
         width: windowWidth,
+        //backgroundColor:"#cfcfcf"
         backgroundColor:"#4a4a4a"
     },
 })

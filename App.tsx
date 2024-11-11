@@ -11,6 +11,8 @@ import TelaPagamentos from './src/screens/TelaPagamentos';
 import CodePush from 'react-native-code-push';
 import Orcamentos from './src/screens/Orcamantos';
 import OrcamentoDetalhe from './src/screens/OrcametoDetalhe';
+import InformativoProduto from './src/screens/InformativoProduto';
+import OrdemServico from './src/screens/OrdemServico'; 
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +29,8 @@ const App = () => {
 					<Stack.Screen name="TelaPagamento" component={TelaPagamentos}  />
 					<Stack.Screen name="Orcamentos" component={Orcamentos}  />
 					<Stack.Screen name="OrcamentoDetalhe" component={OrcamentoDetalhe}  />
+					<Stack.Screen name="InformativoProduto" component={InformativoProduto}  />
+					<Stack.Screen name="OrdemServico" component={OrdemServico}  />
 				</Stack.Navigator>
 			</AuthProvider>
     	</NavigationContainer>

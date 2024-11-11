@@ -35,6 +35,12 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
 
     const tamanhoAbertura = windowHeight - 200
 
+    const AberturaOrdermServico = () => {
+
+        return  navigation.navigate('OrdemServico',{valorTotal, user:user, itensBag:itensBag})
+        
+    }
+
     const calculaValorEQuantidade = async (itens) => {
         
         let v = 0
@@ -274,10 +280,10 @@ const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
                                 chaveOrdeServico && (
                                     <View>
                                         <Botao 
-                                            callback={() => irTelaPagamento()}
+                                            callback={() => AberturaOrdermServico()}
                                             color='#fff'
                                             backgroundColor="blue"
-                                            label="Finalizar venda com ordem de serviço"
+                                            label="Abrir ordem de serviço"
                                         />
                                     </View>
                                    

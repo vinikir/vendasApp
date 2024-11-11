@@ -41,6 +41,14 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
         return valorDescontado;
     }
 
+    const cancelar = () => {
+        setqtd(0)
+        setDesconto(0)
+        setTotal("0,00")
+        setMsg("")
+        fechaModal()
+    }
+
     const atualizarQtd = (qtd2) => {
         if(qtd2 == ""){
             qtd2 = 0
@@ -97,6 +105,12 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
     }
 
     const adicionar = () => {
+
+        if(qtd <= 0){
+            setMsg("A quantidade é obrigatoria")
+            return
+        }
+
         const json = {
             produtoId:item._id,
             produtoNome:item.nome,
@@ -222,7 +236,7 @@ const ModalConfirmarAdicionarProduto = ({modalAberto, item, fechaModal, callback
                             <Botao 
                                 label="Cancelar"
                                 color='#fff'
-                                callback={() => fechaModal()}
+                                callback={() => cancelar()}
                                 backgroundColor='#ff001e'
                             />
                         </View>

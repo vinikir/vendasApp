@@ -8,15 +8,17 @@ import {
 	Image,
 	Text,
 } from 'react-native';
-import ModalInformativosProduto from './ModalInformativosProtudo';
-import ModalConfirmarAdicionarProduto from './ModaConfirmarAdicionarProduto';
 
-const ProdutoListagem = ({item, callback}) => {
+import ModalConfirmarAdicionarProduto from './ModaConfirmarAdicionarProduto';
+import { useNavigation } from '@react-navigation/native';
+
+const ProdutoListagem = React.memo( ( { item, callback } )  => {
 
     const [ modalDetalhesAberto, setModalDetalhesAberto] = useState(false)
     const [ modalConfirmacaoAberto, setModalConfirmacaoAberto] = useState(false)
 
-
+	const navigation = useNavigation();
+	
     let  img = ''
 
     let preco = `${item.valorVenda.toFixed(2)}`
@@ -32,7 +34,9 @@ const ProdutoListagem = ({item, callback}) => {
 	}
 
     const abrirDetalhes = () => {
-        setModalDetalhesAberto(true)
+		
+		navigation.navigate("InformativoProduto",{item:item})
+        // setModalDetalhesAberto(true)
     }
 
     const adicionarItemBag = (jsonItem) => {
@@ -41,12 +45,13 @@ const ProdutoListagem = ({item, callback}) => {
         setModalConfirmacaoAberto(false)
     }
 
-	let backgroundColor = "#4a4a4a"
+	//let backgroundColor = "#4a4a4a"
+	let backgroundColor = "#707070"
 	let tamanho = 50
 	
 	if(item.tipo == "servico"){
 		backgroundColor = "#ffc48a"
-		tamanho = 100
+		tamanho = "100%"
 	}
 
 	
@@ -66,7 +71,7 @@ const ProdutoListagem = ({item, callback}) => {
 					/>
 				</View>
                 <View style={styles.viewText}> 
-                    <View style={{ height:tamanho,marginTop:2, }}> 
+                    <View style={{ height:tamanho, justifyContent:"center", }}> 
 						<Text style={ { color:"#ffff", fontWeight:"bold"}}>{item.nome}</Text>
 					</View>
 					{
@@ -84,7 +89,7 @@ const ProdutoListagem = ({item, callback}) => {
 					
                 </View>
                 <View>
-                    <View style={{justifyContent:"center", height:100, width:75, alignItems:"center" }}> 
+                    <View style={{justifyContent:"center", height:100, width:75,  alignItems:"center" }}> 
 						<Text style={ {color:"#ffff"}}>R$ {preco}</Text>
 					</View>
                 </View>
@@ -108,12 +113,7 @@ const ProdutoListagem = ({item, callback}) => {
                     <Text style={{color:"#ffff", fontWeight:"bold"}}>Adicionar</Text>
                 </TouchableOpacity>	
             </View>
-            <ModalInformativosProduto
-                item={item}
-                modalAberto={modalDetalhesAberto}
-                fechaModal={() => setModalDetalhesAberto(false)}
-                img={img}
-            />
+            
 
             <ModalConfirmarAdicionarProduto
                 item={item}
@@ -124,33 +124,29 @@ const ProdutoListagem = ({item, callback}) => {
                     adicionarItemBag(jsonItem)
 
                 } }
-            />
+            /> 
         </View>
     )
 
-}
+})
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-	
-   
-    
-    
     
 	subCard:{
-		
+		marginTop:-2,
 		borderBottomLeftRadius:10,
 		borderBottomRightRadius:10,
 		justifyContent:"center",
 		width: windowWidth-18
 	},
 	viewText:{ 
-		height:100,
+		height:105,
 		width:windowWidth-200,
 		justifyContent:"center",
-		marginLeft:5
+		marginLeft:5,
        
 	},
 	viewImg:{
@@ -162,21 +158,20 @@ const styles = StyleSheet.create({
 		
     },
     img:{
-        height:96,
-        width:96,
+        height:100,
+        width:100,
         resizeMode: 'cover',
-		borderRadius:10
+		borderTopLeftRadius:10
     },
     card:{
         
-        height:100, 
+        height:102, 
         flexDirection: 'row',        
-        borderWidth:1,
-		borderBlockColor:"#707070",
+        // borderWidth:1,
+		// borderBlockColor:"#707070",
 		borderTopLeftRadius:10,
 		borderTopRightRadius:10,
 		width: windowWidth-18,
-		elevation:5,
     },
 	
 	
