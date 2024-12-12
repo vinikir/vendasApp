@@ -6,25 +6,48 @@ import {
     Image,
     TouchableOpacity,
     Text,
-    ScrollView
+    ScrollView,
+    FlatList
  } from "react-native"
  import RenderHtml from 'react-native-render-html';
-
+import CarrocelImagens from "../Components/CarrocelImagens";
+import { useEffect, useState } from "react";
 
 const InformativoProduto = ({route, navigation}) => {
-    
+   
     const item = route.params.item
 
     let  img = ''
-
     if(item.img && item.img != null){
-		img = {
-			uri: item.img,
-		}
-	}else{
-		img = require("../../public/img/noimage.png")
-	}
 
+        img = {
+            uri: item.img,
+        }
+
+    }else{
+
+        img = require("../../public/img/noimage.png")
+
+    }
+   
+    useEffect(() => {
+        
+            if(item.imgAdicional && item.imgAdicional.length > 0 && typeof img != "number"){
+
+                if(item.imgAdicional[0] != item.img){
+
+                    item.imgAdicional.unshift(item.img)
+
+                }
+
+            }
+       
+    }, [])
+   
+    
+    
+    const [mostrarImagem, setMostraImagem ] = useState(img)
+    
     let preco = `${item.valorVenda.toFixed(2)}`
 
     preco = preco.replace('.', ',')
@@ -38,6 +61,8 @@ const InformativoProduto = ({route, navigation}) => {
     const source = {
 		html:  `<div style="color:#000; ">`+aplic+`</div>`
 	};
+
+    
 
     if(item.tipo == "servico"){
 
@@ -61,6 +86,7 @@ const InformativoProduto = ({route, navigation}) => {
                                 />
                             </View>
                             
+                           
                             <View style={{ marginBottom:10 }}>
                                 <Text style={{fontWeight:"bold",color:"#FFF",}}>Produto:</Text>
                                 <Text style={{color:"#FFF",}}>{item.nome}</Text>
@@ -124,7 +150,7 @@ const InformativoProduto = ({route, navigation}) => {
             </View>
         )
     }
-
+    const m = ((windowWidth-80))
     return (
         <View style={styles.container}>
             <StatusBar
@@ -132,18 +158,25 @@ const InformativoProduto = ({route, navigation}) => {
 				backgroundColor={"#4a4a4a"}
 			/>
             
-            <View style={{flex:1, width:windowWidth, alignItems:"center"}}>
+            <View style={{flex:1, width:windowWidth, alignItems:"center", top:20}}>
               
                 <View style={styles.viewInfo3}>
 
                     <ScrollView style={styles.viewInfo3}>
                         <View style={ styles.viewImgInfo }>
+                           
                             <Image
                                 style={styles.imgInfo}
-                                source={img}
+                                source={mostrarImagem}
                             />
                         </View>
-                        
+                         
+                        <View>
+                            <CarrocelImagens item={item}  atualziarImagem={(imgval) => { 
+                                setMostraImagem({uri:imgval})
+                                
+                            }}/>
+                        </View>
                         <View style={{ marginBottom:10 }}>
                             <Text style={{fontWeight:"bold",color:"#FFF",}}>Produto:</Text>
                             <Text style={{color:"#FFF",}}>{item.nome}</Text>
@@ -261,7 +294,7 @@ const styles = StyleSheet.create({
         
     },
     viewImgInfo:{
-        height:180,
+        height:270,
 		justifyContent:"center",
 		width: windowWidth-40,
         marginBottom:10,
@@ -269,8 +302,8 @@ const styles = StyleSheet.create({
         
     },
     imgInfo:{
-        height:windowWidth-190,
-        width: windowWidth-150,
+        height:250,
+        width: windowWidth-40,
 		
         resizeMode: 'stretch',
 		borderRadius:10

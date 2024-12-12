@@ -31,7 +31,7 @@ const InformativosProduto = ({item, img}) => {
     if(item.tipo == "servico"){
         
         return(
-            <View style={{flex:1, color:"#000"}}>
+            <View style={{flex:1, color:"#000", }}>
                 <View style={ styles.viewImgInfo }>
                     <Image
                         style={styles.imgInfo}

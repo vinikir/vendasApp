@@ -25,6 +25,8 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 const Login = ({navigation, route}) => {
 
     const [ imgLogo, setImgLogo ] = useState(require("../../public/img/logoGem.png"))
+    const [ loading, setLoading ] = useState(false)
+    const img2 = require("../../public/img/pulse.gif")
 
     const [ seguret, setSeguret ] = useState(true)
     const [ versao, setVersao] =  useState('') 
@@ -100,12 +102,12 @@ const Login = ({navigation, route}) => {
             setModalVisible(true)
             return
         }
-
+        setLoading(true)
         Logar(login.trim(),senha.trim()).then((res) => {
-
+            setLoading(false)
             if(res.erro == true){
                 setMsg(res.valor)
-                setModalVisible(true)
+                setModalVisible(false)
                 return
             }
 
@@ -114,6 +116,11 @@ const Login = ({navigation, route}) => {
 
             setUser(res.valor)
             return  navigation.navigate('Index')
+
+        }).catch(() => {
+
+            setLoading(false)
+
         })
     }
 
@@ -175,10 +182,22 @@ const Login = ({navigation, route}) => {
                         
                     </View>
                     <View style={{flex:1, alignItems:"center", marginTop:40}}>
-                        <TouchableOpacity style={styles.btnLogin} onPress={() => LogarF()}>
-                            {/* <Text style={{ color:"#0F2A33", fontWeight:"bold" }}>Entrar</Text> */}
-                            <Text style={{ color:"#FFF", fontWeight:"bold" }}>Entrar</Text>
-                        </TouchableOpacity>
+                        {
+                            loading ? (
+                                <Image
+                                    style={styles.img2}
+                                    source={img2}
+                                />
+                            ) : 
+                            (
+                                <TouchableOpacity style={styles.btnLogin} onPress={() => LogarF()}>
+                                    {/* <Text style={{ color:"#0F2A33", fontWeight:"bold" }}>Entrar</Text> */}
+                                    <Text style={{ color:"#FFF", fontWeight:"bold" }}>Entrar</Text>
+                                </TouchableOpacity>
+                            )
+                        }
+                            
+                        
                     </View>
 
                 </View>
