@@ -134,7 +134,7 @@ const OrcamentoDetalhe = ({route, navigation}) => {
                         </tbody>
                         <tfoot>
                             <tr style=" height:40px">
-                                <td scope="row" colspan=4>Total Orçamento</td>
+                                <td scope="row" colspan=4>Total orçamento</td>
                                 <td style="font-weight:Bold">R$ ${valorTotal.toFixed(2).toString().replace(".",",")}</td>
                             </tr>
                         </tfoot>

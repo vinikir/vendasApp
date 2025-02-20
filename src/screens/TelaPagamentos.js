@@ -129,6 +129,9 @@ const TelaPagamentos = ({route, navigation}) => {
                     <div>
                         Data da venda: ${moment().format("DD/MM/YYYY")}
                     </div>
+                     <div>
+                        Vendedor: ${vendedor.nome}
+                    </div>
                     
                 </div>
                 <div style="  width:98%; margin-top:20px; ">
@@ -161,7 +164,7 @@ const TelaPagamentos = ({route, navigation}) => {
                         </tbody>
                         <tfoot>
                             <tr style=" height:40px">
-                                <td scope="row" colspan=4>Total Orçamento</td>
+                                <td scope="row" colspan=4>Total venda</td>
                                 <td style="font-weight:Bold">R$ ${venda.valor.toFixed(2).toString().replace(".",",")}</td>
                             </tr>
                         </tfoot>
@@ -195,7 +198,7 @@ const TelaPagamentos = ({route, navigation}) => {
             };
             
             Share.open(shareOptions).then((res) => {
-
+                voltarLimparBag()
                 console.log('Compartilhado com sucesso:', res);
 
             }).catch((err) => {
@@ -594,7 +597,7 @@ const TelaPagamentos = ({route, navigation}) => {
                                     }}
                                         style={{ flex:1, alignItems:"center", justifyContent:"center", height:40, marginBottom:2, marginTop:2, width:windowWidth-110, borderWidth:0.5, borderColor:"blue"  }}
                                     >
-                                        <Text>{item.nome}</Text>
+                                        <Text style={{color:"#000"}}>{item.nome}</Text>
                                     </TouchableOpacity>
                                 )
                             }}

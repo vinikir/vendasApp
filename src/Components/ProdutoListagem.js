@@ -20,6 +20,10 @@ const ProdutoListagem = React.memo( ( { item, callback } )  => {
 	const navigation = useNavigation();
 	
     let  img = ''
+	
+	if(typeof item.valorVenda == "undefined" ){
+		return
+	}
 
     let preco = `${item.valorVenda.toFixed(2)}`
 

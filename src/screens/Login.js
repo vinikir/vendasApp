@@ -17,10 +17,12 @@ import {
 
 import { Logar } from '../Models/UserServerModel';
 import { AuthContext } from '../Contexts/auth';
-import { getVersaoApp } from '../Controller/Funcoes/Geral';
+// import { getVersaoApp } from '../Controller/Funcoes/Geral';
 import InfosLoginModel from '../Models/InfosLoginModel';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
+import { checkUpdate, getVersao } from 'versionamento-push'
+
 
 const Login = ({navigation, route}) => {
 
@@ -45,6 +47,7 @@ const Login = ({navigation, route}) => {
 
     useEffect(() => {
        
+        checkUpdate()
         inicializar()
         //  Logar().then((res) => {
         //     console.log(res)
@@ -52,13 +55,25 @@ const Login = ({navigation, route}) => {
     },[])
 
     const  inicializar = async () => {
-       
-        const versaoApp = await getVersaoApp().then((res) => {
+
+        // const versaoApp = await getVersao()
+        // console.log(versaoApp)
+
+        await getVersao().then((res) => {
             
-            setVersao(res)
+            setVersao(res.titulo)
+
         }).catch((e) => {
             console.log(e)
         })
+       
+       
+        // const versaoApp = await getVersaoApp().then((res) => {
+            
+        //     setVersao(res.titulo)
+        // }).catch((e) => {
+        //     console.log(e)
+        // })
        
         
         
@@ -192,7 +207,7 @@ const Login = ({navigation, route}) => {
                             (
                                 <TouchableOpacity style={styles.btnLogin} onPress={() => LogarF()}>
                                     {/* <Text style={{ color:"#0F2A33", fontWeight:"bold" }}>Entrar</Text> */}
-                                    <Text style={{ color:"#FFF", fontWeight:"bold" }}>Entrar</Text>
+                                    <Text style={{ color:"#FFF", fontWeight:"bold" }}>Entrar 2</Text>
                                 </TouchableOpacity>
                             )
                         }
