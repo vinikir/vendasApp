@@ -1,7 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
-apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 apply plugin: 'com.google.gms.google-services' 
 /**
@@ -82,7 +81,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0.6"
+        versionName "1.0.10"
     }
     signingConfigs {
         debug {

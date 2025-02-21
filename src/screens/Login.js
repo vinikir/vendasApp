@@ -207,7 +207,7 @@ const Login = ({navigation, route}) => {
                             (
                                 <TouchableOpacity style={styles.btnLogin} onPress={() => LogarF()}>
                                     {/* <Text style={{ color:"#0F2A33", fontWeight:"bold" }}>Entrar</Text> */}
-                                    <Text style={{ color:"#FFF", fontWeight:"bold" }}>Entrar 2</Text>
+                                    <Text style={{ color:"#FFF", fontWeight:"bold" }}>Entrar</Text>
                                 </TouchableOpacity>
                             )
                         }

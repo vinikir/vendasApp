@@ -8,7 +8,6 @@ import Index from './src/screens/Index';
 import AuthProvider from './src/Contexts/auth';
 import TrocarSenha from './src/screens/TrocarSenha';
 import TelaPagamentos from './src/screens/TelaPagamentos';
-import CodePush from 'react-native-code-push';
 import Orcamentos from './src/screens/Orcamantos';
 import OrcamentoDetalhe from './src/screens/OrcametoDetalhe';
 import InformativoProduto from './src/screens/InformativoProduto';
@@ -38,8 +37,8 @@ const App = () => {
 
 }
 
-export default CodePush({
-	checkFrequency: CodePush.CheckFrequency.ON_APP_START,
-})(App);
+// export default CodePush({
+// 	checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+// })(App);
 
-//export default App
+export default App
