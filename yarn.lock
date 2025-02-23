@@ -8918,7 +8918,7 @@ __metadata:
     realm: ^12.11.1
     typescript: 5.0.4
     versionamento-cli: ^0.0.1
-    versionamento-push: ^0.0.11
+    versionamento-push: ^0.0.12
   languageName: unknown
   linkType: soft
 
@@ -15251,9 +15251,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"versionamento-push@npm:^0.0.11":
-  version: 0.0.11
-  resolution: "versionamento-push@npm:0.0.11"
+"versionamento-push@npm:^0.0.12":
+  version: 0.0.12
+  resolution: "versionamento-push@npm:0.0.12"
   dependencies:
     "@babel/core": ^7.26.0
     "@babel/preset-env": ^7.26.0
@@ -15277,7 +15277,7 @@ __metadata:
     react: 18.3.1
     react-native-device-info: ^14.0.2
     react-native-sqlite-storage: ^6.0.1
-  checksum: 8c65f51cd6d0ed2357fd3575bc5a074dcc04b2c5701018c3d286eb40ebe201691538981a2d4aac2618e3a03678be99781295a11abc79e344e221401e4a5e41e0
+  checksum: 4031057bbfc5df926b20c72f7ad909d14b7d765791f81dc1fd790ba18947bb6b4e105f9b54d6c9d2c609315cacc257344968a93963e8b9b34500a2d4d71ea3dd
   languageName: node
   linkType: hard
 

@@ -10,7 +10,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
-
+import java.io.File
+import com.facebook.react.ReactInstanceManager
 
 class MainApplication : Application(), ReactApplication {
 
@@ -28,6 +29,15 @@ class MainApplication : Application(), ReactApplication {
 
         override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
         override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+        override fun getJSBundleFile(): String? {
+          val bundlePath = "${filesDir.absolutePath}/index.android.bundle"
+          val bundleFile = File(bundlePath)
+          return if (bundleFile.exists()) {
+              bundlePath
+          } else {
+              super.getJSBundleFile()  // Fallback para o bundle padrão
+          }
+        }
       }
 
   override val reactHost: ReactHost

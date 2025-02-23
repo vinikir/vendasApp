@@ -40,7 +40,7 @@
     "react-native-webview": "^13.12.1",
     "realm": "^12.11.1",
     "versionamento-cli": "^0.0.1",
-    "versionamento-push": "^0.0.11"
+    "versionamento-push": "^0.0.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
