@@ -26,10 +26,12 @@ import { checkUpdate, getVersao } from 'versionamento-push'
 
 const Login = ({navigation, route}) => {
 
-    const [ imgLogo, setImgLogo ] = useState(require("../../public/img/logoGem.png"))
+    
     const [ loading, setLoading ] = useState(false)
     const img2 = require("../../public/img/pulse.gif")
 
+    const  imgLogo = require("../../public/img/logoGem.png")
+    
     const [ seguret, setSeguret ] = useState(true)
     const [ versao, setVersao] =  useState('') 
 
@@ -119,10 +121,11 @@ const Login = ({navigation, route}) => {
         }
         setLoading(true)
         Logar(login.trim(),senha.trim()).then((res) => {
+            console.log("res",res)
             setLoading(false)
             if(res.erro == true){
                 setMsg(res.valor)
-                setModalVisible(false)
+                setModalVisible(true)
                 return
             }
 
@@ -132,8 +135,8 @@ const Login = ({navigation, route}) => {
             setUser(res.valor)
             return  navigation.navigate('Index')
 
-        }).catch(() => {
-
+        }).catch((e) => {
+            console.log("e",e)
             setLoading(false)
 
         })

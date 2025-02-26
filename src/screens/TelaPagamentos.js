@@ -1,4 +1,4 @@
-import React, { useState, useMemo,useEffect }  from 'react';
+import React, { useState, useMemo,useEffect,useRef }  from 'react';
 
 import { 
     Text,
@@ -11,6 +11,7 @@ import {
     FlatList,
     TouchableOpacity
 } from "react-native"
+import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 
 import { SalvaVendaServer } from "../Models/ProdutosServerModel"
 import RadioGroup from 'react-native-radio-buttons-group';
@@ -22,6 +23,7 @@ import { buscaVendedores } from '../Models/UserServerModel';
 import moment from 'moment';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
+import api from '../Api/api';
 
 
 const TelaPagamentos = ({route, navigation}) => {
@@ -38,6 +40,15 @@ const TelaPagamentos = ({route, navigation}) => {
     const [ vendedores, setVendedores ] = useState([])
     const [ modalSalvoSucesso, setModalSalvoSucesso] = useState(false)
     const [ venda, setVenda ] = useState(undefined)
+    const [ cliente, setCliente ] = useState({})
+    const [ existeFaturado, setExisteFaturado ] = useState(false)
+    const [ modalCliente, setModalCliente] = useState(false)
+    const [ varBuscaClientes, setVarBuscaCliente ] = useState("")
+    const [ clientesListagem, setClientesListagem ] = useState([])
+    const [carregando, setCarregando] = useState(false);
+
+
+    const controllerBuscaCliente = useRef<AbortController | null>(null);
     const user = route.params.user
     const valorCobrar = route.params.valorTotal
     const itensBag = route.params.itensBag
@@ -56,6 +67,32 @@ const TelaPagamentos = ({route, navigation}) => {
         
         setKeyboardHeight(0);
     };
+
+    const buscarClientes = () => {
+
+        if (controllerBuscaCliente.current) {
+
+            controllerBuscaCliente.current.abort();
+
+        }
+
+        const controller = new AbortController();
+        controllerBuscaCliente.current = controller;
+
+        setCarregando(true);
+
+        api.get(`/user-buscar?search=${varBuscaClientes}&tipo=cliente`,{
+            signal:controller.signal
+        }).then((res) => {
+
+            setClientesListagem(res.data.valor)
+
+        }).finally(() => {
+
+            setCarregando(false);
+
+        }) 
+    }
 
     const listagemProdutos = (orcamento) => {
         let he = ''
@@ -183,7 +220,7 @@ const TelaPagamentos = ({route, navigation}) => {
         try{
             const options = {
                 html: await criaHTMLPdf(itensBag),
-                fileName: 'GeM_moto_pecas_orcamento_'+venda.vendaId+"_"+moment().format("DDMMYYYYHm"),
+                fileName: 'GeM_moto_pecas_venda_'+venda.vendaId+"_"+moment().format("DDMMYYYYHm"),
                 directory: 'Documents',
             };
 
@@ -202,7 +239,7 @@ const TelaPagamentos = ({route, navigation}) => {
                 console.log('Compartilhado com sucesso:', res);
 
             }).catch((err) => {
-
+                voltarLimparBag()
                 console.log('Erro ao compartilhar:', err);
 
             });
@@ -259,11 +296,34 @@ const TelaPagamentos = ({route, navigation}) => {
             labelStyle:{ color: "#fff", fontWeight:"bold"}
         }
     ]), []);
+    const radioButtons1 = useMemo(() => ([
+        
+        {
+            id: '5',
+            label: 'Faturado',
+            value: 'faturado',
+            color:"#f0660a",
+            labelStyle:{ color: "#fff", fontWeight:"bold"}
+        }
+    ]), []);
+
+    const selecionaCliente = (cliente) => {
+        setCliente(cliente)
+        setModalCliente(false)
+    }
 
     
 
     const finalizar = (pagamento) => {
+       
+        if(existeFaturado && typeof cliente._id == "undefined"){
 
+            setMsg("O Cliente é obrigatorio para faturar.")
+            setModalMsgAberto(true)
+            return
+
+        }
+       
         const jsonFinalizar = {
             userId:vendedor._id,
             tipoVenda:"local",
@@ -271,14 +331,16 @@ const TelaPagamentos = ({route, navigation}) => {
             status:"finalizado",
             pagamento:pagamento,
             produtos:itensBag,
-            valor:parseFloat(valorCobrar.replace(",",".")).toFixed(2)
+            valor:parseFloat(valorCobrar.replace(",",".")).toFixed(2),
+            clienteId:cliente._id
         }
-
+        
 
         SalvaVendaServer(jsonFinalizar).then(( re ) => {
 
             if(re.erro == false){
 
+               
                 setVenda(re.valor)
                 setMsg("Venda finalizada com sucesso")
                 setModalSalvoSucesso(true)
@@ -291,8 +353,8 @@ const TelaPagamentos = ({route, navigation}) => {
 
             }
 
-        }).catch(() => {
-
+        }).catch((e) => {
+            console.log(e)
             setMsg("Erro ao finalizar venda")
             setModalMsgAberto(true)
 
@@ -310,17 +372,26 @@ const TelaPagamentos = ({route, navigation}) => {
     }
 
     const limpaVar = () => {
+
         setPagamento([])
         setSelectedId();
         setvalor(valorCobrar)
         setvalorTotalPago(0.0)
         setValorValtante(valorCobrar)
+
     }
 
     const adicionarPagamento = () => {
-        
+
+        let formasPagamentos = [ ... radioButtons, ... radioButtons1]
+
         let p = pagamento
-        const metodo = radioButtons.find(el => el.id == selectedId)
+        const metodo = formasPagamentos.find(el => el.id == selectedId)
+       
+        if(metodo.value == "faturado"){
+            setExisteFaturado(true)
+        }
+
         p.push({
             metodo:metodo.value,
             valor:parseFloat(valor.replace(",","."))
@@ -337,14 +408,19 @@ const TelaPagamentos = ({route, navigation}) => {
 
     const finaliza = () => {
 
+        let formasPagamentos = [ ... radioButtons, ... radioButtons1]
+
         let p = pagamento
-        const metodo = radioButtons.find(el => el.id == selectedId)
+
+        const metodo = formasPagamentos.find(el => el.id == selectedId)
+
         p.push({
             metodo:metodo.value,
             valor:parseFloat(valor.replace(",","."))
         })
       
         limpaVar()
+
        
        
         finalizar(p)
@@ -400,7 +476,7 @@ const TelaPagamentos = ({route, navigation}) => {
                         callback={() => {
                             finaliza()
                         }}
-                        backgroundColor="#13a303"
+                        backgroundColor="#28a745"
                         color='#fff'
                     
                     />
@@ -418,7 +494,7 @@ const TelaPagamentos = ({route, navigation}) => {
                         callback={() => {
                             adicionarPagamento()
                         }}
-                        backgroundColor="#2196F3"
+                        backgroundColor="#d39e00"
                         color='#fff'
                     
                     />
@@ -430,19 +506,26 @@ const TelaPagamentos = ({route, navigation}) => {
 
     }
 
+    const adicionarCliente = () => {
+        setModalCliente(true)
+
+    }
+
     const abrirModalVendedores = () => {
         setModalVendedore(true)
     }
-    
+    const removerCliente = () => {
+        setCliente({})
+    }
     return (
         <View style={styles.container}>
 
             <View style={ [ styles.subContainerMenor, {  bottom: keyboardHeight}] }>
-                <View style={{ marginTop: 10, marginBottom:10 }}>
-                    <Text style={{ fontSize:18, fontWeight:"bold", color:"#fff"}}>O valor total a ser cobrado é de R${valorCobrar}</Text>
+                <View style={{ marginTop: 5, marginBottom:5 }}>
+                    <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}>Valor total a ser cobrado é de R${valorCobrar}</Text>
                 </View>
-                <View style={{ marginTop: 10, marginBottom:10 }}>
-                    <Text style={{ fontSize:18, fontWeight:"bold", color:"#fff"}}>O valor restante a ser cobrado é de R${valorValtante}</Text>
+                <View style={{ marginTop: 5, marginBottom:5 }}>
+                    <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}>Valor restante a ser cobrado é de R${valorValtante}</Text>
                 </View>
             </View>
 
@@ -453,6 +536,16 @@ const TelaPagamentos = ({route, navigation}) => {
                         color="#FFF"
                         layout="row"
                         radioButtons={radioButtons} 
+                        onPress={setSelectedId}
+                        selectedId={selectedId}
+                    />
+                </View>
+                <View>
+                    <RadioGroup 
+                        borderColor="#fff"
+                        color="#FFF"
+                        layout="row"
+                        radioButtons={radioButtons1} 
                         onPress={setSelectedId}
                         selectedId={selectedId}
                     />
@@ -486,25 +579,40 @@ const TelaPagamentos = ({route, navigation}) => {
                 <View >
                     <Text  style={ {color:"#fff"}}>Venda realizada para o vendedor:  {vendedor.nome}</Text>
                 </View>
-                
             </View>
-                {
-                    user.Nome == "Vinicius Kiritschenco Costa" && (
-                        <View style={{marginTop:15}}>
-                            <Botao 
-                                label="Troca vendedor"
-                                callback={() => {
-                                    abrirModalVendedores()
-                                    
-                                }}
-                                backgroundColor="grey"
-                                color='#fff'
-                            
-                            />
+            {
+                typeof cliente._id != "undefined" && (
+                    <View style={styles.infosCliente}>
+                        <View style={{ width: windowWidth-75}} >
+                            <Text  style={ {color:"#fff"}}>Cliente:  {cliente.nome}</Text>
                         </View>
-                    )
-                }
-            <View style={[styles.subContainer, {  bottom: keyboardHeight}]}>
+                        <View >
+                            <TouchableOpacity onPress={() => removerCliente()} style={{width:"20px"}}>
+                                <Icon name="trash-alt" size={18} color="red" />
+                            </TouchableOpacity>
+                        </View>
+                        
+                    </View>
+                )
+            }
+            
+            {
+                user.Nome == "Vinicius Kiritschenco Costa" && (
+                    <View style={{marginTop:15}}>
+                        <Botao 
+                            label="Troca vendedor"
+                            callback={() => {
+                                abrirModalVendedores()
+                                
+                            }}
+                            backgroundColor="grey"
+                            color='#fff'
+                        
+                        />
+                    </View>
+                )
+            }
+            <View style={[styles.botoes, {  bottom: keyboardHeight}]}>
                 {
                     Botoes()
                 }
@@ -521,6 +629,24 @@ const TelaPagamentos = ({route, navigation}) => {
                     />
                     
                 </View>
+                {
+                    typeof cliente._id == "undefined" && (
+                        <View style={{marginTop:15}}>
+                            <Botao 
+                                label="Adicionar cliente"
+                                callback={() => {
+                                    adicionarCliente()
+                                    
+                                }}
+                                backgroundColor="#007bff" 
+                                color='#fff'
+                            
+                            />
+                            
+                        </View>
+                    )
+                }
+                
             </View>
 
             <ModalMsg 
@@ -528,7 +654,6 @@ const TelaPagamentos = ({route, navigation}) => {
                 msg={msg}
                 fechaModal={() => { 
                     setModalMsgAberto(false)
-                    voltarLimparBag()
                 }} 
             />
             <Modal
@@ -621,6 +746,60 @@ const TelaPagamentos = ({route, navigation}) => {
                 </View>
             
             </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalCliente}
+            >
+                <View style={styles.centeredView}>
+
+                    <View style={styles.modalViewNota}>
+                       
+
+                        <View style={{  width:windowWidth-108, height:150}}>
+                           <TextInput  
+                                style={ styles.input}
+                                onChangeText={(t) => setVarBuscaCliente(t)}
+                                value={varBuscaClientes}
+                            />
+                            <View>
+                                <TouchableOpacity onPress={() => { buscarClientes()}} disabled={carregando}>
+                                    <Text>Buscar</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            
+                            <View>
+                                {carregando ? 
+                                        ( <Text> Buscando...</Text> ) 
+                                    : 
+                                        <FlatList 
+                                            data={clientesListagem}
+                                            renderItem={({item}) => {
+                                                return (
+                                                    <TouchableOpacity style={{flexDirection:"row"}} onPress={() => selecionaCliente(item)}>
+                                                        <View style={{ width:(windowWidth-108)/2,overflow:"hidden" }}>
+                                                            <Text>{item.nome}</Text>
+                                                        </View>
+                                                        <View style={{ width:(windowWidth-108)/2, }}>
+                                                            <Text>{item.cpfCnpj}</Text>
+                                                        </View>
+                                                        
+                                                    </TouchableOpacity>
+                                                )
+                                            }}
+                                        />
+                                }
+                            </View>
+
+                            
+                        </View>
+                      
+                    
+                    </View>
+                </View>
+            
+            </Modal>
         </View>
     )
 }
@@ -631,7 +810,7 @@ const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        justifyContent: 'center',
+        //justifyContent: 'center',
         alignItems:'center',
         width: windowWidth,
         backgroundColor:"#4a4a4a"
@@ -639,15 +818,28 @@ const styles = StyleSheet.create({
     infosVendedor:{
         width:windowWidth-20
     },
+    infosCliente:{
+        width:windowWidth-20,
+        flexDirection:"row",
+        marginTop:"10px"
+    },
     subContainer:{
-        height: windowHeight/4,
+        height: (windowHeight/10)*3,
         alignItems:"center",
-        justifyContent:"center"
+        justifyContent:"center",
+        
+    },
+    botoes:{
+        height: (windowHeight/10)*2,
+        alignItems:"center",
+        justifyContent:"center",
+        marginTop:20
     },
     subContainerMenor:{
-        height: windowHeight/8,
+        height: windowHeight/10,
         alignItems:"center",
-        justifyContent:"center"
+        justifyContent:"center",
+        
     },
     input: {
         backgroundColor: '#4a4a4a', 

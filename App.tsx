@@ -30,6 +30,7 @@ const App = () => {
 					<Stack.Screen name="OrcamentoDetalhe" component={OrcamentoDetalhe}  />
 					<Stack.Screen name="InformativoProduto" component={InformativoProduto}  />
 					<Stack.Screen name="OrdemServico" component={OrdemServico}  />
+					
 				</Stack.Navigator>
 			</AuthProvider>
     	</NavigationContainer>
