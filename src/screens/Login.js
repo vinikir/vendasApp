@@ -27,11 +27,12 @@ import { checkUpdate, getVersao } from 'versionamento-push'
 const Login = ({navigation, route}) => {
 
     
+
     const [ loading, setLoading ] = useState(false)
     const img2 = require("../../public/img/pulse.gif")
 
-    const  imgLogo = require("../../public/img/logoGem.png")
-    
+    const  imgLogo = Image.resolveAssetSource(require('../../public/img/logoGem.png'));
+   
     const [ seguret, setSeguret ] = useState(true)
     const [ versao, setVersao] =  useState('') 
 
