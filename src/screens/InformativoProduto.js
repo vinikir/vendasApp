@@ -26,7 +26,7 @@ const InformativoProduto = ({route, navigation}) => {
 
     }else{
 
-        img = require("../../public/img/noimage.png")
+        img = require("../../assets/noimage.png")
 
     }
    

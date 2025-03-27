@@ -5,12 +5,12 @@ import Botao from "../Components/Botao"
 import Share from 'react-native-share';
 import { WebView } from 'react-native-webview';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import teste from '../../public/img/logoGem_.png'
+import teste from '../../assets/logoGem_.png'
 
 const OrcamentoDetalhe = ({route, navigation}) => {
     const [ html, setHtml ] = useState()
     const orcamento = route.params.orcamento
-    const  imgLogo = require("../../public/img/logoGem_.png")
+    const  imgLogo = require("../../assets/logoGem_.png")
     let valorTotal = 0
 
     for (let index = 0; index < orcamento.produtos.length; index++) {

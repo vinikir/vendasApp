@@ -17,7 +17,6 @@ import {
 
 import { Logar } from '../Models/UserServerModel';
 import { AuthContext } from '../Contexts/auth';
-// import { getVersaoApp } from '../Controller/Funcoes/Geral';
 import InfosLoginModel from '../Models/InfosLoginModel';
 
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
@@ -29,9 +28,9 @@ const Login = ({navigation, route}) => {
     
 
     const [ loading, setLoading ] = useState(false)
-    const img2 = require("../../public/img/pulse.gif")
+    const img2 = require("../../assets/pulse.gif")
 
-    const  imgLogo = Image.resolveAssetSource(require('../../public/img/logoGem.png'));
+    const  imgLogo = require('../../assets/logoGem.png');
    
     const [ seguret, setSeguret ] = useState(true)
     const [ versao, setVersao] =  useState('') 
@@ -69,14 +68,6 @@ const Login = ({navigation, route}) => {
         }).catch((e) => {
             console.log(e)
         })
-       
-       
-        // const versaoApp = await getVersaoApp().then((res) => {
-            
-        //     setVersao(res.titulo)
-        // }).catch((e) => {
-        //     console.log(e)
-        // })
        
         
         

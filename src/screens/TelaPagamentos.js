@@ -81,7 +81,7 @@ const TelaPagamentos = ({route, navigation}) => {
 
         setCarregando(true);
 
-        api.get(`/user-buscar?search=${varBuscaClientes}&tipo=cliente`,{
+        api.get(`/user-buscar?search=${varBuscaClientes}&userid=${user.ID}`,{
             signal:controller.signal
         }).then((res) => {
 

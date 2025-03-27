@@ -8901,7 +8901,7 @@ __metadata:
     prettier: 2.8.8
     react: 18.2.0
     react-native: 0.74.5
-    react-native-device-info: ^11.1.0
+    react-native-device-info: ^14.0.2
     react-native-fs: ^2.20.0
     react-native-html-to-pdf: ^0.12.0
     react-native-radio-buttons-group: ^3.1.0
@@ -8914,11 +8914,12 @@ __metadata:
     react-native-side-menu: ^1.1.3
     react-native-vector-icons: ^10.1.0
     react-native-webview: ^13.12.1
+    react-native-zip-archive: ^7.0.1
     react-test-renderer: 18.2.0
     realm: ^12.11.1
     typescript: 5.0.4
     versionamento-cli: ^0.0.1
-    versionamento-push: ^0.0.12
+    versionamento-push: ^0.1.0
   languageName: unknown
   linkType: soft
 
@@ -12898,21 +12899,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-device-info@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "react-native-device-info@npm:11.1.0"
-  peerDependencies:
-    react-native: "*"
-  checksum: 272cab82573933a1f3a9bc394b82a387ccbdf9fbef131fc1f04b8ff78b36f581931b5c643f5aa278f28577cbc320ef2ac588cafdb73292e9b0cf4427d54c44ce
-  languageName: node
-  linkType: hard
-
 "react-native-device-info@npm:^14.0.1":
   version: 14.0.2
   resolution: "react-native-device-info@npm:14.0.2"
   peerDependencies:
     react-native: "*"
   checksum: c1825a31514f0de08947de7876a361e53b3449fc84e34aace9b881a77f7ecf85e58b3c04eaa8b46c5d4d1fb911d95a73b229d2b98c5bce61bc5be5b89e071ec9
+  languageName: node
+  linkType: hard
+
+"react-native-device-info@npm:^14.0.2":
+  version: 14.0.4
+  resolution: "react-native-device-info@npm:14.0.4"
+  peerDependencies:
+    react-native: "*"
+  checksum: aa839dbe7df1246a4b5f9bcfeb3d4cc4be585f13a0d3ff6a03f57a0c2cfe7590291ac292dda4c51fd8765f94c870857676463e8e2f1660b057f3ae2b4335db29
   languageName: node
   linkType: hard
 
@@ -13093,6 +13094,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 7433a1e15b9ba677f86652f0429cc4f2430cc3e5fc26bac22d358b19d2a66317b6a651a4980567bcd6b83f5bcc8850f5ef099371e4872665f8ebe13ef2507338
+  languageName: node
+  linkType: hard
+
+"react-native-zip-archive@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "react-native-zip-archive@npm:7.0.1"
+  peerDependencies:
+    react: ">=16.8.6"
+    react-native: ">=0.60.0"
+  checksum: 2f7747d2ed903102e0d097921d1a019311f0c23c9ceb15304c39d699fba380e60b70cb1474b1fb516d114514af2a3c8a88ee5690f83d0a92d87500d095ba2b39
   languageName: node
   linkType: hard
 
@@ -15251,9 +15262,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"versionamento-push@npm:^0.0.12":
-  version: 0.0.12
-  resolution: "versionamento-push@npm:0.0.12"
+"versionamento-push@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "versionamento-push@npm:0.1.0"
   dependencies:
     "@babel/core": ^7.26.0
     "@babel/preset-env": ^7.26.0
@@ -15275,9 +15286,10 @@ __metadata:
   peerDependencies:
     fs: ^0.0.1-security
     react: 18.3.1
-    react-native-device-info: ^14.0.2
+    react-native-device-info: ^11.1.0
     react-native-sqlite-storage: ^6.0.1
-  checksum: 4031057bbfc5df926b20c72f7ad909d14b7d765791f81dc1fd790ba18947bb6b4e105f9b54d6c9d2c609315cacc257344968a93963e8b9b34500a2d4d71ea3dd
+    react-native-zip-archive: ^7.0.1
+  checksum: 1517759d8c783014a295af935aabdd9e3983dab9bbb871067c32cc4b5e3e839c90f2d74b3dc48c715599f7b8567abd0cbf64eee92f09262bf0923f3b16832abd
   languageName: node
   linkType: hard
 

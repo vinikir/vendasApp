@@ -34,7 +34,7 @@ const ProdutoListagem = React.memo( ( { item, callback } )  => {
 			uri: item.img,
 		}
 	}else{
-		img = require("../../public/img/noimage.png")
+		img = require("../../assets/noimage.png")
 	}
 
     const abrirDetalhes = () => {
