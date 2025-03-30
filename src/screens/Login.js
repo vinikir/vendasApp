@@ -113,7 +113,7 @@ const Login = ({navigation, route}) => {
         }
         setLoading(true)
         Logar(login.trim(),senha.trim()).then((res) => {
-            console.log("res",res)
+            
             setLoading(false)
             if(res.erro == true){
                 setMsg(res.valor)

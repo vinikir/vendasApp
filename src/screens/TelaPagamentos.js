@@ -9,7 +9,9 @@ import {
     Keyboard,
     Modal,
     FlatList,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert,
+    Image
 } from "react-native"
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 
@@ -24,8 +26,8 @@ import moment from 'moment';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 import api from '../Api/api';
-
-
+import GifPagamentoRegeitado from '../Components/GifPagamentoRegeitado';
+import GifPagamentoAceito from '../Components/GifPagamentoAceito';
 const TelaPagamentos = ({route, navigation}) => {
     
     const [ pagamento, setPagamento ] = useState([])
@@ -46,6 +48,13 @@ const TelaPagamentos = ({route, navigation}) => {
     const [ varBuscaClientes, setVarBuscaCliente ] = useState("")
     const [ clientesListagem, setClientesListagem ] = useState([])
     const [carregando, setCarregando] = useState(false);
+    const [ modalPerguntaPixAberto, setModalPerguntaPixAberto] = useState(false);
+    const [ valorGerarQRPix, setValorGerarQRPix] = useState(0.00);
+    const [ modalQrCodeAberto, setModalQrCodeAberto] = useState(false);
+    const [ qr_code_base64, setQr_code_base64] = useState("");
+    const [ transacaoId, setTransacaoId] = useState();
+    const [ mostraErroPagamentoGif, setMostraErroPagamentoGif] = useState(false);
+    const [ mostraPagamentoGif, setMostraPagamentoGif] = useState(false);
 
 
     const controllerBuscaCliente = useRef<AbortController | null>(null);
@@ -62,6 +71,43 @@ const TelaPagamentos = ({route, navigation}) => {
         
         setKeyboardHeight(-160);
     };
+
+    const gerarQrCode = () => {
+
+        api.post("/pagamento/pix/qrcode",{valor: valorGerarQRPix}).then((res) => {
+
+            if(typeof res != "undefined" && typeof res.data != "undefined" && typeof res.data.point_of_interaction != "undefined" && typeof res.data.point_of_interaction.transaction_data != "undefined" && typeof res.data.point_of_interaction != "undefined" && typeof res.data.point_of_interaction.transaction_data.qr_code_base64 != "undefined"){
+                
+                setTransacaoId(res.data.id)
+                setQr_code_base64(res.data.point_of_interaction.transaction_data.qr_code_base64)
+                setModalQrCodeAberto(true)
+
+            }
+
+            
+        }).catch( (e) => {
+            Alert.alert("Erro:", JSON.stringify(e.message))
+        })
+
+    }
+
+    const confirmarPagamento = () => {
+
+        api.post("/pagamento/status",{id: transacaoId}).then((res) => {
+
+            if(typeof res != "undefined" && typeof res.data != "undefined" && typeof res.data.point_of_interaction != "undefined" && typeof res.data.point_of_interaction.transaction_data != "undefined" && typeof res.data.point_of_interaction != "undefined" && typeof res.data.point_of_interaction.transaction_data.qr_code_base64 != "undefined"){
+               
+                console.log("status", res.data.status)
+
+            }
+            
+        }).catch( (e) => {
+
+            Alert.alert("Erro:", JSON.stringify(e.message))
+
+        })
+
+    }
   
     const handleKeyboardDidHide = () => {
         
@@ -312,10 +358,18 @@ const TelaPagamentos = ({route, navigation}) => {
         setModalCliente(false)
     }
 
+
+    const abreModalPerguntaPix = () => {
+
+        setModalPerguntaPixAberto(true)
+        
+    }
     
 
     const finalizar = (pagamento) => {
-       
+
+
+        return
         if(existeFaturado && typeof cliente._id == "undefined"){
 
             setMsg("O Cliente é obrigatorio para faturar.")
@@ -406,7 +460,7 @@ const TelaPagamentos = ({route, navigation}) => {
         setValorValtante(`${calculo.toFixed(2)}`.replace(".",","))
     }
 
-    const finaliza = () => {
+    const finaliza = (validarPix = true) => {
 
         let formasPagamentos = [ ... radioButtons, ... radioButtons1]
 
@@ -421,7 +475,17 @@ const TelaPagamentos = ({route, navigation}) => {
       
         limpaVar()
 
-       
+        if( validarPix){
+            const pagamentosPix = p.filter(el => el.metodo == "pix")
+
+            if(pagamentosPix.length > 0){
+                const soma = p.reduce((total, item) => total + item.valor, 0);
+                setValorGerarQRPix(soma)
+                abreModalPerguntaPix()
+                return
+            }
+            
+        }
        
         finalizar(p)
 
@@ -519,7 +583,12 @@ const TelaPagamentos = ({route, navigation}) => {
     }
     return (
         <View style={styles.container}>
-
+                        <Botao 
+                                    label="Cancelar"
+                                    color='#fff'
+                                    callback={() =>  setMostraPagamentoGif(true)}
+                                    backgroundColor='#ff001e'
+                                />
             <View style={ [ styles.subContainerMenor, {  bottom: keyboardHeight}] }>
                 <View style={{ marginTop: 5, marginBottom:5 }}>
                     <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}>Valor total a ser cobrado é de R${valorCobrar}</Text>
@@ -800,6 +869,121 @@ const TelaPagamentos = ({route, navigation}) => {
                 </View>
             
             </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalPerguntaPixAberto}
+            >
+                <View style={styles.centeredView}>
+
+                    <View style={styles.modalViewNota}>
+                        
+                        <View style={{ height:150,  alignItems:"center", justifyContent:"center"}}>
+                            <Text style={{ fontSize:20, fontWeight:"bold"}}>Deseja criar qr code para o pix no valor: {valorGerarQRPix.toFixed(2).replace(".",",")}</Text>
+                        </View>
+                       
+
+                        <View style={{  width:windowWidth-108, height:150}}>
+                            <View style={{ marginTop:0}}>
+                                <Botao 
+                                    label="Gerar QR code pix"
+                                    color='#fff'
+                                    callback={() => {
+                                        gerarQrCode()
+                                        setModalPerguntaPixAberto(false)
+                                    }}
+                                    backgroundColor='#13a303'
+                                />
+                            </View>
+                            <View style={{ marginTop:10}}>
+                                <Botao 
+                                    label="Não gerar"
+                                    color='#fff'
+                                    callback={() => {
+                                        setModalPerguntaPixAberto(false)
+                                        finaliza(false)
+                                    voltarLimparBag()
+                                    }}
+                                    backgroundColor='#ff001e'
+                                />
+                            </View>
+
+                            
+                        </View>
+                      
+                    
+                    </View>
+                </View>
+            
+            </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalQrCodeAberto}
+            >
+                <View style={styles.centeredView}>
+
+                    <View style={styles.modalViewNotaQR}>
+                        <View style={{ width:windowWidth, alignItems: "center"}}>
+                            <Text style={{ fontSize:20, fontWeight:"bold"}}>QR code para o pix no valor: </Text>
+                            <Text style={{ fontSize:30, fontWeight:"bold"}}>{valorGerarQRPix.toFixed(2).replace(".",",")}</Text>
+                        </View>
+                        
+                        <View style={{ height:windowWidth-50, marginTop:30,  alignItems:"center", justifyContent:"center"}}>
+                            <Image
+                                source={{ uri: `data:image/png;base64,${qr_code_base64}` }}
+                                style={{ width: windowWidth-50, height: windowWidth-50 }}
+                                />
+                        </View>
+                       
+
+                        <View style={{  width:windowWidth-108, height:150}}>
+                           
+                            <View style={{ marginTop:60}}>
+                                <Botao 
+                                    label="Pago"
+                                    color='#fff'
+                                    callback={() => {
+                                        setModalQrCodeAberto(false)
+                                        confirmarPagamento()
+                                    }}
+                                    backgroundColor='#13a303'
+                                />
+                                 
+                            </View>
+                            <View style={{ marginTop:10}}>
+                               
+                                 <Botao 
+                                    label="Cancelar"
+                                    color='#fff'
+                                    callback={() =>  setModalQrCodeAberto(false)}
+                                    backgroundColor='#ff001e'
+                                />
+                            </View>
+
+
+                            
+                        </View>
+                      
+                    
+                    </View>
+                </View>
+            
+            </Modal>
+            {
+                mostraErroPagamentoGif && (
+
+                    <GifPagamentoRegeitado mostrar={mostraErroPagamentoGif} onAnimationEnd={() => setMostraErroPagamentoGif(false)}/>
+
+                ) 
+            }
+            {
+                mostraPagamentoGif && (
+
+                    <GifPagamentoAceito mostrar={mostraPagamentoGif} onAnimationEnd={() => setMostraPagamentoGif(false)}/>
+
+                ) 
+            }
         </View>
     )
 }
@@ -898,5 +1082,23 @@ const styles = StyleSheet.create({
         elevation: 5,
         height:300
     },
+    modalViewNotaQR:{
+        width:windowWidth-20,
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        height:windowHeight-50
+    }
 })
 export default TelaPagamentos
