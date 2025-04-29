@@ -521,12 +521,18 @@ const TelaPagamentos = ({route, navigation}) => {
         <View style={styles.container}>
 
             <View style={ [ styles.subContainerMenor, {  bottom: keyboardHeight}] }>
-                <View style={{ marginTop: 5, marginBottom:5 }}>
-                    <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}>Valor total a ser cobrado é de R${valorCobrar}</Text>
+                <View style={styles.cabecalho}>
+                    <Text style={styles.titulo}>Valor total a ser cobrado é de R${valorCobrar}</Text>
+                </View>
+                <View style={styles.cabecalho}>
+                    <Text style={styles.titulo}>Valor restante a ser cobrado é de R${valorValtante}</Text>
+                </View>
+                {/* <View style={{ marginTop: 5, marginBottom:5 }}>
+                    <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}></Text>
                 </View>
                 <View style={{ marginTop: 5, marginBottom:5 }}>
-                    <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}>Valor restante a ser cobrado é de R${valorValtante}</Text>
-                </View>
+                    <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}></Text>
+                </View> */}
             </View>
 
             <View style={[styles.subContainer, {  bottom: keyboardHeight}]}>
@@ -559,18 +565,22 @@ const TelaPagamentos = ({route, navigation}) => {
                         }
                         
                     </View>
-               
-                    <TextInput 
-                        style={ styles.input}
-                        onChangeText={(t) => setvalor(formatMoney(t))}
-                        value={valor}
-                        keyboardType='numeric'
-                    />
+                    <View style={styles.inputContainer}>
+                        <TextInput 
+                            style={ styles.input}
+                            onChangeText={(t) => setvalor(formatMoney(t))}
+                            value={valor}
+                            keyboardType='numeric'
+                            placeholder="Valor a ser cobrado"
+                            placeholderTextColor="#666"
+                            autoCapitalize="none"
+                        />
+                    </View>
                 </View>
                
             </View>
 
-            <View style={[styles.subContainer, {  bottom: keyboardHeight}]}>
+            <View style={[styles.subContainerMedio, {  bottom: keyboardHeight}]}>
                 <TabelaPagamentos 
                     pagamentos={pagamento}
                 />
@@ -813,10 +823,23 @@ const styles = StyleSheet.create({
         //justifyContent: 'center',
         alignItems:'center',
         width: windowWidth,
-        backgroundColor:"#4a4a4a"
+        backgroundColor:"#1a1a1a"
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#2a2a2a',
+        borderRadius: 8,
+        marginBottom: 15,
+        paddingHorizontal: 15,
+        height: 50,
+        borderWidth: 1,
+        borderColor: '#333',
+        width:"80%"
     },
     infosVendedor:{
-        width:windowWidth-20
+        width:windowWidth-20,
+        marginTop:10,
     },
     infosCliente:{
         width:windowWidth-20,
@@ -824,9 +847,17 @@ const styles = StyleSheet.create({
         marginTop:"10px"
     },
     subContainer:{
-        height: (windowHeight/10)*3,
+        height: (windowHeight/12)*2,
         alignItems:"center",
         justifyContent:"center",
+        marginBottom:10,
+        marginTop:20,
+    },
+    subContainerMedio:{
+        height: (windowHeight/10)*4,
+        alignItems:"center",
+        justifyContent:"center",
+        marginBottom:10
         
     },
     botoes:{
@@ -836,20 +867,21 @@ const styles = StyleSheet.create({
         marginTop:20
     },
     subContainerMenor:{
-        height: windowHeight/10,
+        height: windowHeight/15,
         alignItems:"center",
         justifyContent:"center",
         
     },
+    titulo: {
+        color: "#f0660a",
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+    },
     input: {
-        backgroundColor: '#4a4a4a', 
-        color: '#fff', // Cor do texto
-        padding: 15,
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: '#707070', // Cor da borda
-        width: windowWidth-90,
-        elevation:5
+        flex: 1,
+        color: '#fff',
+        fontSize: 16,
     },
     input2:{ 
         backgroundColor:"#fff",

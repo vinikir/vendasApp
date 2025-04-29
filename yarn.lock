@@ -8152,6 +8152,7 @@ __metadata:
     react-native-device-info: ^14.0.2
     react-native-fs: ^2.20.0
     react-native-html-to-pdf: ^0.12.0
+    react-native-linear-gradient: ^2.8.3
     react-native-radio-buttons-group: ^3.1.0
     react-native-reanimated: ^3.14.0
     react-native-render-html: ^6.3.4
@@ -12113,6 +12114,16 @@ __metadata:
   version: 0.12.0
   resolution: "react-native-html-to-pdf@npm:0.12.0"
   checksum: a5be594ccbfdd501d3ac626fb643f9a87631f1693029cd42679d08925658d03becef9a1dd02d1c38c64b93ef914b6a5f42646d36869dcdeed3d0f6ddcbf013ba
+  languageName: node
+  linkType: hard
+
+"react-native-linear-gradient@npm:^2.8.3":
+  version: 2.8.3
+  resolution: "react-native-linear-gradient@npm:2.8.3"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: f980d324e551bbc475c6406bdc5250a08242020cbe653412fa169bbdf51e28a502e225de105b4d696d6a1a1b733d44782469020f4936d8b3ce0e2c78e51cf58f
   languageName: node
   linkType: hard
 

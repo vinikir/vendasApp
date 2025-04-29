@@ -1,311 +1,489 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, PanResponder, Dimensions, TouchableWithoutFeedback,ScrollView, TouchableOpacity, FlatList
- } from 'react-native';
-
- import Animated, { 
-    set, 
-    withSpring,
-    useAnimatedStyle,
+import React, { useState, useEffect } from 'react';
+import {
+    View,
+    Text,
+    Dimensions,
+    TouchableOpacity,
+    FlatList,
+    StyleSheet,
+    Modal,
+    TextInput,
+    KeyboardAvoidingView,
+    Platform
+} from 'react-native';
+import Animated, {
     useSharedValue,
-    withTiming,
+    useAnimatedStyle,
+    withTiming
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
-import Botao from './Botao';
-import ModalMsg from './ModalMsg';
-import MenuBag from './MenuBag';
 import { useNavigation } from '@react-navigation/native';
 import { SalvaOrcamentoServer } from '../Models/OrcamentosServer';
-const Bag = ({  itensBag, countItens, removerItem, user, limparBag }) => {
-    
+import MenuBag from './MenuBag';
+import Botao from './Botao';
+import ModalMsg from './ModalMsg';
+
+const Bag = ({ itensBag, countItens, removerItem, user, limparBag, atualizarItem }) => {
+    // Estados
     const height = useSharedValue(0);
-	const [ expanded, setExpanded] = useState(false);
-    const [ totalItens, setTotalItens ] = useState(0)
-    const [ valorTotal, setValorTotal ] = useState("0,00")
-    const [ chaveOrdeServico, setChaveOrdemServico ] = useState(false)
-    const [ menuBagVisivel, setMenuBagVisilve ] = useState(false)
+    const [expanded, setExpanded] = useState(false);
+    const [totalItens, setTotalItens] = useState(0);
+    const [valorTotal, setValorTotal] = useState("0,00");
+    const [temServico, setTemServico] = useState(false);
+    const [menuVisivel, setMenuVisivel] = useState(false);
+    const [modalAberto, setModalAberto] = useState(false);
+    const [mensagem, setMensagem] = useState("");
+    const [itemEditando, setItemEditando] = useState(null);
+    const [qtdEditando, setQtdEditando] = useState("");
+    const [descontoEditando, setDescontoEditando] = useState("");
 
-    const [ modalMsgAberto, setModalMsgAberto ] = useState(false)
-    const [ msg, setMsg ] =  useState("")
-    
-    const navigation = useNavigation()
+    const navigation = useNavigation();
+    const alturaBag = Dimensions.get('window').height - 200;
+    const larguraColuna = (Dimensions.get('window').width - 20) / 6;
 
-    useEffect(() => {
-        calculaValorEQuantidade(itensBag)
-    },[itensBag])
+    // Animação
+    const animacao = useAnimatedStyle(() => ({
+        height: height.value
+    }));
 
-    const tamanhoAbertura = windowHeight - 200
+    // Efeitos
+    useEffect(() => calcularTotais(itensBag), [itensBag]);
 
-    const AberturaOrdermServico = () => {
+    // Funções
+    const toggleBag = () => {
+        height.value = withTiming(expanded ? 0 : alturaBag, { duration: 300 });
+        setExpanded(!expanded);
+    };
 
-        return  navigation.navigate('OrdemServico',{valorTotal, user:user, itensBag:itensBag})
-        
-    }
+    const calcularTotais = (itens) => {
+        let total = 0;
+        let qtd = 0;
+        let servico = false;
 
-    const calculaValorEQuantidade = async (itens) => {
-        
-        let v = 0
-        let it = 0
-        let c = false
-        for (let index = 0; index < itens.length; index++) {
-            const element = itens[index];
-            it = it +   parseInt(element.qtd)
-            v = v + element.valorTotal
+        itens.forEach(item => {
+            qtd += parseInt(item.qtd);
+            total += item.valorTotal;
+            if (item.tipo === "servico") servico = true;
+        });
 
-            if(element.tipo == "servico"){
-                c = true
+        setValorTotal(total.toFixed(2).replace('.', ','));
+        setTotalItens(qtd);
+        setTemServico(servico);
+    };
+
+    const abrirEdicao = (item) => {
+        setItemEditando(item);
+        setQtdEditando(item.qtd.toString());
+        setDescontoEditando(item.desconto.toString());
+    };
+
+    const salvarEdicao = () => {
+        const novaQtd = parseInt(qtdEditando) || 0;
+        const novoDesconto = parseInt(descontoEditando) || 0;
+
+        if (novaQtd <= 0) {
+            setMensagem("Quantidade inválida!");
+            setModalAberto(true);
+            return;
+        }
+
+        const valorComDesconto = itemEditando.valorUnitario * (1 - (novoDesconto / 100));
+        const novoTotal = valorComDesconto * novaQtd;
+
+        atualizarItem({
+            ...itemEditando,
+            qtd: novaQtd,
+            desconto: novoDesconto,
+            valorTotal: novoTotal
+        });
+
+        setItemEditando(null);
+    };
+
+    const salvarOrcamento = () => {
+        const orcamento = {
+            userId: user.ID,
+            tipoVenda: "local",
+            user: user.Nome,
+            produtos: itensBag
+        };
+
+        SalvaOrcamentoServer(orcamento).then((res) => {
+            if (res.erro === false) {
+                setMensagem("Orçamento salvo com sucesso");
+                setModalAberto(true);
             }
+        });
+    };
 
-        }
-
-        let preco2 = `${v.toFixed(2)}`
-
-        preco2 = preco2.replace('.', ',')
-        setValorTotal(preco2)
-        setTotalItens(it)
-        setChaveOrdemServico(c)
-
-    } 
-
-    
-
-    const fechaModalMsg = (liBag) => {
-
-        if(liBag == true){
-            
-            setExpanded(false)
-            limparBag(true)
-        }
-
-        
-
-    }
-
-
-	const hh = useAnimatedStyle(() => {
-		return ({
-			height:height.value
-		} )
-	})
-
-    const showContent = () => {
-		//t()
-        
-		if(expanded){
-			
-			height.value = withTiming(0, {
-				duration: 500,
-			  });
-			
-			setExpanded(false)
-			
-		}else{
-			
-			height.value = withTiming(tamanhoAbertura, {
-				duration: 500,
-				
-			});
-			
-			setExpanded(true)
-			
-		}
-	};
-
-    const irTelaPagamento = () => {
-
-        return  navigation.navigate('TelaPagamento',{valorTotal, user:user, itensBag:itensBag})
-
-    }
-    const funcoes = (funcao) => {
-        if(funcao == "limparBag"){
-            limparBag()
-        }
-
-        if(funcao == "orcamento"){
-            const orcamento = {
-                userId:user.ID,
-                tipoVenda:"local",
-                user:user.Nome,
-                produtos:itensBag
-            }
-            
-            SalvaOrcamentoServer(orcamento).then((res) => {
-               
-                if(res.erro == false){
-                    setMsg("Orçamento salvo com sucesso")
-                    setModalMsgAberto(true)
-                }
-
-            }).catch((er) => {
-                console.log("er", er)
-            })
-        }
-    }
-
-    const tamanhoColuna = (windowWidth-10)/8
-
+    const renderItem = ({ item }) => (
+        <TouchableOpacity
+            style={styles.item}
+            onPress={() => abrirEdicao(item)}
+        >
+            <View style={[styles.coluna, { width: larguraColuna * 2 }]}>
+                <Text style={styles.textoItem}>{item.produtoNome}</Text>
+            </View>
+            <View style={styles.coluna}>
+                <Text style={styles.textoItem}>{item.valorUnitario.toFixed(2).replace('.', ',')}</Text>
+            </View>
+            <View style={styles.coluna}>
+                <Text style={styles.textoItem}>{item.qtd}</Text>
+            </View>
+            <View style={styles.coluna}>
+                <Text style={styles.textoItem}>{item.desconto}%</Text>
+            </View>
+            <View style={styles.coluna}>
+                <Text style={styles.textoItem}>{item.valorTotal.toFixed(2).replace('.', ',')}</Text>
+            </View>
+            <TouchableOpacity
+                style={styles.coluna}
+                onPress={() => removerItem(item.produtoId)}
+            >
+                <Icon name="trash-alt" size={16} color="#ff3a30" />
+            </TouchableOpacity>
+        </TouchableOpacity>
+    );
 
     return (
-        <View style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
+        <View style={styles.container}>
+            {/* Cabeçalho */}
+            <TouchableOpacity onPress={toggleBag} style={styles.botaoCabecalho}>
+                <View style={styles.cabecalho}>
+                    {expanded && (
+                        <TouchableOpacity
+                            style={styles.botaoMenu}
+                            onPress={() => setMenuVisivel(!menuVisivel)}
+                        >
+                            <Icon name="bars" size={18} color="#fff" />
+                        </TouchableOpacity>
+                    )}
 
-        
-            <TouchableOpacity style={{ alignItems:"center", justifyContent:"center" }}
-                onPress={() => { showContent() }}
-            >
-                <View style={{backgroundColor:"#707070", flexDirection:"row", flex:1,alignItems:"center",justifyContent:"center", width:windowWidth, height:30, borderTopLeftRadius:10, borderTopRightRadius:10}}>
-                    
-                    {
-                        expanded == true && (
-                            <TouchableOpacity onPress={ () => setMenuBagVisilve(!menuBagVisivel) } style={{position:"absolute", left:10}}>
-                                
-                                <View style={{ height:30, width:30, alignItems:"center", justifyContent:"center",flex:1, }}>
-                                    <Text style={{ color:"#ffff", fontWeight:"bold"}}>
-                                        <Icon name="bars" size={18} color="#ffff" />
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    }
-           
-                    
-                    <Text style={{fontSize:30, color:"#ffff", fontWeight:"bold"}}>
-                        <Icon name="ellipsis-h" size={18} color="#ffff" />
-                    </Text>
-                    <View style={{position:"absolute", right:10}}>
-                        
-                        <View style={{marginTop:-25, height:30, width:30, alignItems:"center", justifyContent:"center",flex:1,  backgroundColor:"red", borderRadius:50}}>
-                            <Text style={{ color:"#ffff", fontWeight:"bold"}}>{countItens}</Text>
-                        </View>
-                        
+                    <Icon name="shopping-bag" size={18} color="#fff" />
+
+                    <View style={styles.contador}>
+                        <Text style={styles.textoContador}>{countItens}</Text>
                     </View>
                 </View>
-               
             </TouchableOpacity>
-       
-        <Animated.View style={[{ width: windowWidth,  color:"#bfbfbf" },hh]}>
-            
-            <MenuBag
-                visivel={menuBagVisivel}
-                callback={(funcao) => funcoes(funcao)}
-            />
+
+            {/* Conteúdo */}
+            <Animated.View style={[styles.conteudo, animacao]}>
+                <MenuBag
+                    visivel={menuVisivel}
+                    callback={(acao) => {
+                        if (acao === "limparBag") limparBag();
+                        if (acao === "orcamento") salvarOrcamento();
+                    }}
+                />
+
+
                 
 
-            <ScrollView 
-                nestedScrollEnabled={true}>
-                    <View style={{ backgroundColor:"#ebebeb", height:tamanhoAbertura, width:windowWidth}}>
-                        <View style={{ height:tamanhoAbertura-120}}>
-                            <View style={{ width:windowWidth-10,Height:40,justifyContent:"center", alignItems:"center", marginLeft:5, marginRight:5, flexDirection:"row" }}>
-                                <View style={{width:tamanhoColuna*3 }}>
-                                    <Text style={{color:"#000",fontWeight:"bold" }}>Produto</Text>
-                                </View>
-                                <View style={{width:tamanhoColuna , alignItems:'center' }}>
-                                    <Text style={{color:"#000",fontWeight:"bold" }}>Valor U</Text>
-                                </View>
-                                <View style={{width:tamanhoColuna , alignItems:'center'}}>
-                                    <Text style={{color:"#000",fontWeight:"bold" }}>Qtd</Text>
-                                </View>
-                                <View style={{width:tamanhoColuna , alignItems:'center'}}>
-                                    <Text style={{color:"#000",fontWeight:"bold" }}>Desconto (%)</Text>
-                                </View>
-                                <View style={{width:tamanhoColuna , alignItems:'center' }}>
-                                    <Text style={{color:"#000",fontWeight:"bold" }}>Valor T</Text>
-                                </View>
-                                <View style={{width:tamanhoColuna ,alignItems:'center'}}>
-                                    <Text style={{color:"#000",fontWeight:"bold" }}>Ação</Text>
-                                </View>
-                            </View>
-                            <FlatList 
-                                data={ itensBag }
-                                ListEmptyComponent={
-                                    <Text style={{color:"#fff"}}>Sem Itens</Text>
-                                }
-                                renderItem={ ({ item, index }) => {
-                                    
-                                    let uni = `${item.valorUnitario.toFixed(2)}`
-                                    let preco = `${item.valorTotal.toFixed(2)}`
+                {/* Lista de itens */}
+                <View style={styles.listaContainer}>
+                    <View style={styles.cabecalhoLista}>
+                        <Text style={styles.textoCabecalho}>Produto</Text>
+                        <Text style={styles.textoCabecalho}>Valor</Text>
+                        <Text style={styles.textoCabecalho}>Qtd</Text>
+                        <Text style={styles.textoCabecalho}>Desc</Text>
+                        <Text style={styles.textoCabecalho}>Total</Text>
+                        <Text style={styles.textoCabecalho}>Ação</Text>
+                    </View>
+                    <View style={styles.listaWrapper}>
+                        <FlatList
+                            data={itensBag}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.produtoId}
+                            ListEmptyComponent={
+                                <Text style={styles.listaVazia}>Nenhum item na sacola</Text>
+                            }
+                            contentContainerStyle={styles.listaContent}
+                        />
+                    </View>
 
-                                    preco = preco.replace('.', ',')
-                                    uni = uni.replace('.', ',')
-                                   
-                                    return (
-                                           <View style={{ flex:1, width:windowWidth-10,minHeight:40,justifyContent:"center", alignItems:"center", marginLeft:5, marginRight:5, flexDirection:"row" }}>
-                                                <View style={{width:tamanhoColuna*3 }}>
-                                                    <Text style={{color:"#000",}}>{item.produtoNome}</Text>
-                                                </View>
-                                                <View style={{width:tamanhoColuna , alignItems:'center' }}>
-                                                    <Text style={{color:"#000",}}>{uni} X</Text>
-                                                </View>
-                                                <View style={{width:tamanhoColuna , alignItems:'center'}}>
-                                                    <Text style={{color:"#000",}}>{item.qtd} </Text>
-                                                </View>
-                                                <View style={{width:tamanhoColuna , alignItems:'center'}}>
-                                                    <Text style={{color:"#000",}}>{item.desconto} </Text>
-                                                </View>
-                                                <View style={{width:tamanhoColuna , alignItems:'center' }}>
-                                                    <Text style={{color:"#000",}}>{preco}</Text>
-                                                </View>
-                                                <TouchableOpacity onPress={() => removerItem(item.produtoId)} style={{width:tamanhoColuna ,alignItems:'center'}}>
-                                                    <Icon name="trash-alt" size={18} color="red" />
-                                                </TouchableOpacity>
-                                            </View>
-                                    )
-                                }}
+                    {/* <FlatList
+                        data={itensBag}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.produtoId}
+                        ListEmptyComponent={
+                            <Text style={styles.listaVazia}>Nenhum item na sacola</Text>
+                        }
+                        style={{ maxHeight: alturaBag - 320 }}
+                    /> */}
+
+                    {/* Resumo */}
+                    <View style={styles.resumo}>
+                        <Text style={styles.textoResumo}>Total: R$ {valorTotal}</Text>
+                        <Text style={styles.textoResumo}>Itens: {totalItens}</Text>
+                    </View>
+
+                    {/* Ações */}
+                    <View style={styles.acoes}>
+                        <View>
+                            <Botao
+                                label="Finalizar Venda"
+                                color="#fff"
+                                backgroundColor="#4CAF50"
+                                callback={() => navigation.navigate('TelaPagamento', {
+                                    valorTotal,
+                                    user,
+                                    itensBag
+                                })}
+
                             />
-                            <View style={{marginLeft:5}}>
-                                <View>
-                                    <Text style={{fontSize:22,color:"#000", fontWeight:"bold"}}>Valor Total: R$ {valorTotal}</Text>
-                                </View>
-                                <View>
-                                    <Text style={{fontSize:22,color:"#000", fontWeight:"bold"}}>Quantidade de itens: {totalItens}</Text>
-                                </View>
-
-                            </View>
                         </View>
-                        <View style={{ alignItems:'center', justifyContent:"center", marginTop:10 }}>
-                            <View style={{marginBottom:10}}>
-                                <Botao 
-                                    callback={() => irTelaPagamento()}
-                                    color='#fff'
-                                    backgroundColor="#13a303"
-                                    label="Finalizar venda"
+
+                        {temServico && (
+                            <View style={{ marginTop: 10 }}>
+                                <Botao
+                                    label="Ordem de Serviço"
+                                    color="#fff"
+                                    backgroundColor="#2196F3"
+                                    callback={() => navigation.navigate('OrdemServico', {
+                                        valorTotal,
+                                        user,
+                                        itensBag
+                                    })}
+
                                 />
                             </View>
-                           
-                            {
-                                chaveOrdeServico && (
-                                    <View>
-                                        <Botao 
-                                            callback={() => AberturaOrdermServico()}
-                                            color='#fff'
-                                            backgroundColor="blue"
-                                            label="Abrir ordem de serviço"
-                                        />
-                                    </View>
-                                   
-                                    
-                                )
-                            }
-                         
-                        </View>
+                        )}
                     </View>
-              
-            </ScrollView>
-        </Animated.View>
-        <ModalMsg
-            modalAberto={modalMsgAberto}
-            msg={msg}
-            fechaModal={() => fechaModalMsg(true)}
-        />
-      </View>
+                </View>
+            </Animated.View>
+
+            {/* Modal de edição */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={!!itemEditando}
+                onRequestClose={() => setItemEditando(null)}
+            >
+                <View style={styles.modalFundo}>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={styles.modalContainer}
+                    >
+                        <Text style={styles.modalTitulo}>Editar Item</Text>
+                        <Text style={styles.modalProduto}>{itemEditando?.produtoNome}</Text>
+
+                        <View style={styles.grupoInput}>
+                            <Text style={styles.rotuloInput}>Quantidade:</Text>
+                            <TextInput
+                                style={styles.input}
+                                keyboardType="numeric"
+                                value={qtdEditando}
+                                onChangeText={setQtdEditando}
+                            />
+                        </View>
+
+                        <View style={styles.grupoInput}>
+                            <Text style={styles.rotuloInput}>Desconto (%):</Text>
+                            <TextInput
+                                style={styles.input}
+                                keyboardType="numeric"
+                                value={descontoEditando}
+                                onChangeText={setDescontoEditando}
+                            />
+                        </View>
+
+                        <View style={styles.botoesModal}>
+                            <Botao
+                                label="Cancelar"
+                                color="#fff"
+                                backgroundColor="#f44336"
+                                callback={() => setItemEditando(null)}
+
+                            />
+
+                            <Botao
+                                label="Salvar"
+                                color="#fff"
+                                backgroundColor="#4CAF50"
+                                callback={salvarEdicao}
+
+                            />
+                        </View>
+                    </KeyboardAvoidingView>
+                </View>
+            </Modal>
+
+            {/* Modal de mensagem */}
+            {/* <ModalMsg
+                modalAberto={modalAberto}
+                msg={mensagem}
+                fechaModal={() => {
+                    setModalAberto(false);
+                    if (mensagem.includes("sucesso")) {
+                        setExpanded(false);
+                        limparBag(true);
+                    }
+                }}
+            /> */}
+        </View>
     );
 };
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-  
+// Estilos
+const styles = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+    },
+    botaoCabecalho: {
+        width: '100%',
+    },
+    cabecalho: {
+        backgroundColor: "#4a4a4a",
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 50,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        paddingHorizontal: 20,
+    },
+    botaoMenu: {
+        position: 'absolute',
+        left: 15,
+    },
+    listaWrapper: {
+        flex: 1,  // Isso permite que o FlatList cresça
+        maxHeight: '60%',  // Ajuste conforme necessário
+    },
+    listaContent: {
+        paddingBottom: 20,  // Espaço no final da lista
+    },
+    contador: {
+        position: 'absolute',
+        right: 15,
+        backgroundColor: '#f0660a',
+        width: 26,
+        height: 26,
+        borderRadius: 13,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    textoContador: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    conteudo: {
+        width: '100%',
+        backgroundColor: '#f8f8f8',
+        overflow: 'hidden',
+    },
+    listaContainer: {
+        flex: 1,
+        padding: 15,
+    },
+    cabecalhoLista: {
+        flexDirection: 'row',
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
+    },
+    textoCabecalho: {
+        fontWeight: 'bold',
+        color: '#333',
+        textAlign: 'center',
+        flex: 1,
+    },
+    item: {
+        flexDirection: 'row',
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    coluna: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+    },
+    textoItem: {
+        color: '#444',
+        fontSize: 14,
+    },
+    listaVazia: {
+        textAlign: 'center',
+        marginTop: 20,
+        color: '#666',
+    },
+    resumo: {
+        marginTop: 10,
+        padding: 15,
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        elevation: 2,
+    },
+    textoResumo: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginVertical: 5,
+    },
+    acoes: {
+        marginTop: 15,
+        alignItems: 'center',
+        flexDirection: "column"
+    },
+    botaoAcao: {
+        marginBottom: 10,
+    },
+    modalFundo: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+        width: '90%',
+        maxWidth: 400,
+    },
+    modalTitulo: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        textAlign: 'center',
+        color: '#333',
+    },
+    modalProduto: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 20,
+        textAlign: 'center',
+        color: '#555',
+    },
+    grupoInput: {
+        marginBottom: 15,
+    },
+    rotuloInput: {
+        marginBottom: 5,
+        color: '#666',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 6,
+        padding: 10,
+        fontSize: 16,
+    },
+    botoesModal: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+    botaoModal: {
+        width: '48%',
+    },
+});
+
 export default Bag;

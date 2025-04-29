@@ -1,184 +1,224 @@
-import React , { useEffect, useState, useContext } from 'react';
-
+import React, { useState } from 'react';
 import {
-	StyleSheet,
-	TouchableOpacity,
-	View,
-	Dimensions,
-	Image,
-	Text,
+    StyleSheet,
+    TouchableOpacity,
+    View,
+    Dimensions,
+    Image,
+    Text,
+    Animated,
+    TouchableWithoutFeedback
 } from 'react-native';
-
-import ModalConfirmarAdicionarProduto from './ModaConfirmarAdicionarProduto';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/dist/FontAwesome5';
+import ModalConfirmarAdicionarProduto from './ModaConfirmarAdicionarProduto';
 
-const ProdutoListagem = React.memo( ( { item, callback } )  => {
+const ProdutoListagem = React.memo(({ item, callback }) => {
+    const [modalConfirmacaoAberto, setModalConfirmacaoAberto] = useState(false);
+    const [scaleAnim] = useState(new Animated.Value(1));
+    const navigation = useNavigation();
 
-    const [ modalDetalhesAberto, setModalDetalhesAberto] = useState(false)
-    const [ modalConfirmacaoAberto, setModalConfirmacaoAberto] = useState(false)
+    if(typeof item.valorVenda == "undefined") {
+        return null;
+    }
 
-	const navigation = useNavigation();
-	
-    let  img = ''
-	
-	if(typeof item.valorVenda == "undefined" ){
-		return
-	}
+    const handlePressIn = () => {
+        Animated.spring(scaleAnim, {
+            toValue: 0.98,
+            useNativeDriver: true
+        }).start();
+    };
 
-    let preco = `${item.valorVenda.toFixed(2)}`
+    const handlePressOut = () => {
+        Animated.spring(scaleAnim, {
+            toValue: 1,
+            friction: 3,
+            tension: 40,
+            useNativeDriver: true
+        }).start();
+    };
 
-    preco = preco.replace('.', ',')
+    let img = item.img && item.img != null ? 
+        { uri: item.img } : 
+        require("../../assets/noimage.png");
 
-	if(item.img && item.img != null){
-		img = {
-			uri: item.img,
-		}
-	}else{
-		img = require("../../assets/noimage.png")
-	}
+    let preco = `${item.valorVenda.toFixed(2)}`.replace('.', ',');
 
     const abrirDetalhes = () => {
-		
-		navigation.navigate("InformativoProduto",{item:item})
-        // setModalDetalhesAberto(true)
-    }
+        navigation.navigate("InformativoProduto", { item: item });
+    };
 
     const adicionarItemBag = (jsonItem) => {
-        callback(jsonItem)
-        
-        setModalConfirmacaoAberto(false)
-    }
+        callback(jsonItem);
+        setModalConfirmacaoAberto(false);
+    };
 
-	//let backgroundColor = "#4a4a4a"
-	let backgroundColor = "#707070"
-	let tamanho = 50
-	
-	if(item.tipo == "servico"){
-		backgroundColor = "#ffc48a"
-		tamanho = "100%"
-	}
+    // Cores baseadas no tipo de produto
+    const backgroundColor = item.tipo === "servico" ? "#3a3a3a" : "#4a4a4a";
+    const accentColor = item.tipo === "servico" ? "#f0660a" : "#4CAF50";
 
-	
-
-    return(
-        <View style={{ marginBottom:10, width:windowWidth, alignItems:"center" }} >
-            <TouchableOpacity 
-				onPress={ () => {
-					abrirDetalhes()
-				}} 
-				style={ [ styles.card, { backgroundColor:backgroundColor}] }
-			>
-                <View style={ styles.viewImg }>
-					<Image
-						style={styles.img}
-						source={img}
-					/>
-				</View>
-                <View style={styles.viewText}> 
-                    <View style={{ height:tamanho, justifyContent:"center", }}> 
-						<Text style={ { color:"#ffff", fontWeight:"bold"}}>{item.nome}</Text>
-					</View>
-					{
-						item.tipo != "servico" && (
-							<View>
-								<View style={{ height:25,  }}> 
-									<Text style={ {color:"#ffff"}}>Marca: {item.marca}</Text>
-								</View>
-								<View style={{ height:25,  }}> 
-									<Text style={ {color:"#ffff"}}>Estoque: {item.estoque}</Text>
-								</View>
-							</View>
-						)
-					}
-					
-                </View>
-                <View>
-                    <View style={{justifyContent:"center", height:100, width:75,  alignItems:"center" }}> 
-						<Text style={ {color:"#ffff"}}>R$ {preco}</Text>
-					</View>
-                </View>
-					
-            </TouchableOpacity>
-            <View style={ styles.subCard}>
-                <TouchableOpacity style={{ 
-						backgroundColor:"#f0660a",
-						flex:1,
-						justifyContent:"center",
-						alignItems:"center",
-						borderBottomLeftRadius:10,
-						borderBottomRightRadius:10, 
-						width: windowWidth-18,
-						elevation:5,
-						height:45,
-					}}
-                    onPress={() => setModalConfirmacaoAberto(true)}
+    return (
+        <View style={styles.container}>
+            <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                {/* Card principal */}
+                <TouchableWithoutFeedback 
+                    onPress={abrirDetalhes}
+                    onPressIn={handlePressIn}
+                    onPressOut={handlePressOut}
                 >
-							
-                    <Text style={{color:"#ffff", fontWeight:"bold"}}>Adicionar</Text>
-                </TouchableOpacity>	
-            </View>
-            
+                    <View style={[styles.card, { backgroundColor }]}>
+                        {/* Imagem do produto */}
+                        <View style={styles.imageContainer}>
+                            <Image style={styles.image} source={img} />
+                            {item.tipo === "servico" && (
+                                <View style={[styles.serviceBadge, { backgroundColor: accentColor }]}>
+                                    <Text style={styles.badgeText}>SERVIÇO</Text>
+                                </View>
+                            )}
+                        </View>
 
+                        {/* Informações do produto */}
+                        <View style={styles.infoContainer}>
+                            <Text style={styles.productName} numberOfLines={2}>{item.nome}</Text>
+                            
+                            {item.tipo !== "servico" && (
+                                <>
+                                    <View style={styles.detailRow}>
+                                        <Icon name="tag" size={12} color="#aaa" />
+                                        <Text style={styles.detailText}> {item.marca || 'Sem marca'}</Text>
+                                    </View>
+                                    <View style={styles.detailRow}>
+                                        <Icon name="box-open" size={12} color="#aaa" />
+                                        <Text style={styles.detailText}> Estoque: {item.estoque}</Text>
+                                    </View>
+                                </>
+                            )}
+                        </View>
+
+                        {/* Preço */}
+                        <View style={styles.priceContainer}>
+                            <Text style={styles.priceText}>R$ {preco}</Text>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+
+                {/* Botão de ação */}
+                <TouchableOpacity 
+                    style={[styles.actionButton, { backgroundColor: accentColor }]}
+                    onPress={() => setModalConfirmacaoAberto(true)}
+                    activeOpacity={0.8}
+                >
+                    <Text style={styles.actionButtonText}>ADICIONAR</Text>
+                    <Icon name="plus" size={14} color="#fff" />
+                </TouchableOpacity>
+            </Animated.View>
+
+            {/* Modal de confirmação */}
             <ModalConfirmarAdicionarProduto
                 item={item}
                 modalAberto={modalConfirmacaoAberto}
                 fechaModal={() => setModalConfirmacaoAberto(false)}
-                callbackAdicionar={(jsonItem) => {
-                   
-                    adicionarItemBag(jsonItem)
-
-                } }
-            /> 
+                callbackAdicionar={adicionarItemBag}
+            />
         </View>
-    )
-
-})
+    );
+});
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-    
-	subCard:{
-		marginTop:-2,
-		borderBottomLeftRadius:10,
-		borderBottomRightRadius:10,
-		justifyContent:"center",
-		width: windowWidth-18
-	},
-	viewText:{ 
-		height:105,
-		width:windowWidth-200,
-		justifyContent:"center",
-		marginLeft:5,
-       
-	},
-	viewImg:{
-        height:100,
-		borderRadius:10,
-		width:100,
-		alignItems:"center",
-		justifyContent:"center",
+    container: {
+        width: windowWidth - 30,
+        marginBottom: 15,
+        marginHorizontal:0,
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 5,
+        backgroundColor: '#2a2a2a',
+        overflow: 'hidden',
 		
     },
-    img:{
-        height:100,
-        width:100,
-        resizeMode: 'cover',
-		borderTopLeftRadius:10
+    card: {
+        flexDirection: 'row',
+        padding: 12,
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        alignItems: 'center'
     },
-    card:{
-        
-        height:102, 
-        flexDirection: 'row',        
-        // borderWidth:1,
-		// borderBlockColor:"#707070",
-		borderTopLeftRadius:10,
-		borderTopRightRadius:10,
-		width: windowWidth-18,
+    imageContainer: {
+        position: 'relative',
+        width: 80,
+        height: 80,
+        borderRadius: 8,
+        overflow: 'hidden',
+        backgroundColor: '#3a3a3a'
     },
-	
-	
+    image: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover'
+    },
+    serviceBadge: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        paddingVertical: 3,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    badgeText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: 'bold'
+    },
+    infoContainer: {
+        flex: 1,
+        marginHorizontal: 12,
+        justifyContent: 'center'
+    },
+    productName: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 6
+    },
+    detailRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4
+    },
+    detailText: {
+        color: '#ccc',
+        fontSize: 12
+    },
+    priceContainer: {
+        width: 70,
+        alignItems: 'flex-end',
+        justifyContent: 'center'
+    },
+    priceText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
+    actionButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12
+    },
+    actionButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        marginRight: 8
+    }
 });
 
-export default ProdutoListagem
+export default ProdutoListagem;

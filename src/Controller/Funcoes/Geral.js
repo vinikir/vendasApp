@@ -10,17 +10,17 @@
     
 // }
 
-// export const formatMoney = (value) => {
-//     // Remove caracteres não numéricos
-//     const cleanedValue = value.replace(/[^0-9]/g, '');
+export const formatMoney = (value) => {
+    // Remove caracteres não numéricos
+    const cleanedValue = value.replace(/[^0-9]/g, '');
 
-//     // Adiciona a vírgula se a quantidade de dígitos for maior que 2
-//     let formattedValue = cleanedValue;
+    // Adiciona a vírgula se a quantidade de dígitos for maior que 2
+    let formattedValue = cleanedValue;
     
-//     if (cleanedValue.length > 2) {
-//         formattedValue = `${cleanedValue.slice(0, -2)},${cleanedValue.slice(-2)}`;
-//     }
+    if (cleanedValue.length > 2) {
+        formattedValue = `${cleanedValue.slice(0, -2)},${cleanedValue.slice(-2)}`;
+    }
 
-//     // Retorna o valor formatado
-//     return formattedValue;
-// };
+    // Retorna o valor formatado
+    return formattedValue;
+};
