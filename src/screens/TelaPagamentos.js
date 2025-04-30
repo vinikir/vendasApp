@@ -1,6 +1,6 @@
-import React, { useState, useMemo,useEffect,useRef }  from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 
-import { 
+import {
     Text,
     View,
     TextInput,
@@ -9,6 +9,7 @@ import {
     Keyboard,
     Modal,
     FlatList,
+    ActivityIndicator,
     TouchableOpacity
 } from "react-native"
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
@@ -26,45 +27,45 @@ import Share from 'react-native-share';
 import api from '../Api/api';
 
 
-const TelaPagamentos = ({route, navigation}) => {
-    
-    const [ pagamento, setPagamento ] = useState([])
-    const [ selectedId, setSelectedId] = useState();
-    const [ valor ,setvalor ] = useState(route.params.valorTotal)
-    const [ valorTotalPago, setvalorTotalPago ] = useState(0.0)
-    const [ msg, setMsg ] = useState("")
-    const [ modalMsgAberto, setModalMsgAberto ] = useState(false)
-    const [ valorValtante, setValorValtante ] = useState(route.params.valorTotal)
+const TelaPagamentos = ({ route, navigation }) => {
+
+    const [pagamento, setPagamento] = useState([])
+    const [selectedId, setSelectedId] = useState();
+    const [valor, setvalor] = useState(route.params.valorTotal)
+    const [valorTotalPago, setvalorTotalPago] = useState(0.0)
+    const [msg, setMsg] = useState("")
+    const [modalMsgAberto, setModalMsgAberto] = useState(false)
+    const [valorValtante, setValorValtante] = useState(route.params.valorTotal)
     const [keyboardHeight, setKeyboardHeight] = useState(0);
-    const [ modalVendedore, setModalVendedore] = useState(false);
-    const [ vendedores, setVendedores ] = useState([])
-    const [ modalSalvoSucesso, setModalSalvoSucesso] = useState(false)
-    const [ venda, setVenda ] = useState(undefined)
-    const [ cliente, setCliente ] = useState({})
-    const [ existeFaturado, setExisteFaturado ] = useState(false)
-    const [ modalCliente, setModalCliente] = useState(false)
-    const [ varBuscaClientes, setVarBuscaCliente ] = useState("")
-    const [ clientesListagem, setClientesListagem ] = useState([])
+    const [modalVendedore, setModalVendedore] = useState(false);
+    const [vendedores, setVendedores] = useState([])
+    const [modalSalvoSucesso, setModalSalvoSucesso] = useState(false)
+    const [venda, setVenda] = useState(undefined)
+    const [cliente, setCliente] = useState({})
+    const [existeFaturado, setExisteFaturado] = useState(false)
+    const [modalCliente, setModalCliente] = useState(false)
+    const [varBuscaClientes, setVarBuscaCliente] = useState("")
+    const [clientesListagem, setClientesListagem] = useState([])
     const [carregando, setCarregando] = useState(false);
 
 
-    const controllerBuscaCliente = useRef<AbortController | null>(null);
+    const controllerBuscaCliente = useRef < AbortController | null > (null);
     const user = route.params.user
     const valorCobrar = route.params.valorTotal
     const itensBag = route.params.itensBag
 
-    const [ vendedor, setVendedor ] = useState({
-        _id:user.ID,
-        nome:user.Nome
+    const [vendedor, setVendedor] = useState({
+        _id: user.ID,
+        nome: user.Nome
     })
 
     const handleKeyboardDidShow = (event) => {
-        
+
         setKeyboardHeight(-160);
     };
-  
+
     const handleKeyboardDidHide = () => {
-        
+
         setKeyboardHeight(0);
     };
 
@@ -81,8 +82,8 @@ const TelaPagamentos = ({route, navigation}) => {
 
         setCarregando(true);
 
-        api.get(`/user-buscar?search=${varBuscaClientes}&userid=${user.ID}`,{
-            signal:controller.signal
+        api.get(`/user-buscar?search=${varBuscaClientes}&userid=${user.ID}`, {
+            signal: controller.signal
         }).then((res) => {
 
             setClientesListagem(res.data.valor)
@@ -91,12 +92,12 @@ const TelaPagamentos = ({route, navigation}) => {
 
             setCarregando(false);
 
-        }) 
+        })
     }
 
     const listagemProdutos = (orcamento) => {
         let he = ''
-       
+
         orcamento.map((item) => {
             he += `
             
@@ -111,7 +112,7 @@ const TelaPagamentos = ({route, navigation}) => {
                 
 
                 
-                    <td >R$ ${item.valorUnitario.toFixed(2).toString().replace(".",",")}</td>
+                    <td >R$ ${item.valorUnitario.toFixed(2).toString().replace(".", ",")}</td>
                 
 
                 
@@ -119,15 +120,15 @@ const TelaPagamentos = ({route, navigation}) => {
                 
 
                 
-                    <td >R$ ${item.valorTotal.toFixed(2).toString().replace(".",",")}</td>
+                    <td >R$ ${item.valorTotal.toFixed(2).toString().replace(".", ",")}</td>
                     
 
                 </tr>
             `
-            
+
         })
 
-        
+
         return he
     }
 
@@ -202,7 +203,7 @@ const TelaPagamentos = ({route, navigation}) => {
                         <tfoot>
                             <tr style=" height:40px">
                                 <td scope="row" colspan=4>Total venda</td>
-                                <td style="font-weight:Bold">R$ ${venda.valor.toFixed(2).toString().replace(".",",")}</td>
+                                <td style="font-weight:Bold">R$ ${venda.valor.toFixed(2).toString().replace(".", ",")}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -210,30 +211,30 @@ const TelaPagamentos = ({route, navigation}) => {
                 </div>
             </div>
         `;
-        
+
         return h
-    } 
-    
+    }
+
     const gerarNota = async (itensBag) => {
-        
-        
-        try{
+
+
+        try {
             const options = {
                 html: await criaHTMLPdf(itensBag),
-                fileName: 'GeM_moto_pecas_venda_'+venda.vendaId+"_"+moment().format("DDMMYYYYHm"),
+                fileName: 'GeM_moto_pecas_venda_' + venda.vendaId + "_" + moment().format("DDMMYYYYHm"),
                 directory: 'Documents',
             };
 
             const file = await RNHTMLtoPDF.convert(options);
-            
-            
+
+
             const shareOptions = {
                 title: 'Compartilhar PDF',
                 message: 'Confira este PDF!',
-                url: "file://"+file.filePath,
+                url: "file://" + file.filePath,
                 type: 'application/pdf',
             };
-            
+
             Share.open(shareOptions).then((res) => {
                 voltarLimparBag()
                 console.log('Compartilhado com sucesso:', res);
@@ -245,65 +246,65 @@ const TelaPagamentos = ({route, navigation}) => {
             });
 
         } catch (error) {
-          console.log('Erro ao gerar PDF:', error);
+            console.log('Erro ao gerar PDF:', error);
         }
     }
-    
+
 
     useEffect(() => {
         Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
         Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
-        if(user.Nome == "Vinicius Kiritschenco Costa"){
+        if (user.Nome == "Vinicius Kiritschenco Costa") {
             buscaVendedores().then((res) => {
-                if(res.erro == false){
+                if (res.erro == false) {
                     setVendedores(res.valor)
                 }
             })
         }
-        
-     
+
+
     }, []);
-    
-    
+
+
 
     const radioButtons = useMemo(() => ([
         {
-            id: '1', 
+            id: '1',
             label: 'Pix',
             value: 'pix',
-            color:"#f0660a",
-            labelStyle:{ color: "#fff", fontWeight:"bold"}
+            color: "#f0660a",
+            labelStyle: { color: "#fff", fontWeight: "bold" }
         },
         {
             id: '2',
             label: 'Dinheiro',
             value: 'dinheiro',
-            color:"#f0660a",
-            labelStyle:{ color: "#fff", fontWeight:"bold"}
+            color: "#f0660a",
+            labelStyle: { color: "#fff", fontWeight: "bold" }
         },
         {
             id: '3',
             label: 'Débito',
             value: 'debito',
-            color:"#f0660a",
-            labelStyle:{ color: "#fff", fontWeight:"bold"}
+            color: "#f0660a",
+            labelStyle: { color: "#fff", fontWeight: "bold" }
         },
         {
             id: '4',
             label: 'Crédito',
             value: 'credito',
-            color:"#f0660a",
-            labelStyle:{ color: "#fff", fontWeight:"bold"}
+            color: "#f0660a",
+            labelStyle: { color: "#fff", fontWeight: "bold" }
         }
     ]), []);
     const radioButtons1 = useMemo(() => ([
-        
+
         {
             id: '5',
             label: 'Faturado',
             value: 'faturado',
-            color:"#f0660a",
-            labelStyle:{ color: "#fff", fontWeight:"bold"}
+            color: "#f0660a",
+            labelStyle: { color: "#fff", fontWeight: "bold" }
         }
     ]), []);
 
@@ -312,41 +313,41 @@ const TelaPagamentos = ({route, navigation}) => {
         setModalCliente(false)
     }
 
-    
+
 
     const finalizar = (pagamento) => {
-       
-        if(existeFaturado && typeof cliente._id == "undefined"){
+
+        if (existeFaturado && typeof cliente._id == "undefined") {
 
             setMsg("O Cliente é obrigatorio para faturar.")
             setModalMsgAberto(true)
             return
 
         }
-       
+
         const jsonFinalizar = {
-            userId:vendedor._id,
-            tipoVenda:"local",
-            user:vendedor.nome,
-            status:"finalizado",
-            pagamento:pagamento,
-            produtos:itensBag,
-            valor:parseFloat(valorCobrar.replace(",",".")).toFixed(2),
-            clienteId:cliente._id
+            userId: vendedor._id,
+            tipoVenda: "local",
+            user: vendedor.nome,
+            status: "finalizado",
+            pagamento: pagamento,
+            produtos: itensBag,
+            valor: parseFloat(valorCobrar.replace(",", ".")).toFixed(2),
+            clienteId: cliente._id
         }
-        
 
-        SalvaVendaServer(jsonFinalizar).then(( re ) => {
 
-            if(re.erro == false){
+        SalvaVendaServer(jsonFinalizar).then((re) => {
 
-               
+            if (re.erro == false) {
+
+
                 setVenda(re.valor)
                 setMsg("Venda finalizada com sucesso")
                 setModalSalvoSucesso(true)
-                
 
-            }else{
+
+            } else {
 
                 setMsg(re.valor)
                 setModalMsgAberto(true)
@@ -368,7 +369,7 @@ const TelaPagamentos = ({route, navigation}) => {
     }
 
     const voltarLimparBag = () => {
-        return  navigation.navigate('Index', {limparBag:true})
+        return navigation.navigate('Index', { limparBag: true })
     }
 
     const limpaVar = () => {
@@ -383,122 +384,122 @@ const TelaPagamentos = ({route, navigation}) => {
 
     const adicionarPagamento = () => {
 
-        let formasPagamentos = [ ... radioButtons, ... radioButtons1]
+        let formasPagamentos = [...radioButtons, ...radioButtons1]
 
         let p = pagamento
         const metodo = formasPagamentos.find(el => el.id == selectedId)
-       
-        if(metodo.value == "faturado"){
+
+        if (metodo.value == "faturado") {
             setExisteFaturado(true)
         }
 
         p.push({
-            metodo:metodo.value,
-            valor:parseFloat(valor.replace(",","."))
+            metodo: metodo.value,
+            valor: parseFloat(valor.replace(",", "."))
         })
-      
-        setvalorTotalPago(valorTotalPago + parseFloat(valor.replace(",",".")))
-        let calculo = parseFloat(valorCobrar.replace(",",".")) - (parseFloat(valor.replace(",","."))+valorTotalPago)
+
+        setvalorTotalPago(valorTotalPago + parseFloat(valor.replace(",", ".")))
+        let calculo = parseFloat(valorCobrar.replace(",", ".")) - (parseFloat(valor.replace(",", ".")) + valorTotalPago)
 
         setPagamento(p)
         setSelectedId()
-        setvalor(`${calculo.toFixed(2)}`.replace(".",","))
-        setValorValtante(`${calculo.toFixed(2)}`.replace(".",","))
+        setvalor(`${calculo.toFixed(2)}`.replace(".", ","))
+        setValorValtante(`${calculo.toFixed(2)}`.replace(".", ","))
     }
 
     const finaliza = () => {
 
-        let formasPagamentos = [ ... radioButtons, ... radioButtons1]
+        let formasPagamentos = [...radioButtons, ...radioButtons1]
 
         let p = pagamento
 
         const metodo = formasPagamentos.find(el => el.id == selectedId)
 
         p.push({
-            metodo:metodo.value,
-            valor:parseFloat(valor.replace(",","."))
+            metodo: metodo.value,
+            valor: parseFloat(valor.replace(",", "."))
         })
-      
+
         limpaVar()
 
-       
-       
+
+
         finalizar(p)
 
     }
 
     const msgValor = () => {
-        if(parseFloat(valor.replace(",",".")) > parseFloat(valorCobrar.replace(",","."))){
-            
+        if (parseFloat(valor.replace(",", ".")) > parseFloat(valorCobrar.replace(",", "."))) {
+
             return (
-                <Text style={{color:"red"}}>O valor cobrado é maior que o valor da compra</Text>
+                <Text style={{ color: "red" }}>O valor cobrado é maior que o valor da compra</Text>
             )
         }
     }
 
     const Botoes = () => {
 
-        if(selectedId == undefined && valorTotalPago != parseFloat(valorCobrar.replace(",","."))){
+        if (selectedId == undefined && valorTotalPago != parseFloat(valorCobrar.replace(",", "."))) {
             return
         }
-        
-        if(parseFloat(valor.replace(",",".")) > parseFloat(valorCobrar.replace(",","."))){
-            
-            return 
+
+        if (parseFloat(valor.replace(",", ".")) > parseFloat(valorCobrar.replace(",", "."))) {
+
+            return
         }
 
-        
 
-        if(parseFloat(valor.replace(",",".")) < parseFloat(valorCobrar.replace(",",".")) && valorTotalPago + parseFloat(valor.replace(",",".")) == parseFloat(valorCobrar.replace(",","."))){
-            return(
-                <View style={{ marginTop:15}}>
-                    <Botao 
+
+        if (parseFloat(valor.replace(",", ".")) < parseFloat(valorCobrar.replace(",", ".")) && valorTotalPago + parseFloat(valor.replace(",", ".")) == parseFloat(valorCobrar.replace(",", "."))) {
+            return (
+                <View style={{ marginTop:5, marginBottom: 5 }}>
+                    <Botao
                         label="Finalizar"
                         callback={() => {
                             finaliza()
                         }}
                         backgroundColor="#13a303"
                         color='#fff'
-                    
+
                     />
-                    
+
                 </View>
             )
         }
 
-        
 
-        if(parseFloat(valor.replace(",",".")) == parseFloat(valorCobrar.replace(",","."))){
-            return(
-                <View style={{ marginTop:15}}>
-                    <Botao 
+
+        if (parseFloat(valor.replace(",", ".")) == parseFloat(valorCobrar.replace(",", "."))) {
+            return (
+                <View style={{ marginTop:5, marginBottom: 5 }}>
+                    <Botao
                         label="Finalizar"
                         callback={() => {
                             finaliza()
                         }}
                         backgroundColor="#28a745"
                         color='#fff'
-                    
+
                     />
-                    
+
                 </View>
             )
         }
-       
 
-        if(parseFloat(valor.replace(",",".")) < parseFloat(valorCobrar.replace(",","."))){
-            return(
-                <View style={{ marginTop:15}}>
-                    <Botao 
+
+        if (parseFloat(valor.replace(",", ".")) < parseFloat(valorCobrar.replace(",", "."))) {
+            return (
+                <View style={{ marginTop:5, marginBottom: 5 }}>
+                    <Botao
                         label="Adicionar pagamento"
                         callback={() => {
                             adicionarPagamento()
                         }}
                         backgroundColor="#d39e00"
                         color='#fff'
-                    
+
                     />
-                   
+
                 </View>
             )
         }
@@ -519,311 +520,235 @@ const TelaPagamentos = ({route, navigation}) => {
     }
     return (
         <View style={styles.container}>
-
-            <View style={ [ styles.subContainerMenor, {  bottom: keyboardHeight}] }>
-                <View style={styles.cabecalho}>
-                    <Text style={styles.titulo}>Valor total a ser cobrado é de R${valorCobrar}</Text>
-                </View>
-                <View style={styles.cabecalho}>
-                    <Text style={styles.titulo}>Valor restante a ser cobrado é de R${valorValtante}</Text>
-                </View>
-                {/* <View style={{ marginTop: 5, marginBottom:5 }}>
-                    <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}></Text>
-                </View>
-                <View style={{ marginTop: 5, marginBottom:5 }}>
-                    <Text style={{ fontSize:14, fontWeight:"bold", color:"#fff"}}></Text>
-                </View> */}
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.headerText}>FINALIZAR PAGAMENTO</Text>
             </View>
 
-            <View style={[styles.subContainer, {  bottom: keyboardHeight}]}>
-                <View>
-                    <RadioGroup 
-                        borderColor="#fff"
-                        color="#FFF"
-                        layout="row"
-                        radioButtons={radioButtons} 
-                        onPress={setSelectedId}
-                        selectedId={selectedId}
-                    />
+            {/* Valores */}
+            <View style={styles.valueCards}>
+                <View style={styles.valueCard}>
+                    <Text style={styles.valueLabel}>TOTAL A PAGAR</Text>
+                    <Text style={styles.valueText}>R$ {valorCobrar}</Text>
                 </View>
-                <View>
-                    <RadioGroup 
-                        borderColor="#fff"
-                        color="#FFF"
-                        layout="row"
-                        radioButtons={radioButtons1} 
-                        onPress={setSelectedId}
-                        selectedId={selectedId}
-                    />
+                <View style={styles.valueCard}>
+                    <Text style={styles.valueLabel}>RESTANTE</Text>
+                    <Text style={[styles.valueText,
+                    { color: parseFloat(valorValtante.replace(",", ".")) > 0 ? '#ff6b6b' : '#4CAF50' }]}>
+                        R$ {valorValtante}
+                    </Text>
                 </View>
-                
-                <View style={{   height:90}}>
-               
-                    <View style={{ alignItems:"center", justifyContent:"center", height:30}}>
-                        { 
-                            msgValor()
-                        }
-                        
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <TextInput 
-                            style={ styles.input}
-                            onChangeText={(t) => setvalor(formatMoney(t))}
-                            value={valor}
-                            keyboardType='numeric'
-                            placeholder="Valor a ser cobrado"
-                            placeholderTextColor="#666"
-                            autoCapitalize="none"
-                        />
-                    </View>
-                </View>
-               
             </View>
 
-            <View style={[styles.subContainerMedio, {  bottom: keyboardHeight}]}>
-                <TabelaPagamentos 
-                    pagamentos={pagamento}
+            {/* Métodos de Pagamento */}
+            <View style={styles.paymentMethods}>
+                <RadioGroup
+                    containerStyle={{ alignItems: 'flex-start' }}
+                    radioButtons={radioButtons}
+                    onPress={setSelectedId}
+                    selectedId={selectedId}
+                    layout="row"
+                />
+                <RadioGroup
+                    containerStyle={{ marginTop: 10 }}
+                    radioButtons={radioButtons1}
+                    onPress={setSelectedId}
+                    selectedId={selectedId}
+                    layout="row"
                 />
             </View>
-            <View style={styles.infosVendedor}>
-                <View >
-                    <Text  style={ {color:"#fff"}}>Venda realizada para o vendedor:  {vendedor.nome}</Text>
+
+            {/* Input Valor */}
+            <View style={styles.paymentInputContainer}>
+                <Text style={styles.inputLabel}>VALOR DO PAGAMENTO</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ color: '#fff', fontSize: 18, marginRight: 10 }}>R$</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={(t) => setvalor(formatMoney(t))}
+                        value={valor}
+                        keyboardType='numeric'
+                        placeholder="0,00"
+                        placeholderTextColor="#666"
+                    />
                 </View>
+                {msgValor()}
             </View>
-            {
-                typeof cliente._id != "undefined" && (
-                    <View style={styles.infosCliente}>
-                        <View style={{ width: windowWidth-75}} >
-                            <Text  style={ {color:"#fff"}}>Cliente:  {cliente.nome}</Text>
-                        </View>
-                        <View >
-                            <TouchableOpacity onPress={() => removerCliente()} style={{width:"20px"}}>
-                                <Icon name="trash-alt" size={18} color="red" />
-                            </TouchableOpacity>
-                        </View>
-                        
+
+            {/* Tabela de Pagamentos */}
+            <TabelaPagamentos pagamentos={pagamento} />
+
+            {/* Informações Vendedor/Cliente */}
+            <View style={styles.userInfoContainer}>
+                <Text style={{ color: '#fff' }}>Vendedor: {vendedor.nome}</Text>
+
+                {typeof cliente._id != "undefined" && (
+                    <View style={styles.clientTag}>
+                        <Text style={styles.clientText}>Cliente: {cliente.nome}</Text>
+                        <TouchableOpacity onPress={removerCliente}>
+                            <Icon name="times" size={16} color="#ff6b6b" />
+                        </TouchableOpacity>
                     </View>
-                )
-            }
-            
-            {
-                user.Nome == "Vinicius Kiritschenco Costa" && (
-                    <View style={{marginTop:15}}>
-                        <Botao 
-                            label="Troca vendedor"
-                            callback={() => {
-                                abrirModalVendedores()
-                                
-                            }}
-                            backgroundColor="grey"
-                            color='#fff'
-                        
+                )}
+
+                {user.Nome == "Vinicius Kiritschenco Costa" && (
+                    <Botao
+                        label="Trocar Vendedor"
+                        callback={abrirModalVendedores}
+                        backgroundColor="#333"
+                        color='#f0660a'
+                        style={{ marginTop: 10 }}
+                    />
+                )}
+
+                {typeof cliente._id == "undefined" && (
+                    <View style={{ marginTop:10, marginBottom: 5 }}>
+                        <Botao
+                            label="Adicionar Cliente"
+                            callback={adicionarCliente}
+                            backgroundColor="#333"
+                            color='#007bff'
+                            style={{ marginTop: 10 }}
                         />
                     </View>
-                )
-            }
-            <View style={[styles.botoes, {  bottom: keyboardHeight}]}>
-                {
-                    Botoes()
-                }
-                <View style={{marginTop:15}}>
-                    <Botao 
+
+                )}
+            </View>
+
+            {/* Botões de Ação */}
+            <View style={styles.buttonsContainer}>
+                {Botoes()}
+                <View style={{ marginTop:5, marginBottom: 5 }}>
+                    <Botao
                         label="Cancelar"
                         callback={() => {
                             limpaVar()
                             voltar()
                         }}
-                        backgroundColor="red"
+                        backgroundColor="#dc3545"
                         color='#fff'
-                    
+                        style={{ marginTop: 10 }}
                     />
-                    
                 </View>
-                {
-                    typeof cliente._id == "undefined" && (
-                        <View style={{marginTop:15}}>
-                            <Botao 
-                                label="Adicionar cliente"
-                                callback={() => {
-                                    adicionarCliente()
-                                    
-                                }}
-                                backgroundColor="#007bff" 
-                                color='#fff'
-                            
-                            />
-                            
-                        </View>
-                    )
-                }
                 
             </View>
 
-            <ModalMsg 
-                modalAberto={modalMsgAberto}
-                msg={msg}
-                fechaModal={() => { 
-                    setModalMsgAberto(false)
-                }} 
-            />
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalSalvoSucesso}
-            >
-                <View style={styles.centeredView}>
+            {/* Modais (atualizados) */}
+            <ModalMsg modalAberto={modalMsgAberto} msg={msg} fechaModal={() => setModalMsgAberto(false)} />
 
-                    <View style={styles.modalViewNota}>
-                        
-                        <View style={{ height:150,  alignItems:"center", justifyContent:"center"}}>
-                            <Text style={{ fontSize:20, fontWeight:"bold"}}>{msg}</Text>
+            <Modal animationType="fade" transparent={true} visible={modalSalvoSucesso}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>{msg}</Text>
                         </View>
-                       
-
-                        <View style={{  width:windowWidth-108, height:150}}>
-                            <View style={{ marginTop:0}}>
-                                <Botao 
-                                    label="Gerar nota"
-                                    color='#fff'
-                                    callback={() => {
-                                        setModalSalvoSucesso(false)
-                                        gerarNota(itensBag)
-                                    }}
-                                    backgroundColor='#f0660a'
-                                />
-                            </View>
-                            <View style={{ marginTop:10}}>
-                                <Botao 
-                                    label="Finalizar"
-                                    color='#fff'
-                                    callback={() => {
-                                        setModalSalvoSucesso(false)
-                                    voltarLimparBag()
-                                    }}
-                                    backgroundColor='#13a303'
-                                />
-                            </View>
-
-                            
+                        <View style={{marginBottom:20}}>
+                            <Botao
+                                label="Gerar Nota Fiscal"
+                                callback={() => {
+                                    setModalSalvoSucesso(false);
+                                    gerarNota(itensBag);
+                                }}
+                                backgroundColor="#f0660a"
+                                color='#fff'
+                                style={{ marginBottom: 10 }}
+                            />
                         </View>
-                      
-                    
+                        <View>
+                            <Botao
+                                label="Finalizar"
+                                callback={() => {
+                                    setModalSalvoSucesso(false);
+                                    voltarLimparBag();
+                                }}
+                                backgroundColor="#28a745"
+                                color='#fff'
+                            />
+                        </View>
                     </View>
                 </View>
-            
             </Modal>
+
             <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVendedore}
-            >
-                <View style={styles.centeredView}>
-
-                    <View style={styles.modalView}>
-                        
-                        
-                        <FlatList 
-                            data={vendedores}
-                            renderItem={({item}) => {
-                                return (
-                                    <TouchableOpacity onPress={() => { 
-                                        setVendedor(item)
-                                        setModalVendedore(false)
-                                    }}
-                                        style={{ flex:1, alignItems:"center", justifyContent:"center", height:40, marginBottom:2, marginTop:2, width:windowWidth-110, borderWidth:0.5, borderColor:"blue"  }}
-                                    >
-                                        <Text style={{color:"#000"}}>{item.nome}</Text>
-                                    </TouchableOpacity>
-                                )
-                            }}
-                        />
-
-                    
-                        <View style={{  width:windowWidth-108, height:60}}>
-                            <View style={{ marginTop:10}}>
-                                <Botao 
-                                    label="Cancelar"
-                                    color='#fff'
-                                    callback={() => setModalVendedore(false)}
-                                    backgroundColor='#ff001e'
-                                />
-                            </View>
-
-                            
-                        </View>
-                    
-                    </View>
-                </View>
-            
-            </Modal>
-            <Modal
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 visible={modalCliente}
             >
-                <View style={styles.centeredView}>
-
-                    <View style={styles.modalViewNota}>
-                       
-
-                        <View style={{  width:windowWidth-108, height:150}}>
-                           <TextInput  
-                                style={ styles.input}
-                                onChangeText={(t) => setVarBuscaCliente(t)}
-                                value={varBuscaClientes}
-                            />
-                            <View>
-                                <TouchableOpacity onPress={() => { buscarClientes()}} disabled={carregando}>
-                                    <Text>Buscar</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                            
-                            <View>
-                                {carregando ? 
-                                        ( <Text> Buscando...</Text> ) 
-                                    : 
-                                        <FlatList 
-                                            data={clientesListagem}
-                                            renderItem={({item}) => {
-                                                return (
-                                                    <TouchableOpacity style={{flexDirection:"row"}} onPress={() => selecionaCliente(item)}>
-                                                        <View style={{ width:(windowWidth-108)/2,overflow:"hidden" }}>
-                                                            <Text>{item.nome}</Text>
-                                                        </View>
-                                                        <View style={{ width:(windowWidth-108)/2, }}>
-                                                            <Text>{item.cpfCnpj}</Text>
-                                                        </View>
-                                                        
-                                                    </TouchableOpacity>
-                                                )
-                                            }}
-                                        />
-                                }
-                            </View>
-
-                            
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>SELECIONAR CLIENTE</Text>
                         </View>
-                      
-                    
+
+                        <View style={styles.searchContainer}>
+                            <TextInput
+                                style={styles.searchInput}
+                                onChangeText={setVarBuscaCliente}
+                                value={varBuscaClientes}
+                                placeholder="Buscar cliente..."
+                                placeholderTextColor="#666"
+                            />
+                            <TouchableOpacity
+                                onPress={buscarClientes}
+                                disabled={carregando}
+                                style={styles.searchButton}
+                            >
+                                {carregando ? (
+                                    <ActivityIndicator color="#f0660a" />
+                                ) : (
+                                    <Icon name="search" size={20} color="#f0660a" />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+
+                        {clientesListagem.length > 0 ? (
+                            <FlatList
+                                data={clientesListagem}
+                                renderItem={({ item }) => (
+                                    <TouchableOpacity
+                                        style={styles.clientItem}
+                                        onPress={() => selecionaCliente(item)}
+                                    >
+                                        <View style={styles.clientInfo}>
+                                            <Text style={styles.clientName}>{item.nome}</Text>
+                                            <Text style={styles.clientDoc}>{item.cpfCnpj}</Text>
+                                        </View>
+                                        <Icon name="chevron-right" size={16} color="#666" />
+                                    </TouchableOpacity>
+                                )}
+                                keyExtractor={(item, index) => index.toString()}
+                                style={{ maxHeight: windowHeight * 0.5 }}
+                            />
+                        ) : (
+                            <View style={styles.emptyState}>
+                                <Icon name="users" size={40} color="#666" />
+                                <Text style={styles.emptyText}>Nenhum cliente encontrado</Text>
+                            </View>
+                        )}
+
+                        <View style={{ marginTop: 15 }}>
+                            <Botao
+                                label="Cancelar"
+                                callback={() => setModalCliente(false)}
+                                backgroundColor="#333"
+                                color='#fff'
+                            />
+                        </View>
                     </View>
                 </View>
-            
             </Modal>
         </View>
-    )
+    );
 }
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        //justifyContent: 'center',
-        alignItems:'center',
-        width: windowWidth,
-        backgroundColor:"#1a1a1a"
+    container: {
+        flex: 1,
+        backgroundColor: '#1a1a1a',
+        paddingTop: 20,
     },
     inputContainer: {
         flexDirection: 'row',
@@ -835,42 +760,155 @@ const styles = StyleSheet.create({
         height: 50,
         borderWidth: 1,
         borderColor: '#333',
-        width:"80%"
+        width: "80%"
     },
-    infosVendedor:{
-        width:windowWidth-20,
-        marginTop:10,
+    header: {
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f0660a',
+        marginBottom: 10,
     },
-    infosCliente:{
-        width:windowWidth-20,
-        flexDirection:"row",
-        marginTop:"10px"
+    headerText: {
+        color: '#f0660a',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
-    subContainer:{
-        height: (windowHeight/12)*2,
-        alignItems:"center",
-        justifyContent:"center",
-        marginBottom:10,
-        marginTop:20,
+    valueCards: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        marginBottom: 15,
     },
-    subContainerMedio:{
-        height: (windowHeight/10)*4,
-        alignItems:"center",
-        justifyContent:"center",
-        marginBottom:10
-        
+    valueCard: {
+        backgroundColor: '#2a2a2a',
+        borderRadius: 10,
+        padding: 15,
+        width: '48%',
+        borderWidth: 1,
+        borderColor: '#333',
     },
-    botoes:{
-        height: (windowHeight/10)*2,
-        alignItems:"center",
-        justifyContent:"center",
-        marginTop:20
+    valueLabel: {
+        color: '#aaa',
+        fontSize: 14,
+        marginBottom: 5,
     },
-    subContainerMenor:{
-        height: windowHeight/15,
-        alignItems:"center",
-        justifyContent:"center",
-        
+    valueText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    paymentMethods: {
+        backgroundColor: '#2a2a2a',
+        borderRadius: 10,
+        padding: 15,
+        marginHorizontal: 20,
+        marginBottom: 15,
+        borderWidth: 1,
+        borderColor: '#333',
+    },
+    paymentInputContainer: {
+        backgroundColor: '#2a2a2a',
+        borderRadius: 10,
+        padding: 20,
+        marginHorizontal: 20,
+        marginBottom: 15,
+        borderWidth: 1,
+        borderColor: '#333',
+    },
+    inputLabel: {
+        color: '#f0660a',
+        marginBottom: 10,
+        fontWeight: 'bold',
+    },
+    userInfoContainer: {
+        backgroundColor: '#2a2a2a',
+        borderRadius: 10,
+        padding: 15,
+        marginHorizontal: 20,
+        marginBottom: 15,
+        borderWidth: 1,
+        borderColor: '#333',
+    },
+    clientTag: {
+        backgroundColor: '#333',
+        borderRadius: 15,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    clientText: {
+        color: '#fff',
+    },
+    buttonsContainer: {
+        paddingHorizontal: 20,
+        paddingBottom: 30,
+        alignItems:"center"
+    },
+    // Atualize os modais para ficarem mais premium
+    modalContainer: {
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: '#2a2a2a',
+        width: '90%',
+        borderRadius: 15,
+        padding: 20,
+        borderWidth: 1,
+        borderColor: '#f0660a',
+    },
+    modalHeader: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#f0660a',
+        paddingBottom: 10,
+        marginBottom: 15,
+    },
+    modalTitle: {
+        color: '#f0660a',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    infosVendedor: {
+        width: windowWidth - 20,
+        marginTop: 10,
+    },
+    infosCliente: {
+        width: windowWidth - 20,
+        flexDirection: "row",
+        marginTop: "10px"
+    },
+    subContainer: {
+        height: (windowHeight / 12) * 2,
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 10,
+        marginTop: 20,
+    },
+    subContainerMedio: {
+        height: (windowHeight / 10) * 4,
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 10
+
+    },
+    botoes: {
+        height: (windowHeight / 10) * 2,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 20
+    },
+    subContainerMenor: {
+        height: windowHeight / 15,
+        alignItems: "center",
+        justifyContent: "center",
+
     },
     titulo: {
         color: "#f0660a",
@@ -883,19 +921,19 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
     },
-    input2:{ 
-        backgroundColor:"#fff",
-        width: windowWidth-90,
-        borderRadius:5,
-        paddingLeft:45,
-        height:45,
-        color:"rgba(0, 0, 0, 0.6)"
+    input2: {
+        backgroundColor: "#fff",
+        width: windowWidth - 90,
+        borderRadius: 5,
+        paddingLeft: 45,
+        height: 45,
+        color: "rgba(0, 0, 0, 0.6)"
     },
     centeredView: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor:"rgba(50,50,50,0.8)"
+        backgroundColor: "rgba(50,50,50,0.8)"
         // marginTop: 22,
     },
     modalView: {
@@ -906,13 +944,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
-          width: 0,
-          height: 2
+            width: 0,
+            height: 2
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        height:windowHeight -50
+        height: windowHeight - 50
     },
     modalViewNota: {
         margin: 20,
@@ -922,13 +960,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
-          width: 0,
-          height: 2
+            width: 0,
+            height: 2
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        height:300
+        height: 300
     },
 })
 export default TelaPagamentos

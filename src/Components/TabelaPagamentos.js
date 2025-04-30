@@ -6,28 +6,44 @@ import {
     FlatList,
     Dimensions
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const TabelaPagamentos = ({ pagamentos }) => {
     if (pagamentos.length === 0) return null;
 
     // Calcula o total
     const total = pagamentos.reduce((sum, item) => sum + item.valor, 0);
-    const totalFormatado = `${total.toFixed(2)}`.replace(".", ",");
+    const totalFormatado = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-    // Renderiza cada item da lista
+    // Ícones e cores para cada método
+    const getPaymentIcon = (metodo) => {
+        switch(metodo.toLowerCase()) {
+            case 'pix': return ['qr-code', '#32BCAD'];
+            case 'dinheiro': return ['money', '#4CAF50'];
+            case 'débito':
+            case 'debito': return ['credit-card', '#2196F3'];
+            case 'crédito':
+            case 'credito': return ['payment', '#9C27B0'];
+            case 'faturado': return ['receipt', '#F44336'];
+            default: return ['attach-money', '#607D8B'];
+        }
+    };
+
+    // Renderiza cada item
     const renderItem = ({ item }) => {
-        const valorFormatado = `${item.valor.toFixed(2)}`.replace(".", ",");
+        const [iconName, iconColor] = getPaymentIcon(item.metodo);
         
         return (
             <View style={styles.itemContainer}>
-                <View style={styles.colunaMetodo}>
-                    <Text style={styles.label}>Método</Text>
-                    <Text style={styles.valor}>{item.metodo}</Text>
+                <View style={styles.itemLeft}>
+                    <View style={[styles.iconContainer, { backgroundColor: '#2a2a2a' }]}>
+                        <Icon name={iconName} size={20} color={iconColor} />
+                    </View>
+                    <Text style={[styles.metodoText, { color: '#FFF' }]}>
+                        {item.metodo.charAt(0).toUpperCase() + item.metodo.slice(1)}
+                    </Text>
                 </View>
-                <View style={styles.colunaValor}>
-                    <Text style={styles.label}>Valor</Text>
-                    <Text style={styles.valor}>R$ {valorFormatado}</Text>
-                </View>
+                <Text style={styles.valorText}>{item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
             </View>
         );
     };
@@ -35,23 +51,25 @@ const TabelaPagamentos = ({ pagamentos }) => {
     return (
         <View style={styles.container}>
             {/* Cabeçalho */}
-            <View style={styles.cabecalho}>
-                <Text style={styles.titulo}>PAGAMENTOS</Text>
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>PAGAMENTOS</Text>
+                <View style={styles.headerDivider} />
             </View>
             
-            {/* Lista de pagamentos */}
+            {/* Lista */}
             <FlatList 
                 data={pagamentos}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
-                contentContainerStyle={styles.listaContent}
-                style={styles.lista}
+                contentContainerStyle={styles.listContent}
+                style={styles.list}
+                scrollEnabled={pagamentos.length > 3}
             />
             
             {/* Total */}
             <View style={styles.totalContainer}>
-                <Text style={styles.totalTexto}>Total Pago:</Text>
-                <Text style={styles.totalValor}>R$ {totalFormatado}</Text>
+                <Text style={styles.totalLabel}>TOTAL PAGO:</Text>
+                <Text style={styles.totalValue}>{totalFormatado}</Text>
             </View>
         </View>
     );
@@ -62,79 +80,95 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#2a2a2a",
-        borderRadius: 8,
-        padding: 15,
+        backgroundColor: "#1a1a1a",
+        borderRadius: 12,
+        padding: 16,
         width: windowWidth - 40,
-        maxHeight: (windowHeight / 10)*4,
+        maxHeight: (windowHeight / 10) * 4,
         marginVertical: 10,
-        elevation: 3,
+        borderWidth: 1,
+        borderColor: '#2a2a2a',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 5,
     },
-    cabecalho: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0660a',
-        paddingBottom: 8,
-        marginBottom: 10,
+    header: {
+        marginBottom: 12,
     },
-    titulo: {
+    headerTitle: {
         color: "#f0660a",
-        fontWeight: 'bold',
+        fontWeight: '700',
         fontSize: 16,
         textAlign: 'center',
+        letterSpacing: 1,
     },
-    lista: {
-        flexGrow: 0, // Impede que a lista cresça indefinidamente
+    headerDivider: {
+        height: 2,
+        backgroundColor: '#f0660a',
+        width: '30%',
+        alignSelf: 'center',
+        marginTop: 8,
+        borderRadius: 2,
+        opacity: 0.5
     },
-    listaContent: {
-        paddingBottom: 10,
+    list: {
+        flexGrow: 0,
+    },
+    listContent: {
+        paddingBottom: 8,
     },
     itemContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         paddingVertical: 12,
+        paddingHorizontal: 8,
         borderBottomWidth: 1,
-        borderBottomColor: '#3a3a3a',
+        borderBottomColor: '#2a2a2a',
     },
-    colunaMetodo: {
-        flex: 2,
+    itemLeft: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-    colunaValor: {
-        flex: 1,
-        alignItems: 'flex-end',
+    iconContainer: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
+        borderWidth: 1,
+        borderColor: '#333'
     },
-    label: {
-        color: "#aaa",
-        fontSize: 14,
-        marginRight: 10,
-    },
-    valor: {
-        color: "#FFF",
+    metodoText: {
         fontSize: 14,
         fontWeight: '500',
+    },
+    valorText: {
+        color: "#FFF",
+        fontSize: 14,
+        fontWeight: '600',
     },
     totalContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 15,
-        paddingTop: 10,
+        marginTop: 12,
+        paddingTop: 12,
         borderTopWidth: 1,
-        borderTopColor: '#3a3a3a',
+        borderTopColor: '#2a2a2a',
     },
-    totalTexto: {
-        color: "#FFF",
-        fontSize: 16,
-        fontWeight: 'bold',
+    totalLabel: {
+        color: "#f0660a",
+        fontSize: 15,
+        fontWeight: '700',
+        letterSpacing: 0.5,
     },
-    totalValor: {
+    totalValue: {
         color: "#4CAF50",
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 15,
+        fontWeight: '700',
     },
 });
 

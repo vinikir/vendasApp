@@ -253,8 +253,8 @@ const ModalConfirmarAdicionarProduto = ({ modalAberto, item, fechaModal, callbac
                                     callback={adicionar}
                                     disabled={disabilitado}
                                     backgroundColor='#4CAF50'
-                                    style={styles.confirmButton}
-                                    icon="check"
+                                   // style={styles.confirmButton}
+                                    iconName="check"
                                     iconColor="#fff"
                                 />
                             </View>
