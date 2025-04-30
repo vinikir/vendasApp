@@ -452,7 +452,7 @@ const TelaPagamentos = ({ route, navigation }) => {
 
         if (parseFloat(valor.replace(",", ".")) < parseFloat(valorCobrar.replace(",", ".")) && valorTotalPago + parseFloat(valor.replace(",", ".")) == parseFloat(valorCobrar.replace(",", "."))) {
             return (
-                <View style={{ marginTop:5, marginBottom: 5 }}>
+                <View style={{ marginTop: 5, marginBottom: 5 }}>
                     <Botao
                         label="Finalizar"
                         callback={() => {
@@ -471,7 +471,7 @@ const TelaPagamentos = ({ route, navigation }) => {
 
         if (parseFloat(valor.replace(",", ".")) == parseFloat(valorCobrar.replace(",", "."))) {
             return (
-                <View style={{ marginTop:5, marginBottom: 5 }}>
+                <View style={{ marginTop: 5, marginBottom: 5 }}>
                     <Botao
                         label="Finalizar"
                         callback={() => {
@@ -489,7 +489,7 @@ const TelaPagamentos = ({ route, navigation }) => {
 
         if (parseFloat(valor.replace(",", ".")) < parseFloat(valorCobrar.replace(",", "."))) {
             return (
-                <View style={{ marginTop:5, marginBottom: 5 }}>
+                <View style={{ marginTop: 5, marginBottom: 5 }}>
                     <Botao
                         label="Adicionar pagamento"
                         callback={() => {
@@ -591,18 +591,20 @@ const TelaPagamentos = ({ route, navigation }) => {
                     </View>
                 )}
 
-                {user.Nome == "Vinicius Kiritschenco Costa" && (
-                    <Botao
-                        label="Trocar Vendedor"
-                        callback={abrirModalVendedores}
-                        backgroundColor="#333"
-                        color='#f0660a'
-                        style={{ marginTop: 10 }}
-                    />
-                )}
+                {user.Nome == "Vinicius Kiritschenco Costa"   && (
+                    <View style={{ marginTop: 10, marginBottom: 5 }}>
+                        <Botao
+                            label="Trocar Vendedor"
+                            callback={abrirModalVendedores}
+                            backgroundColor="#333"
+                            color='#f0660a'
+                            style={{ marginTop: 10 }}
+                        />
+                    </View>
+                )} 
 
                 {typeof cliente._id == "undefined" && (
-                    <View style={{ marginTop:10, marginBottom: 5 }}>
+                    <View style={{ marginTop: 10, marginBottom: 5 }}>
                         <Botao
                             label="Adicionar Cliente"
                             callback={adicionarCliente}
@@ -618,7 +620,7 @@ const TelaPagamentos = ({ route, navigation }) => {
             {/* Botões de Ação */}
             <View style={styles.buttonsContainer}>
                 {Botoes()}
-                <View style={{ marginTop:5, marginBottom: 5 }}>
+                <View style={{ marginTop: 5, marginBottom: 5 }}>
                     <Botao
                         label="Cancelar"
                         callback={() => {
@@ -630,7 +632,7 @@ const TelaPagamentos = ({ route, navigation }) => {
                         style={{ marginTop: 10 }}
                     />
                 </View>
-                
+
             </View>
 
             {/* Modais (atualizados) */}
@@ -642,7 +644,7 @@ const TelaPagamentos = ({ route, navigation }) => {
                         <View style={styles.modalHeader}>
                             <Text style={styles.modalTitle}>{msg}</Text>
                         </View>
-                        <View style={{marginBottom:20}}>
+                        <View style={{ marginBottom: 20 }}>
                             <Botao
                                 label="Gerar Nota Fiscal"
                                 callback={() => {
@@ -662,6 +664,47 @@ const TelaPagamentos = ({ route, navigation }) => {
                                     voltarLimparBag();
                                 }}
                                 backgroundColor="#28a745"
+                                color='#fff'
+                            />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVendedore}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>SELECIONAR VENDEDOR</Text>
+                        </View>
+
+                        <FlatList
+                            data={vendedores}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setVendedor(item);
+                                        setModalVendedore(false);
+                                    }}
+                                    style={styles.modalItem}
+                                >
+                                    <Text style={styles.modalItemText}>{item.nome}</Text>
+                                    <Icon name="user" size={16} color="#f0660a" />
+                                </TouchableOpacity>
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                            style={{ maxHeight: windowHeight * 0.6 }}
+                        />
+
+                        <View style={{ marginTop: 15 }}>
+                            <Botao
+                                label="Cancelar"
+                                callback={() => setModalVendedore(false)}
+                                backgroundColor="#333"
                                 color='#fff'
                             />
                         </View>
@@ -780,6 +823,52 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginBottom: 15,
     },
+    emptyText: {
+        color: '#666',
+        marginTop: 10,
+        fontSize: 14,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        backgroundColor: '#333',
+        borderRadius: 8,
+        paddingHorizontal: 15,
+        marginBottom: 15,
+        alignItems: 'center',
+    },
+    searchInput: {
+        flex: 1,
+        color: '#fff',
+        height: 45,
+    },
+    searchButton: {
+        padding: 10,
+    },
+    clientItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#333',
+    },
+    clientInfo: {
+        flex: 1,
+    },
+    clientName: {
+        color: '#fff',
+        fontSize: 15,
+        marginBottom: 3,
+    },
+    clientDoc: {
+        color: '#aaa',
+        fontSize: 12,
+    },
+    emptyState: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 30,
+    },
     valueCard: {
         backgroundColor: '#2a2a2a',
         borderRadius: 10,
@@ -846,7 +935,7 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         paddingHorizontal: 20,
         paddingBottom: 30,
-        alignItems:"center"
+        alignItems: "center"
     },
     // Atualize os modais para ficarem mais premium
     modalContainer: {
@@ -883,6 +972,19 @@ const styles = StyleSheet.create({
         width: windowWidth - 20,
         flexDirection: "row",
         marginTop: "10px"
+    },
+    modalItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 15,
+        paddingHorizontal: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#333',
+    },
+    modalItemText: {
+        color: '#fff',
+        fontSize: 15,
     },
     subContainer: {
         height: (windowHeight / 12) * 2,
