@@ -338,7 +338,7 @@ const TelaPagamentos = ({ route, navigation }) => {
 
 
         SalvaVendaServer(jsonFinalizar).then((re) => {
-
+           
             if (re.erro == false) {
 
 
