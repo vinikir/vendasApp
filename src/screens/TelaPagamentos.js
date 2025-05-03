@@ -10,7 +10,8 @@ import {
     Modal,
     FlatList,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView
 } from "react-native"
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 
@@ -106,10 +107,10 @@ const TelaPagamentos = ({ route, navigation }) => {
             </tr>
         `).join('');
     };
-    
+
     const criaHTMLPdf = async (itens) => {
         const totalVenda = itens.reduce((total, item) => total + item.valorTotal, 0);
-        
+
         const html = `
         <!DOCTYPE html>
         <html>
@@ -269,10 +270,10 @@ const TelaPagamentos = ({ route, navigation }) => {
         </body>
         </html>
         `;
-    
+
         return html;
     };
-    
+
     const gerarNota = async (itensBag) => {
         try {
             const options = {
@@ -280,9 +281,9 @@ const TelaPagamentos = ({ route, navigation }) => {
                 fileName: `G&M_Venda_${venda.vendaId}_${moment().format("DDMMYYYY_HHmm")}`,
                 directory: 'Documents',
             };
-    
+
             const file = await RNHTMLtoPDF.convert(options);
-    
+
             const shareOptions = {
                 title: `Venda ${venda.vendaId} - G&M Moto Peças`,
                 message: `Comprovante de venda Nº ${venda.vendaId}`,
@@ -290,7 +291,7 @@ const TelaPagamentos = ({ route, navigation }) => {
                 type: 'application/pdf',
                 subject: `Venda ${venda.vendaId}`,
             };
-    
+
             await Share.open(shareOptions);
             voltarLimparBag();
         } catch (error) {
@@ -387,7 +388,7 @@ const TelaPagamentos = ({ route, navigation }) => {
 
 
         SalvaVendaServer(jsonFinalizar).then((re) => {
-           
+
             if (re.erro == false) {
 
 
@@ -588,44 +589,49 @@ const TelaPagamentos = ({ route, navigation }) => {
                     </Text>
                 </View>
             </View>
+            <ScrollView>
 
-            {/* Métodos de Pagamento */}
-            <View style={styles.paymentMethods}>
-                <RadioGroup
-                    containerStyle={{ alignItems: 'flex-start' }}
-                    radioButtons={radioButtons}
-                    onPress={setSelectedId}
-                    selectedId={selectedId}
-                    layout="row"
-                />
-                <RadioGroup
-                    containerStyle={{ marginTop: 10 }}
-                    radioButtons={radioButtons1}
-                    onPress={setSelectedId}
-                    selectedId={selectedId}
-                    layout="row"
-                />
-            </View>
-
-            {/* Input Valor */}
-            <View style={styles.paymentInputContainer}>
-                <Text style={styles.inputLabel}>VALOR DO PAGAMENTO</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ color: '#fff', fontSize: 18, marginRight: 10 }}>R$</Text>
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={(t) => setvalor(formatMoney(t))}
-                        value={valor}
-                        keyboardType='numeric'
-                        placeholder="0,00"
-                        placeholderTextColor="#666"
+                <View style={styles.paymentMethods}>
+                    <RadioGroup
+                        containerStyle={{ alignItems: 'flex-start' }}
+                        radioButtons={radioButtons}
+                        onPress={setSelectedId}
+                        selectedId={selectedId}
+                        layout="row"
+                    />
+                    <RadioGroup
+                        containerStyle={{ marginTop: 10 }}
+                        radioButtons={radioButtons1}
+                        onPress={setSelectedId}
+                        selectedId={selectedId}
+                        layout="row"
                     />
                 </View>
-                {msgValor()}
-            </View>
 
-            {/* Tabela de Pagamentos */}
-            <TabelaPagamentos pagamentos={pagamento} />
+                {/* Input Valor */}
+                <View style={styles.paymentInputContainer}>
+                    <Text style={styles.inputLabel}>VALOR DO PAGAMENTO</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ color: '#fff', fontSize: 18, marginRight: 10 }}>R$</Text>
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={(t) => setvalor(formatMoney(t))}
+                            value={valor}
+                            keyboardType='numeric'
+                            placeholder="0,00"
+                            placeholderTextColor="#666"
+                        />
+                    </View>
+                    {msgValor()}
+                </View>
+
+                {/* Tabela de Pagamentos */}
+                <TabelaPagamentos pagamentos={pagamento} />
+
+            </ScrollView>
+
+            {/* Métodos de Pagamento */}
+
 
             {/* Informações Vendedor/Cliente */}
             <View style={styles.userInfoContainer}>
@@ -640,7 +646,7 @@ const TelaPagamentos = ({ route, navigation }) => {
                     </View>
                 )}
 
-                {user.Nome == "Vinicius Kiritschenco Costa"   && (
+                {user.Nome == "Vinicius Kiritschenco Costa" && (
                     <View style={{ marginTop: 10, marginBottom: 5 }}>
                         <Botao
                             label="Trocar Vendedor"
@@ -650,7 +656,7 @@ const TelaPagamentos = ({ route, navigation }) => {
                             style={{ marginTop: 10 }}
                         />
                     </View>
-                )} 
+                )}
 
                 {typeof cliente._id == "undefined" && (
                     <View style={{ marginTop: 10, marginBottom: 5 }}>
@@ -695,7 +701,7 @@ const TelaPagamentos = ({ route, navigation }) => {
                         </View>
                         <View style={{ marginBottom: 20 }}>
                             <Botao
-                                label="Gerar Nota Fiscal"
+                                label="Gerar Nota"
                                 callback={() => {
                                     setModalSalvoSucesso(false);
                                     gerarNota(itensBag);

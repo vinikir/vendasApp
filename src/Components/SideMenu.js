@@ -132,6 +132,21 @@ const SideMenuComponent = ({ abreSideMenu }) => {
 
                             <TouchableOpacity 
                                 style={styles.menuItem}
+                                onPress={() => navigateTo('Vendas')}
+                            >
+                                <LinearGradient
+                                    colors={['rgba(240, 102, 10, 0.2)', 'transparent']}
+                                    style={styles.menuItemBackground}
+                                    start={{ x: 0, y: 0.5 }}
+                                    end={{ x: 1, y: 0.5 }}
+                                >
+                                    <Icon name="receipt" size={18} color="#f0660a" />
+                                    <Text style={styles.menuItemText}>Vendas</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity 
+                                style={styles.menuItem}
                                 onPress={() => navigateTo('TrocarSenha')}
                             >
                                 <LinearGradient
@@ -159,6 +174,8 @@ const SideMenuComponent = ({ abreSideMenu }) => {
                                     <Text style={styles.menuItemText}>Sair</Text>
                                 </LinearGradient>
                             </TouchableOpacity>
+
+                            
                         </View>
 
                         {/* Rodapé do menu */}

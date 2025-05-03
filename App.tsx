@@ -12,7 +12,8 @@ import Orcamentos from './src/screens/Orcamantos';
 import OrcamentoDetalhe from './src/screens/OrcametoDetalhe';
 import InformativoProduto from './src/screens/InformativoProduto';
 import OrdemServico from './src/screens/OrdemServico'; 
-
+import Vendas from './src/screens/Vendas';
+import DetalheVenda from './src/screens/DetalhesVenda';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -30,6 +31,8 @@ const App = () => {
 					<Stack.Screen name="OrcamentoDetalhe" component={OrcamentoDetalhe}  />
 					<Stack.Screen name="InformativoProduto" component={InformativoProduto}  />
 					<Stack.Screen name="OrdemServico" component={OrdemServico}  />
+					<Stack.Screen name="Vendas" component={Vendas}  />
+					<Stack.Screen name="DetalheVenda" component={DetalheVenda}  />
 					
 				</Stack.Navigator>
 			</AuthProvider>
