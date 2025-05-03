@@ -100,22 +100,38 @@ const ModalConfirmarAdicionarProduto = ({ modalAberto, item, fechaModal, callbac
         atualizarValores(qtdNum, desconto);
     };
 
-    const atualizarDesconto = (desc) => {
-        if (desc === "") desc = 0;
-        const descNum = parseInt(desc) || 0;
+    const handleChangeDesconto = (e) => {
+        const valor = e.replace(',', '.'); // substitui vírgula por ponto
 
-        if (descNum > item.descontoMaximo) {
+        // Aceita apenas números, ponto e vazio
+        if (/^[0-9]*\.?[0-9]*$/.test(valor) || valor === "") {
+            setDesconto(valor); // mantém como string visual
+        }
+    };
+
+    const atualizarDesconto = () => {
+
+        const valorFloat = parseFloat(desconto);
+
+        if (isNaN(valorFloat)) {
+            setDesconto("0");
+            setDisabilitado(true);
+            setMsg("Desconto inválido");
+            setTotal("0,00");
+            return;
+        }
+
+        if (valorFloat > item.descontoMaximo) {
             setMsg(`Desconto máximo permitido: ${item.descontoMaximo}%`);
-            setDesconto(0);
+            setDesconto("0");
             setDisabilitado(true);
             setTotal("0,00");
             return;
         }
 
-        setDisabilitado(false);
         setMsg("");
-        setDesconto(descNum);
-        atualizarValores(qtd, descNum);
+        setDisabilitado(false);
+        atualizarValores(qtd, valorFloat);
     };
 
     const adicionar = () => {
@@ -171,13 +187,13 @@ const ModalConfirmarAdicionarProduto = ({ modalAberto, item, fechaModal, callbac
                                 {/* Informações do Produto */}
                                 <View style={styles.productInfo}>
                                     <Text style={styles.productName}>{item.nome}</Text>
-                                    
+
                                     <View style={styles.priceRow}>
                                         <View style={styles.priceContainer}>
                                             <Text style={styles.priceLabel}>VALOR UNITÁRIO</Text>
                                             <Text style={styles.priceValue}>R$ {precoFormatado}</Text>
                                         </View>
-                                        
+
                                         {item.tipo != "servico" && (
                                             <View style={styles.stockContainer}>
                                                 <Text style={styles.stockLabel}>ESTOQUE</Text>
@@ -214,7 +230,9 @@ const ModalConfirmarAdicionarProduto = ({ modalAberto, item, fechaModal, callbac
                                             <TextInput
                                                 style={styles.input}
                                                 keyboardType='numeric'
-                                                onChangeText={atualizarDesconto}
+                                                onChangeText={handleChangeDesconto}
+                                                onBlur={atualizarDesconto}
+
                                                 value={desconto.toString()}
                                                 placeholder="0"
                                                 placeholderTextColor="#666"
@@ -246,14 +264,14 @@ const ModalConfirmarAdicionarProduto = ({ modalAberto, item, fechaModal, callbac
                                     icon="times"
                                     iconColor="#fff"
                                 /> */}
-                                
-                                <Botao 
+
+                                <Botao
                                     label="ADICIONAR ITEM"
                                     color='#fff'
                                     callback={adicionar}
                                     disabled={disabilitado}
                                     backgroundColor='#4CAF50'
-                                   // style={styles.confirmButton}
+                                    // style={styles.confirmButton}
                                     iconName="check"
                                     iconColor="#fff"
                                 />
@@ -413,12 +431,12 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     modalFooter: {
-       
+
         justifyContent: 'space-around',
         padding: 20,
         borderTopWidth: 1,
         borderTopColor: 'rgba(240, 102, 10, 0.3)',
-        flexDirection:"column"
+        flexDirection: "column"
     },
     cancelButton: {
         flex: 1,

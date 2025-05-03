@@ -163,7 +163,7 @@ const SideMenuComponent = ({ abreSideMenu }) => {
 
                         {/* Rodapé do menu */}
                         <View style={styles.menuFooter}>
-                            <Text style={styles.footerText}>v2.0.0</Text>
+                            {/* <Text style={styles.footerText}>v2.0.0</Text> */}
                         </View>
                     </SafeAreaView>
                 </LinearGradient>
