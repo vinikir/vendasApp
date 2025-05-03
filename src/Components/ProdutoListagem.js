@@ -18,7 +18,7 @@ const ProdutoListagem = React.memo(({ item, callback }) => {
     const [scaleAnim] = useState(new Animated.Value(1));
     const navigation = useNavigation();
 
-    if(typeof item.valorVenda == "undefined") {
+    if (typeof item.valorVenda == "undefined") {
         return null;
     }
 
@@ -38,8 +38,8 @@ const ProdutoListagem = React.memo(({ item, callback }) => {
         }).start();
     };
 
-    let img = item.img && item.img != null ? 
-        { uri: item.img } : 
+    let img = item.img && item.img != null ?
+        { uri: item.img } :
         require("../../assets/noimage.png");
 
     let preco = `${item.valorVenda.toFixed(2)}`.replace('.', ',');
@@ -57,11 +57,55 @@ const ProdutoListagem = React.memo(({ item, callback }) => {
     const backgroundColor = item.tipo === "servico" ? "#3a3a3a" : "#4a4a4a";
     const accentColor = item.tipo === "servico" ? "#f0660a" : "#4CAF50";
 
+    const getLocationIcon = (tipo) => {
+        const icons = {
+            'corredor': 'road',
+            'prateleira': 'layer-group',
+            'coluna': 'cube',
+            'caixa': 'box-open'
+        };
+        return icons[tipo.toLowerCase()] || 'map-marker-alt';
+    };
+
+    const formatarLocalizacao = () => {
+        if (!item.localizacao || item.localizacao.length === 0 || item.tipo === "servico") return null;
+
+        return (
+            <View style={styles.locationContainer}>
+                <View style={styles.locationLabelContainer}>
+                    <Icon name="map-pin" size={10} color="#aaa" solid />
+                    <Text style={styles.locationLabel}>Localização</Text>
+                </View>
+                <View style={styles.locationPath}>
+                    {item.localizacao.map((loc, index) => (
+                        <React.Fragment key={index}>
+                            <View style={styles.locationStep}>
+                                <View style={[styles.locationIcon,
+                                { backgroundColor: index === item.localizacao.length - 1 ? accentColor : '#666' }]}>
+                                    <Icon name={getLocationIcon(loc.tipo)} size={10} color="#fff" />
+                                </View>
+                                <Text style={styles.locationText}>
+                                    {loc.tipo}: {loc.valor}
+                                </Text>
+                            </View>
+                            {index < item.localizacao.length - 1 && (
+                                <View style={styles.locationArrow}>
+                                    <Icon name="chevron-right" size={10} color="#aaa" />
+                                </View>
+                            )}
+                        </React.Fragment>
+                    ))}
+                </View>
+            </View>
+        );
+    };
+
+
     return (
         <View style={styles.container}>
             <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                 {/* Card principal */}
-                <TouchableWithoutFeedback 
+                <TouchableWithoutFeedback
                     onPress={abrirDetalhes}
                     onPressIn={handlePressIn}
                     onPressOut={handlePressOut}
@@ -80,7 +124,7 @@ const ProdutoListagem = React.memo(({ item, callback }) => {
                         {/* Informações do produto */}
                         <View style={styles.infoContainer}>
                             <Text style={styles.productName} numberOfLines={2}>{item.nome}</Text>
-                            
+
                             {item.tipo !== "servico" && (
                                 <>
                                     <View style={styles.detailRow}>
@@ -91,6 +135,7 @@ const ProdutoListagem = React.memo(({ item, callback }) => {
                                         <Icon name="box-open" size={12} color="#aaa" />
                                         <Text style={styles.detailText}> Estoque: {item.estoque}</Text>
                                     </View>
+                                    {formatarLocalizacao()}
                                 </>
                             )}
                         </View>
@@ -103,7 +148,7 @@ const ProdutoListagem = React.memo(({ item, callback }) => {
                 </TouchableWithoutFeedback>
 
                 {/* Botão de ação */}
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={[styles.actionButton, { backgroundColor: accentColor }]}
                     onPress={() => setModalConfirmacaoAberto(true)}
                     activeOpacity={0.8}
@@ -131,7 +176,7 @@ const styles = StyleSheet.create({
     container: {
         width: windowWidth - 30,
         marginBottom: 15,
-        marginHorizontal:0,
+        marginHorizontal: 0,
         borderRadius: 12,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
@@ -140,7 +185,7 @@ const styles = StyleSheet.create({
         elevation: 5,
         backgroundColor: '#2a2a2a',
         overflow: 'hidden',
-		
+
     },
     card: {
         flexDirection: 'row',
@@ -218,7 +263,56 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
         marginRight: 8
-    }
+    },
+    locationContainer: {
+        marginTop: 8,
+        paddingTop: 8,
+        borderTopWidth: 1,
+        borderTopColor: '#333'
+    },
+    locationPath: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'wrap'
+    },
+    locationStep: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#3a3a3a',
+        borderRadius: 12,
+        paddingVertical: 3,
+        paddingHorizontal: 8,
+        marginRight: 4
+    },
+    locationIcon: {
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 4
+    },
+    locationText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: '500'
+    },
+    locationArrow: {
+        marginHorizontal: 2
+    },
+    locationLabelContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4
+    },
+    locationLabel: {
+        color: '#aaa',
+        fontSize: 10,
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+        marginLeft: 4
+    },
 });
 
 export default ProdutoListagem;
