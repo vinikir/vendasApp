@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     View,
     Text,
@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import api from '../Api/api';
-
+import { AuthContext } from '../Contexts/auth';
 const Vendas = ({ navigation }) => {
     // Estados
     const [vendas, setVendas] = useState([]);
@@ -26,6 +26,9 @@ const Vendas = ({ navigation }) => {
     const [showDatePicker, setShowDatePicker] = useState(null);
     const [busca, setBusca] = useState('');
     const [buscando, setBuscando] = useState(false);
+
+    const { userInfos } = useContext(AuthContext);
+
     // Simulação de busca de vendas (substitua pela sua API real)
     const buscarVendas = async () => {
         setLoading(true);
@@ -34,14 +37,13 @@ const Vendas = ({ navigation }) => {
             // Formata as datas para o formato YYYY-MM-DD
             const dataInicioFormatada = moment(dataInicio).format('YYYY-MM-DD');
             const dataFimFormatada = moment(dataFim).format('YYYY-MM-DD');
-            
 
             api.post('/venda/buscar/vendedor', {
-                "dataInicio": "2025-05-02",
-                "dataFim": "2025-05-03",
-                "userId": "67bf628a537a9de379947265"
+                "dataInicio": dataInicioFormatada,
+                "dataFim": dataFimFormatada,
+                "userId": userInfos.id
             }).then((res) => {
-                
+
                 setVendas(res.data.valor)
             })
 
@@ -163,6 +165,7 @@ const Vendas = ({ navigation }) => {
                     <Text style={styles.filtroTitulo}>Filtrar por período</Text>
 
                     <View style={styles.dateInputContainer}>
+
                         <TouchableOpacity
                             style={styles.dateInput}
                             onPress={() => setShowDatePicker('inicio')}
@@ -184,28 +187,28 @@ const Vendas = ({ navigation }) => {
                                 {moment(dataFim).format('DD/MM/YYYY')}
                             </Text>
                         </TouchableOpacity>
-                        <TextInput
-                            style={styles.buscaInput}
-                            placeholder="Buscar por cliente..."
-                            placeholderTextColor="#aaa"
-                            value={busca}
-                            onChangeText={setBusca}
-                        />
-                        <TouchableOpacity
-                            style={styles.buscarButton}
-                            onPress={buscarVendas}
-                            disabled={buscando}
-                        >
-                            {buscando ? (
-                                <ActivityIndicator color="#fff" />
-                            ) : (
-                                <Text style={styles.buscarButtonText}>
-                                    <Icon name="search" size={14} color="#fff" /> BUSCAR
-                                </Text>
-                            )}
-                        </TouchableOpacity>
-                    </View>
 
+                    </View>
+                    <TextInput
+                        style={styles.buscaInput}
+                        placeholder="Buscar por cliente..."
+                        placeholderTextColor="#aaa"
+                        value={busca}
+                        onChangeText={setBusca}
+                    />
+                    <TouchableOpacity
+                        style={styles.buscarButton}
+                        onPress={buscarVendas}
+                        disabled={buscando}
+                    >
+                        {buscando ? (
+                            <ActivityIndicator color="#fff" />
+                        ) : (
+                            <Text style={styles.buscarButtonText}>
+                                <Icon name="search" size={14} color="#fff" /> BUSCAR
+                            </Text>
+                        )}
+                    </TouchableOpacity>
 
                 </View>
             )}
