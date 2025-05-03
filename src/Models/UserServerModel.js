@@ -2,7 +2,7 @@ import api from "../Api/api";
 
 export const Logar = async (login, senha) => {
     let retorno
-    const res_api = await api.post('login', { login: login, senha: senha }).then((res) => {
+    const res_api = await api.post('login', { login: login, senha: senha, acesso:"mobile" }).then((res) => {
         if (typeof res.data != "undefined" && res.data) {
             retorno = res.data
             return res.data

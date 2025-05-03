@@ -96,159 +96,208 @@ const TelaPagamentos = ({ route, navigation }) => {
     }
 
     const listagemProdutos = (orcamento) => {
-        let he = ''
-
-        orcamento.map((item) => {
-            he += `
-            
-                <tr style="width:100%; height:40px">
-
-                    
-                    <td >${item.produtoNome}</td>
-                
-
-                
-                    <td >${item.qtd}</td>
-                
-
-                
-                    <td >R$ ${item.valorUnitario.toFixed(2).toString().replace(".", ",")}</td>
-                
-
-                
-                    <td >${item.desconto}</td>
-                
-
-                
-                    <td >R$ ${item.valorTotal.toFixed(2).toString().replace(".", ",")}</td>
-                    
-
-                </tr>
-            `
-
-        })
-
-
-        return he
-    }
-
+        return orcamento.map((item) => `
+            <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 12px 8px; vertical-align: middle;">${item.produtoNome}</td>
+                <td style="text-align: center; padding: 12px 8px; vertical-align: middle;">${item.qtd}</td>
+                <td style="text-align: right; padding: 12px 8px; vertical-align: middle;">R$ ${item.valorUnitario.toFixed(2).replace(".", ",")}</td>
+                <td style="text-align: center; padding: 12px 8px; vertical-align: middle;">${item.desconto}%</td>
+                <td style="text-align: right; padding: 12px 8px; vertical-align: middle; font-weight: bold;">R$ ${item.valorTotal.toFixed(2).replace(".", ",")}</td>
+            </tr>
+        `).join('');
+    };
+    
     const criaHTMLPdf = async (itens) => {
-
-        let h = `
-            <div style="display:flex; align-items:center; flex-direction:column; width:100%; height:100%">
-                <div style=" display:flex; flex-direction:row; width:98%">
-                  
-                    <div style=" width:200px; height:200px ">
-                        <img src='https://i.imgur.com/9Hv8LYj.png' width="200px" height="200px"/>
+        const totalVenda = itens.reduce((total, item) => total + item.valorTotal, 0);
+        
+        const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Venda ${venda.vendaId} - G&M Moto Peças</title>
+            <style>
+                body {
+                    font-family: 'Arial', sans-serif;
+                    margin: 0;
+                    padding: 20px;
+                    color: #333;
+                    line-height: 1.6;
+                }
+                .container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                }
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 30px;
+                    border-bottom: 2px solid #f0660a;
+                    padding-bottom: 20px;
+                }
+                .logo {
+                    width: 150px;
+                    height: auto;
+                }
+                .empresa-info {
+                    text-align: right;
+                }
+                .empresa-nome {
+                    font-size: 22px;
+                    font-weight: bold;
+                    color: #2a2a2a;
+                    margin-bottom: 5px;
+                }
+                .empresa-detalhes {
+                    font-size: 12px;
+                    color: #666;
+                }
+                .titulo-venda {
+                    background-color: #f0660a;
+                    color: white;
+                    text-align: center;
+                    padding: 15px;
+                    font-size: 24px;
+                    font-weight: bold;
+                    border-radius: 5px;
+                    margin-bottom: 20px;
+                }
+                .info-venda {
+                    margin-bottom: 25px;
+                }
+                .info-row {
+                    display: flex;
+                    margin-bottom: 8px;
+                }
+                .info-label {
+                    font-weight: bold;
+                    min-width: 120px;
+                    color: #555;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 25px;
+                }
+                th {
+                    background-color: #2a2a2a;
+                    color: white;
+                    padding: 12px 8px;
+                    text-align: left;
+                }
+                td {
+                    padding: 12px 8px;
+                }
+                .total-row {
+                    font-weight: bold;
+                    font-size: 18px;
+                    text-align: right;
+                    margin-top: 20px;
+                    padding-top: 10px;
+                    border-top: 2px solid #2a2a2a;
+                }
+                .footer {
+                    margin-top: 40px;
+                    text-align: center;
+                    font-size: 12px;
+                    color: #777;
+                    border-top: 1px solid #eee;
+                    padding-top: 15px;
+                }
+                .text-center {
+                    text-align: center;
+                }
+                .text-right {
+                    text-align: right;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <img class="logo" src="https://i.imgur.com/9Hv8LYj.png" alt="G&M Moto Peças">
+                    <div class="empresa-info">
+                        <div class="empresa-nome">G & M Moto Peças</div>
+                        <div class="empresa-detalhes">CNPJ: 55.744.795/0001-34</div>
+                        <div class="empresa-detalhes">Contato: (11) 9 6564-0477</div>
                     </div>
-                    <div style="display:flex; align-items:center; justify-content:center; height: 200px; width:40%; font-size:30px"> 
-                        
-                        G & M Moto Pecas
-                       
-                       
-                    </div>
-                    <div style="display:flex; align-items:center; justify-content:center; height: 200px; font-size:15px; flex-direction:column">
-                        <div>
-                            CNPJ 55.744.795/0001-34
-                        </div>
-                        <div>
-                            Contato (11) 9 6564-0477
-                        </div>
-                    </div>
-                    
                 </div>
-                <div style="display:flex; align-items:center; justify-content:center;width:100%; height:50px; margin-top:20px">
-                    <div style="display:flex; align-items:center; justify-content:center; width:98%; height:60px; font-size:40px; background-color:#4a4a4a; color:#fff">
-                        Venda Nº ${venda.vendaId}
+                
+                <div class="titulo-venda">VENDA Nº ${venda.vendaId}</div>
+                
+                <div class="info-venda">
+                    <div class="info-row">
+                        <span class="info-label">Data da venda:</span>
+                        <span>${moment().format("DD/MM/YYYY")}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Vendedor:</span>
+                        <span>${vendedor.nome}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Cliente:</span>
+                        <span>${venda.cliente || 'Não informado'}</span>
                     </div>
                 </div>
-                <div style="  width:98%; margin-top:20px; ">
-                    
-                    <div>
-                        Data da venda: ${moment().format("DD/MM/YYYY")}
-                    </div>
-                     <div>
-                        Vendedor: ${vendedor.nome}
-                    </div>
-                    
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th class="text-center">Qtd</th>
+                            <th class="text-right">Val. Unit.</th>
+                            <th class="text-center">Desc.</th>
+                            <th class="text-right">Val. Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${listagemProdutos(itens)}
+                    </tbody>
+                </table>
+                
+                <div class="total-row">
+                    TOTAL DA VENDA: R$ ${totalVenda.toFixed(2).replace(".", ",")}
                 </div>
-                <div style="  width:98%; margin-top:20px; ">
-                    <table style="  width:100%; ">
-                        <thead >
-                            <tr style="background-color:rgba(50,50,50,0.3); height:40px">
-                                <td>
-                                    Produto
-                                </td>
-                                <td>
-                                    
-                                    Qtd
-                                    
-                                </td>
-                                <td>
-                                    Val. Uni.
-                                </td>
-                                <td>
-                                    Desc. (%)
-                                </td>
-                                <td>
-                                    Val. Tot.
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            ${listagemProdutos(itens)}
-                        
-                        </tbody>
-                        <tfoot>
-                            <tr style=" height:40px">
-                                <td scope="row" colspan=4>Total venda</td>
-                                <td style="font-weight:Bold">R$ ${venda.valor.toFixed(2).toString().replace(".", ",")}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    
+                
+                <div class="footer">
+                    <p>Obrigado por escolher G&M Moto Peças!</p>
+                    <p>Para dúvidas ou informações, entre em contato: (11) 9 6564-0477</p>
                 </div>
             </div>
+        </body>
+        </html>
         `;
-
-        return h
-    }
-
+    
+        return html;
+    };
+    
     const gerarNota = async (itensBag) => {
-
-
         try {
             const options = {
                 html: await criaHTMLPdf(itensBag),
-                fileName: 'GeM_moto_pecas_venda_' + venda.vendaId + "_" + moment().format("DDMMYYYYHm"),
+                fileName: `G&M_Venda_${venda.vendaId}_${moment().format("DDMMYYYY_HHmm")}`,
                 directory: 'Documents',
             };
-
+    
             const file = await RNHTMLtoPDF.convert(options);
-
-
+    
             const shareOptions = {
-                title: 'Compartilhar PDF',
-                message: 'Confira este PDF!',
-                url: "file://" + file.filePath,
+                title: `Venda ${venda.vendaId} - G&M Moto Peças`,
+                message: `Comprovante de venda Nº ${venda.vendaId}`,
+                url: `file://${file.filePath}`,
                 type: 'application/pdf',
+                subject: `Venda ${venda.vendaId}`,
             };
-
-            Share.open(shareOptions).then((res) => {
-                voltarLimparBag()
-                console.log('Compartilhado com sucesso:', res);
-
-            }).catch((err) => {
-                voltarLimparBag()
-                console.log('Erro ao compartilhar:', err);
-
-            });
-
+    
+            await Share.open(shareOptions);
+            voltarLimparBag();
         } catch (error) {
-            console.log('Erro ao gerar PDF:', error);
+            console.error('Erro ao gerar PDF:', error);
+            voltarLimparBag();
         }
-    }
+    };
 
 
     useEffect(() => {
