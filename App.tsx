@@ -14,6 +14,10 @@ import InformativoProduto from './src/screens/InformativoProduto';
 import OrdemServico from './src/screens/OrdemServico'; 
 import Vendas from './src/screens/Vendas';
 import DetalheVenda from './src/screens/DetalhesVenda';
+import ScannerScreen from './src/screens/Scanner';
+import Faturados from './src/screens/Faturados';
+import DetalhesFaturamento from './src/screens/DetalhesFaturamento';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -33,7 +37,10 @@ const App = () => {
 					<Stack.Screen name="OrdemServico" component={OrdemServico}  />
 					<Stack.Screen name="Vendas" component={Vendas}  />
 					<Stack.Screen name="DetalheVenda" component={DetalheVenda}  />
-					
+					<Stack.Screen name="ScannerScreen" component={ScannerScreen}  />
+					<Stack.Screen name="Faturados" component={Faturados}  />
+					<Stack.Screen name="DetalhesFaturamento" component={DetalhesFaturamento}  />
+
 				</Stack.Navigator>
 			</AuthProvider>
     	</NavigationContainer>

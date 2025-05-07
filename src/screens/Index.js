@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useContext } from 'react';
-import { 
+import {
     Text,
     View,
     Dimensions,
@@ -24,23 +24,43 @@ import SideMenuComponent from '../Components/SideMenu';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const Index = ({ route }) => {
+const Index = ({ route, navigation }) => {
     const [produtos, setProdutos] = useState([]);
     const [itensBag, setItensBag] = useState([]);
     const [busca, setBusca] = useState("");
     const [selectedId, setSelectedId] = useState();
     const [buscaVisivel, setBuscaVisivel] = useState(false);
-    const [refreshing, setRefreshing] = useState(false); 
+    const [refreshing, setRefreshing] = useState(false);
     const [sideMenuAberto, setSidemenuAberto] = useState(false);
 
     const fadeAnim = useState(new Animated.Value(0))[0];
     const slideAnim = useState(new Animated.Value(-100))[0];
+    const pulseAnim = useState(new Animated.Value(1))[0];
 
     const { userInfos } = useContext(AuthContext);
-    
+
     useEffect(() => {
         buscaItensServe();
         startAnimations();
+    }, []);
+
+
+    useEffect(() => {
+        const pulse = () => {
+            Animated.sequence([
+                Animated.timing(pulseAnim, {
+                    toValue: 1.1,
+                    duration: 500,
+                    useNativeDriver: true
+                }),
+                Animated.timing(pulseAnim, {
+                    toValue: 1,
+                    duration: 500,
+                    useNativeDriver: true
+                })
+            ]).start(() => pulse());
+        };
+        pulse();
     }, []);
 
     const startAnimations = () => {
@@ -50,7 +70,7 @@ const Index = ({ route }) => {
             duration: 800,
             useNativeDriver: true
         }).start();
-        
+
         // Animação de slide
         Animated.timing(slideAnim, {
             toValue: 0,
@@ -66,7 +86,7 @@ const Index = ({ route }) => {
         });
     };
 
-    if (typeof route != "undefined" && typeof route.params != "undefined" && 
+    if (typeof route != "undefined" && typeof route.params != "undefined" &&
         typeof route.params.limparBag != "undefined" && route.params.limparBag == true) {
         setItensBag([]);
         buscaItensServe();
@@ -81,8 +101,8 @@ const Index = ({ route }) => {
             color: "#f0660a",
             selectedColor: "#fff",
             borderColor: "#f0660a",
-            labelStyle: { 
-                color: "#fff", 
+            labelStyle: {
+                color: "#fff",
                 fontWeight: "bold",
                 fontFamily: 'Roboto-Medium'
             },
@@ -103,8 +123,8 @@ const Index = ({ route }) => {
             color: "#f0660a",
             selectedColor: "#fff",
             borderColor: "#f0660a",
-            labelStyle: { 
-                color: "#fff", 
+            labelStyle: {
+                color: "#fff",
                 fontWeight: "bold",
                 fontFamily: 'Roboto-Medium'
             },
@@ -125,8 +145,8 @@ const Index = ({ route }) => {
             color: "#f0660a",
             selectedColor: "#fff",
             borderColor: "#f0660a",
-            labelStyle: { 
-                color: "#fff", 
+            labelStyle: {
+                color: "#fff",
                 fontWeight: "bold",
                 fontFamily: 'Roboto-Medium'
             },
@@ -145,14 +165,14 @@ const Index = ({ route }) => {
     const adicionarItemBag = (jsonItem) => {
         let i = JSON.parse(JSON.stringify(itensBag));
         const index = i.findIndex((el) => el.produtoId == jsonItem.produtoId);
-       
+
         if (index < 0) {
             i.push(jsonItem);
         } else {
             i[index].qtd = parseInt(i[index].qtd) + parseInt(jsonItem.qtd);
             i[index].valorTotal = i[index].valorTotal + jsonItem.valorTotal;
-        } 
-       
+        }
+
         setItensBag(i);
     };
 
@@ -175,7 +195,7 @@ const Index = ({ route }) => {
     const MostraBag = () => {
         if (itensBag.length > 0) {
             return (
-                <Bag 
+                <Bag
                     itensBag={itensBag}
                     countItens={itensBag.length}
                     removerItem={(itemId) => removerItem(itemId)}
@@ -185,6 +205,10 @@ const Index = ({ route }) => {
             );
         }
         return null;
+    };
+
+    const abrirScanner = () => {
+        navigation.navigate('ScannerScreen');
     };
 
     const BuscarComFiltro = () => {
@@ -207,20 +231,20 @@ const Index = ({ route }) => {
 
     const ComponentBusca = () => {
         if (!buscaVisivel) return null;
-        
+
         return (
             <View style={styles.buscaContainer}>
                 <View style={styles.buscaContent}>
                     <View>
-                        <RadioGroup 
+                        <RadioGroup
                             layout="row"
-                            radioButtons={radioButtons} 
+                            radioButtons={radioButtons}
                             onPress={setSelectedId}
                             selectedId={selectedId}
                         />
                     </View>
                     <View style={styles.inputContainer}>
-                        <TextInput 
+                        <TextInput
                             style={styles.input}
                             onChangeText={(tex) => setBusca(tex)}
                             value={busca}
@@ -229,17 +253,17 @@ const Index = ({ route }) => {
                         />
                     </View>
                     <View style={styles.buscaButtons}>
-                        <TouchableOpacity 
-                            onPress={BuscarComFiltro} 
+                        <TouchableOpacity
+                            onPress={BuscarComFiltro}
                             style={[styles.button, styles.buttonPrimary]}
                         >
-                            <Text style={styles.buttonText}>Buscar</Text> 
+                            <Text style={styles.buttonText}>Buscar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
-                            onPress={() => setBuscaVisivel(false)} 
+                        <TouchableOpacity
+                            onPress={() => setBuscaVisivel(false)}
                             style={[styles.button, styles.buttonSecondary]}
                         >
-                            <Text style={styles.buttonText}>Fechar</Text> 
+                            <Text style={styles.buttonText}>Fechar</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -250,28 +274,28 @@ const Index = ({ route }) => {
     return (
         <Animated.View style={[styles.safeArea, { opacity: fadeAnim }]}>
             <SideMenuComponent abreSideMenu={sideMenuAberto} />
-            
+
             <Animated.View style={[styles.header, { transform: [{ translateY: slideAnim }] }]}>
-                <TouchableOpacity 
-                    onPress={() => setSidemenuAberto(!sideMenuAberto)} 
+                <TouchableOpacity
+                    onPress={() => setSidemenuAberto(!sideMenuAberto)}
                     style={styles.menuButton}
                 >
                     <Icon2 name="menu" size={24} color="#f0660a" />
                 </TouchableOpacity>
-                
+
                 <View style={styles.userInfo}>
                     <Text style={styles.userGreeting}>Bem-vindo,</Text>
                     <Text style={styles.userName}>{userInfos?.Nome}</Text>
                 </View>
-                
-                <TouchableOpacity 
-                    onPress={() => setBuscaVisivel(!buscaVisivel)} 
+
+                <TouchableOpacity
+                    onPress={() => setBuscaVisivel(!buscaVisivel)}
                     style={styles.filterButton}
                 >
-                    <Icon 
-                        name={buscaVisivel ? "times" : "filter"} 
-                        size={20} 
-                        color="#f0660a" 
+                    <Icon
+                        name={buscaVisivel ? "times" : "filter"}
+                        size={20}
+                        color="#f0660a"
                     />
                 </TouchableOpacity>
             </Animated.View>
@@ -279,17 +303,17 @@ const Index = ({ route }) => {
             {buscaVisivel && (
                 <Animated.View style={[styles.buscaContainer, { opacity: fadeAnim }]}>
                     <View style={styles.buscaContent}>
-                        <RadioGroup 
-                            radioButtons={radioButtons} 
+                        <RadioGroup
+                            radioButtons={radioButtons}
                             onPress={setSelectedId}
                             selectedId={selectedId}
                             layout="row"
                             containerStyle={styles.radioGroup}
                         />
-                        
+
                         <View style={styles.searchBox}>
                             <Icon name="search" size={16} color="#f0660a" style={styles.searchIcon} />
-                            <TextInput 
+                            <TextInput
                                 style={styles.input}
                                 onChangeText={setBusca}
                                 value={busca}
@@ -298,9 +322,9 @@ const Index = ({ route }) => {
                                 selectionColor="#f0660a"
                             />
                         </View>
-                        
-                        <TouchableOpacity 
-                            onPress={BuscarComFiltro} 
+
+                        <TouchableOpacity
+                            onPress={BuscarComFiltro}
                             style={styles.searchButton}
                         >
                             <Text style={styles.searchButtonText}>BUSCAR</Text>
@@ -309,9 +333,9 @@ const Index = ({ route }) => {
                     </View>
                 </Animated.View>
             )}
-            
+
             <View style={styles.listContainer}>
-                <FlatList 
+                <FlatList
                     data={produtos}
                     ListHeaderComponent={
                         <Text style={styles.sectionTitle}>PRODUTOS DISPONÍVEIS</Text>
@@ -324,7 +348,7 @@ const Index = ({ route }) => {
                         </View>
                     }
                     renderItem={({ item }) => (
-                        <ProdutoListagem 
+                        <ProdutoListagem
                             item={item}
                             callback={(jsonItem) => adicionarItemBag(jsonItem)}
                         />
@@ -333,7 +357,7 @@ const Index = ({ route }) => {
                         <RefreshControl
                             colors={["#f0660a", "#ff8c00"]}
                             refreshing={refreshing}
-                            onRefresh={onRefresh} 
+                            onRefresh={onRefresh}
                             tintColor="#f0660a"
                         />
                     }
@@ -343,6 +367,16 @@ const Index = ({ route }) => {
             </View>
 
             <MostraBag />
+            {/* <Animated.View style={[styles.floatButtonContainer, { opacity: fadeAnim }]}>
+                <TouchableOpacity
+                    onPress={abrirScanner}
+                   
+                    style={[styles.floatButton, { transform: [{ scale: pulseAnim }] }]}
+                    activeOpacity={0.8}
+                >
+                    <Icon name="barcode" size={20} color="#fff" />
+                </TouchableOpacity>
+            </Animated.View> */}
         </Animated.View>
     );
 
@@ -449,7 +483,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 15,
         backgroundColor: '#1a1a1a',
-        
+
     },
     sectionTitle: {
         color: '#f0660a',
@@ -481,7 +515,29 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginTop: 5,
         fontFamily: 'Roboto-Light'
-    }
+    },
+    floatButtonContainer: {
+        position: 'absolute',
+        right: 25,
+        bottom: 100,
+        zIndex: 10
+    },
+    floatButton: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: '#f0660a',
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 8,
+        borderWidth: 2,
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        
+    },
 });
 
 export default Index;

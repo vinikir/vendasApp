@@ -147,6 +147,21 @@ const SideMenuComponent = ({ abreSideMenu }) => {
 
                             <TouchableOpacity 
                                 style={styles.menuItem}
+                                onPress={() => navigateTo('Faturados')}
+                            >
+                                <LinearGradient
+                                    colors={['rgba(240, 102, 10, 0.2)', 'transparent']}
+                                    style={styles.menuItemBackground}
+                                    start={{ x: 0, y: 0.5 }}
+                                    end={{ x: 1, y: 0.5 }}
+                                >
+                                    <Icon name="file-invoice" size={18} color="#f0660a" />
+                                    <Text style={styles.menuItemText}>Faturados</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity 
+                                style={styles.menuItem}
                                 onPress={() => navigateTo('TrocarSenha')}
                             >
                                 <LinearGradient
@@ -207,7 +222,6 @@ const styles = StyleSheet.create({
     },
     menuContainer: {
         position: 'absolute',
-        top: 0,
         left: 0,
         bottom: 0,
         zIndex: 3,
@@ -215,7 +229,8 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 5, height: 0 },
         shadowOpacity: 0.3,
         shadowRadius: 10,
-        elevation: 20
+        elevation: 20,
+        height:windowHeight-100
     },
     gradientBackground: {
         flex: 1
