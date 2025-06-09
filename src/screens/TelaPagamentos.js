@@ -734,7 +734,7 @@ const TelaPagamentos = ({ route, navigation }) => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>SELECIONAR VENDEDOR</Text>
+                            <Text style={styles.modalTitle}>Selecionar vendedor</Text>
                         </View>
 
                         <FlatList
