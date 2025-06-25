@@ -124,7 +124,7 @@ const OrcamentoDetalhe = ({route, navigation}) => {
             
             const shareOptions = {
                 title: 'Orçamento G&M Moto Peças',
-                message: `Orçamento Nº ${orcamento.orcamentoId}`,
+                message: `G&M Orçamento Nº ${orcamento.orcamentoId}`,
                 url: `file://${file.filePath}`,
                 type: 'application/pdf',
                 subject: `Orçamento ${orcamento.orcamentoId}`,

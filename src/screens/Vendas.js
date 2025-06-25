@@ -28,8 +28,7 @@ const Vendas = ({ navigation }) => {
     const [buscando, setBuscando] = useState(false);
 
     const { userInfos } = useContext(AuthContext);
-
-    // Simulação de busca de vendas (substitua pela sua API real)
+    
     const buscarVendas = async () => {
         setLoading(true);
         setBuscando(true)
@@ -37,7 +36,7 @@ const Vendas = ({ navigation }) => {
             // Formata as datas para o formato YYYY-MM-DD
             const dataInicioFormatada = moment(dataInicio).format('YYYY-MM-DD');
             const dataFimFormatada = moment(dataFim).format('YYYY-MM-DD');
-
+           
             api.post('/venda/buscar/vendedor', {
                 "dataInicio": dataInicioFormatada,
                 "dataFim": dataFimFormatada,

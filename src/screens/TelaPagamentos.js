@@ -56,8 +56,8 @@ const TelaPagamentos = ({ route, navigation }) => {
     const itensBag = route.params.itensBag
 
     const [vendedor, setVendedor] = useState({
-        _id: user.ID,
-        nome: user.Nome
+        _id: user.id,
+        nome: user.nome
     })
 
     const handleKeyboardDidShow = (event) => {
@@ -278,7 +278,7 @@ const TelaPagamentos = ({ route, navigation }) => {
         try {
             const options = {
                 html: await criaHTMLPdf(itensBag),
-                fileName: `G&M_Venda_${venda.vendaId}_${moment().format("DDMMYYYY_HHmm")}`,
+                fileName: `G&M Venda Nº ${venda.vendaId}_${moment().format("DDMMYYYY_HHmm")}`,
                 directory: 'Documents',
             };
 
@@ -376,17 +376,16 @@ const TelaPagamentos = ({ route, navigation }) => {
         }
 
         const jsonFinalizar = {
-            userId: vendedor._id,
+            vendedorId: vendedor._id,
             tipoVenda: "local",
-            user: vendedor.nome,
+            vendedorNome: vendedor.nome,
             status: "finalizado",
             pagamento: pagamento,
             produtos: itensBag,
             valor: parseFloat(valorCobrar.replace(",", ".")).toFixed(2),
             clienteId: cliente._id
         }
-
-
+       
         SalvaVendaServer(jsonFinalizar).then((re) => {
 
             if (re.erro == false) {

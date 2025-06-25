@@ -216,7 +216,7 @@ const DetalheVenda = ({ route, navigation }) => {
         try {
             const options = {
                 html: await criaHTMLPdf(itensBag),
-                fileName: `G&M_Venda_${venda.vendaId}_${moment().format("DDMMYYYY_HHmm")}`,
+                fileName: `G&M Venda Nº${venda.vendaId}_${moment().format("DDMMYYYY_HHmm")}`,
                 directory: 'Documents',
             };
 
